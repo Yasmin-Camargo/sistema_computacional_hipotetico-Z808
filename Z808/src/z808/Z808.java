@@ -98,7 +98,7 @@ public class Z808 {
                                 else if (instrucao.equals("E0")){   // mul AX
                                     System.out.println("mul AX");
                                 } 
-                                else if (instrucao.equals("D0")){ // not AX
+                                else if (instrucao.equals("D0")){   // not AX
                                     System.out.println("not AX");
                                 } 
                                 break;
@@ -194,6 +194,10 @@ public class Z808 {
                                 }   
                                 break; 
                                 
+                            case "59":                                     // pop opd
+                                System.out.println("pop opd");
+                                break;
+                                
                             case "50":                              
                                 ch[0] = (char) arquivo_leitura.read();
                                 ch[1] = (char) arquivo_leitura.read();
@@ -234,7 +238,17 @@ public class Z808 {
                             case "08":                                     // write Output stream
                                 System.out.println("write Output stream");
                                 break;
+                                
+                            case "EE":                                     // hlt(fim do programa)
+                                System.out.println("hlt");
+                                break;
+                                
+                            case "EF":                                     // ret
+                                System.out.println("ret");
+                                break;
+                                
                             default:
+                                JOptionPane.showMessageDialog(null, "Intrução ["+instrucao+"] não é aceita");
                                 break;
                         }
                     }

@@ -5,24 +5,30 @@
 package z808;
 
 public class Registradores {
-   
     private int CL;       //Contador de Localização: armazena endereço da instrução que está sendo executada
     private int RI;       //Registrador de Instruções: armazena código da instrução que está sendo executada
     
     private int SI;       //Utilizado como índice no endereçamento indireto 
     private int IP;       //Apontador de instrução: contém o endereço da próxima instrução a ser executada
-    private int SR;       //!!!!Registrador de Estado: seis flags para indicar condições durante a execução do programa
+    
+    int SR[] = new int[16]; //Registrador de Estado: seis flags para indicar condições durante a execução do programa
+                            // CF [0] = flag operação de adição resulta em vai-um (carry) ou operação de subtração resulta em vem-um (borrow)
+                            // PF [6] = flag de paridade
+                            // IF [7] = flag de interrupção
+                            // ZF [8] = flag zero
+                            // SF [9] = flag de sinal (positivo ou negativo)
+                            // OF [12] = flag de overflow 
 
                           //Registradores para fazer interface com  a memória
     private int REM;      //Registrador de Endereço de Memória: armazena endereço da posição que será lida ou escrita na memória
     private int RBM;      //Registrador de Buffer da Memória: conteúdo do endereço de memória especificado pelo REM
 
-                          // Registradores de dados
-    private int AX;
+                          
+    private int AX;       //Registradores de dados
     private int DX;
     
-                          // Registrador para pilha
-    private int SP;       // Stack Pointer: apontador do topo da pilha
+                          //Registrador para pilha
+    private int SP;       //Stack Pointer: apontador do topo da pilha
 
     
     //Métodos Getters
@@ -40,10 +46,6 @@ public class Registradores {
 
     public int getIP() {
         return IP;
-    }
-
-    public int getSR() {
-        return SR;
     }
 
     public int getREM() {
@@ -65,7 +67,32 @@ public class Registradores {
     public int getSP() {
         return SP;
     }
+    
+    public int getSR(String flag){
+        if (flag.equals("cf")){
+            return SR[0];
+        }
+        else if (flag.equals("pf")){
+            return SR[6];
+        }
+        else if (flag.equals("if")){
+            return SR[7];
+        }
+        else if (flag.equals("zf")){
+            return SR[8];
+        }
+        else if (flag.equals("sf")){
+            return SR[9];
+        }
+        else if (flag.equals("of")){
+            return SR[12];
+        } else{
+            System.out.println("Opção Inválida");
+            return -1;
+        }
+    }
 
+    //Métodos Setters
     public void setCL(int CL) {
         this.CL = CL;
     }
@@ -74,17 +101,12 @@ public class Registradores {
         this.RI = RI;
     }
 
-    //Métodos Setters
     public void setSI(int SI) {
         this.SI = SI;
     }
 
     public void setIP(int IP) {
         this.IP = IP;
-    }
-
-    public void setSR(int SR) {
-        this.SR = SR;
     }
 
     public void setREM(int REM) {
@@ -107,5 +129,26 @@ public class Registradores {
         this.SP = SP;
     }
     
-    
+    public void setSR(String flag, int valor){
+        if (!(valor == 0 || valor ==1)){
+            System.out.println("ERRO: valor da flag "+ flag + " deve ser 0 ou 1");
+        } 
+        else {
+            if (flag.equals("cf")) {
+                SR[0] = valor;
+            } else if (flag.equals("pf")) {
+                SR[6] = valor;
+            } else if (flag.equals("if")) {
+                SR[7] = valor;
+            } else if (flag.equals("zf")) {
+                SR[8] = valor;
+            } else if (flag.equals("sf")) {
+                SR[9] = valor;
+            } else if (flag.equals("of")) {
+                SR[12] = valor;
+            } else {
+                System.out.println("Opção Inválida");
+            }
+        }
+    } 
 }
