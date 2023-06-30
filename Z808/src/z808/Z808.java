@@ -26,6 +26,8 @@ public class Z808 {
     
     public static void main(String[] args) {
         String caminho_arquivo = "..\\Z808\\src\\z808\\arquivo_teste.txt"; 
+        Registradores registrador = new Registradores();
+        
         int flag_final_arquivo = 0;
         
         // Leitura do arquivo
@@ -37,15 +39,15 @@ public class Z808 {
                 FileInputStream arquivo_leitura = new FileInputStream(arquivo);
                 char[] ch = new char[2];
                 while (flag_final_arquivo != 1) {   
-                    //lê de 2 em 2 bytes (16 bits) o arquivo
+                    //lê primeiro byte (8 bits) da instrução
                     ch[0] = (char) arquivo_leitura.read();
                     ch[1] = (char) arquivo_leitura.read();
                     
                     if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF'){  // Verifica se chegou no Fim do arquivo
                        flag_final_arquivo = 1;
-                    } else{
+                    } 
+                    else{
                         String instrucao = new String(ch);             
-                        
                         
                         // Identificando qual é a intrução
                         switch (instrucao) {
@@ -56,14 +58,28 @@ public class Z808 {
                                 instrucao = new String(ch);
                                 if ((instrucao.equals("C2"))){      // add AX,DX
                                     System.out.println("add AX,DX");
+                                    registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getAX(), registrador));
                                 }
+                                
                                 else if (instrucao.equals("C0")){   // add AX,AX
                                     System.out.println("add AX,AX");
+                                    registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getDX(), registrador));
                                 }   
                                 break;
                                 
                             case "05":                                     // add AX,opd
-                                System.out.println("add AX,opd");
+                                System.out.print("add AX,opd");
+                                //leitura do operando (16 bits)
+                                char[] opd = new char[4];
+                                opd[0] = (char) arquivo_leitura.read();  
+                                opd[1] = (char) arquivo_leitura.read();
+                                opd[2] = (char) arquivo_leitura.read();  
+                                opd[3] = (char) arquivo_leitura.read();
+                                instrucao = new String(opd);
+                             
+                                //converte para inteiro e chama função add  
+                                System.out.println("("+(int) Integer.parseInt(instrucao, 16)+")");
+                                registrador.setAX(Instrucoes.add(registrador.getAX(), (int) Integer.parseInt(instrucao, 16), registrador));
                                 break;
                                 
                             case "2B":
