@@ -42,13 +42,14 @@ public class Z808 {
                     //lê primeiro byte (8 bits) da instrução
                     ch[0] = (char) arquivo_leitura.read();
                     ch[1] = (char) arquivo_leitura.read();
+                    String instrucao = new String(ch);             
+                        
                     
-                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF'){  // Verifica se chegou no Fim do arquivo
+                    // Verifica se chegou no Fim do arquivo
+                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF'){  
                        flag_final_arquivo = 1;
                     } 
-                    else{
-                        String instrucao = new String(ch);             
-                        
+                    else {
                         // Identificando qual é a intrução
                         switch (instrucao) {
                             // ----> Instruções aritméticas
