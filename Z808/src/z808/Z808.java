@@ -23,50 +23,220 @@ import javax.swing.JOptionPane;
  */
 
 public class Z808 {
-    // REGISTRADORES
-    private short registrador_CL;       //Contador de Localização: armazena endereço da instrução que está sendo executada
-    private short registrador_RI;       //Registrador de Instruções: armazena código da instrução que está sendo executada
-    
-    private short registrador_SI;       //Utilizado como índice no endereçamento indireto 
-    private short registrador_IP;       //Apontador de instrução: contém o endereço da próxima instrução a ser executada
-    private short registrador_SR;       //!!!!Registrador de Estado: seis flags para indicar condições durante a execução do programa
-
-    // Registradores para fazer interface com  a memória
-    private short registrador_REM;      //Registrador de Endereço de Memória: armazena endereço da posição que será lida ou escrita na memória
-    private short registrador_RBM;      //Registrador de Buffer da Memória: conteúdo do endereço de memória especificado pelo REM
-
-    // Registradores de dados
-    private short registrador_AX;
-    private short registrador_DX;
-    
-    // Registrador para pilha
-    private short registrador_SP;       // Stack Pointer: apontador do topo da pilha
-    
     
     public static void main(String[] args) {
         String caminho_arquivo = "..\\Z808\\src\\z808\\arquivo_teste.txt"; 
         int flag_final_arquivo = 0;
         
-        File arquivo = new File(caminho_arquivo);
+        // Leitura do arquivo
+        File arquivo = new File(caminho_arquivo);   
         if (!arquivo.exists()) {
             JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
         } else{
             try {
                 FileInputStream arquivo_leitura = new FileInputStream(arquivo);
-                char[] ch = new char[4];
+                char[] ch = new char[2];
                 while (flag_final_arquivo != 1) {   
                     //lê de 2 em 2 bytes (16 bits) o arquivo
                     ch[0] = (char) arquivo_leitura.read();
                     ch[1] = (char) arquivo_leitura.read();
-                    ch[2] = (char) arquivo_leitura.read();
-                    ch[3] = (char) arquivo_leitura.read();
                     
-                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF' || ch[2] == '\uFFFF' || ch[3] == '\uFFFF'){  // Fim do arquivo
+                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF'){  // Verifica se chegou no Fim do arquivo
                        flag_final_arquivo = 1;
                     } else{
-                        String str = new String(ch);             
-                        int decimal = (int) Integer.parseInt(str, 16);  
-                        System.out.println(Integer.toHexString(decimal));
+                        String instrucao = new String(ch);             
+                        
+                        
+                        // Identificando qual é a intrução
+                        switch (instrucao) {
+                            // ----> Instruções aritméticas
+                            case "03":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // add AX,DX
+                                    System.out.println("add AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // add AX,AX
+                                    System.out.println("add AX,AX");
+                                }   
+                                break;
+                                
+                            case "05":                                     // add AX,opd
+                                System.out.println("add AX,opd");
+                                break;
+                                
+                            case "2B":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // sub AX,DX
+                                    System.out.println("sub AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // sub AX,AX
+                                    System.out.println("sub AX,AX");
+                                }   
+                                break;
+                                
+                            case "2D":                                     // sub AX,opd
+                                System.out.println("sub AX,opd");
+                                break;
+                             
+                            case "F7":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("F6"))){      // div SI
+                                    System.out.println("div SI");
+                                }
+                                else if (instrucao.equals("F0")){   // div AX
+                                    System.out.println("div AX");
+                                }
+                                else if ((instrucao.equals("E6"))){ // mul SI
+                                    System.out.println("mul SI");
+                                }
+                                else if (instrucao.equals("E0")){   // mul AX
+                                    System.out.println("mul AX");
+                                } 
+                                else if (instrucao.equals("D0")){ // not AX
+                                    System.out.println("not AX");
+                                } 
+                                break;
+                            
+                            case "3D":                                     // cmp AX,opd
+                                System.out.println("cmp AX,opd");
+                                break;
+                                
+                            case "3B":                                     // cmp AX,DX
+                                System.out.println("cmp AX,DX");
+                                break;
+                            
+                        // ----> Instruções lógicas
+                            case "23":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // and AX,DX
+                                    System.out.println("and AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // and AX,AX
+                                    System.out.println("and AX,AX");
+                                }   
+                                break; 
+                                
+                            case "25":                                     // and AX,opd
+                                System.out.println("and AX,opd");
+                                break;
+                            
+                            case "0B":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // or AX,DX
+                                    System.out.println("or AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // or AX,AX
+                                    System.out.println("or AX,AX");
+                                }   
+                                break; 
+                                
+                            case "0D":                                     // or AX,opd
+                                System.out.println("or AX,opd");
+                                break;
+                            
+                            case "33":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // xor AX,DX
+                                    System.out.println("xor AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // xor AX,AX
+                                    System.out.println("xor AX,AX");
+                                }   
+                                break; 
+                                
+                            case "35":                                     // xor AX,opd
+                                System.out.println("xor AX,opd");
+                                break;
+                            
+                        // ----> Instruções de desvio
+                            case "EB":                                     // jmp opd
+                                System.out.println("jmp opd");
+                                break;
+                            
+                            case "75":                                     // jnz opd
+                                System.out.println("jnz opd");
+                                break;
+                            
+                            case "74":                                     // jz opd
+                                System.out.println("jZ opd");
+                                break;
+                                
+                            case "7A":                                     // jp opd
+                                System.out.println("jp opd");
+                                break;
+                            
+                            case "E8":                                     // call opd
+                                System.out.println("call opd");
+                                break;
+                            
+                        // ----> Instruções da pilha
+                            case "58":                                     
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // pop DX
+                                    System.out.println("xor AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // pop AX
+                                    System.out.println("xor AX,AX");
+                                }   
+                                break; 
+                                
+                            case "50":                              
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // push DX
+                                    System.out.println("xor AX,DX");
+                                }
+                                else if (instrucao.equals("C0")){   // push AX
+                                    System.out.println("xor AX,AX");
+                                }   
+                                break;
+                                
+                            case "9D":                                     // popf AX
+                                System.out.println("popf AX");
+                                break;
+                                
+                            case "9C":                                     // pushf AX
+                                System.out.println("pushf AX");
+                                break;
+                                
+                        // ----> Outras Instruções
+                            case "07":                              
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                instrucao = new String(ch);
+                                if ((instrucao.equals("C2"))){      // store DX
+                                    System.out.println("store DX");
+                                }
+                                else if (instrucao.equals("C0")){   // store AX
+                                    System.out.println("store AX");
+                                }   
+                                break;
+                                
+                            case "12":                                     // read input stream
+                                System.out.println("read input stream");
+                                break;
+                                
+                            case "08":                                     // write Output stream
+                                System.out.println("write Output stream");
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 arquivo_leitura.close();
