@@ -24,3 +24,16 @@ public class Memoria {
         pilha = new int[tamanhoPilha];
     }
 
+// Métodos para obter o tamanho dos segmentos de memória
+    public int tamanhoDados() {
+        return dados.length;
+    }
+
+    public int tamanhoCodigo() {
+        return codigo.length;
+    }
+    public int tamanhoPilha() {
+        return pilha.length;
+    }
+}
+   
