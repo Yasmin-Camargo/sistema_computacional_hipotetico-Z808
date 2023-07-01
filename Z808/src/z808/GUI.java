@@ -21,7 +21,7 @@ import javax.swing.JTextField;
  */
 public class GUI extends JFrame{
 	
-	JTextField nome_arquivo = new JTextField(45);
+	private JTextField nome_arquivo = new JTextField(45);
 	
 	public GUI(){
 		
@@ -32,10 +32,10 @@ public class GUI extends JFrame{
 
 		//Cria o painel de seleção de arquivo fonte
 		JPanel painel_selecao = new JPanel();
-		JLabel instrucoes = new JLabel("Arquivo fonte:");
+		JLabel label = new JLabel("Arquivo fonte:");
 		JButton escolher_arquivo = new JButton("...");
 		JButton confirmar = new JButton ("Confirmar");
-		painel_selecao.add(instrucoes);
+		painel_selecao.add(label);
 		painel_selecao.add(nome_arquivo);
 		painel_selecao.add(escolher_arquivo);
 		painel_selecao.add(confirmar);
@@ -56,10 +56,19 @@ public class GUI extends JFrame{
 			}
 		});
 		
+		//Atribui o retorno do caminho do arquivo fonte ao botão confirmar
+		confirmar.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				getCaminho();
+			}
+		});
 		
-		
-		//Posiciona painel
-		frame.getContentPane().add(BorderLayout.SOUTH, painel_selecao);
+		//Posiciona painel de seleção no topo
+		frame.getContentPane().add(BorderLayout.NORTH, painel_selecao);
 		frame.setVisible(true);
+	}
+	
+	public String getCaminho(){
+		return nome_arquivo.getText();
 	}
 }
