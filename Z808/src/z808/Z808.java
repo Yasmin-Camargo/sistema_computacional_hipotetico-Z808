@@ -23,16 +23,17 @@ import javax.swing.JOptionPane;
  */
 public class Z808 {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Registradores registrador = new Registradores();
 		GUI gui = new GUI();
 		
-		// Enquanto não tem arquivo o código não avança
-		while(gui.getCaminho().equals(""));
+		// Enquanto não tem arquivo não é possivel avançar o código
+		while(gui.getCaminho().equals("")){
+			Thread.sleep(100);
+		}
 		
 		String caminho_arquivo = gui.getCaminho();
 
-		
 		int flag_final_arquivo = 0;
 
 		// Leitura do arquivo
