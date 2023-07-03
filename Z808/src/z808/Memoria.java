@@ -5,48 +5,55 @@
 package z808;
 
 public class Memoria {
-    private static final int TAMANHO_MAXIMO = 64 * 1024; // Tamanho da memória 64K
+   private static final int TAMANHO_MAXIMO = 64 * 1024; // Tamanho da memória 64K
 
-    private int[] dados;    //armazena as variáveis e constantes
-    private int[] codigo;   //armazena as instruções do programa
-    private int[] pilha;    //armazena informações temporárias
+    private int[] codigo_dados_pilha;   // primeira parte da memória armazena as instruções do programa
+                                        // entre dados e pilha estão as variáveis e constantes (dados)
+                                        // parte final da memória armazena informações temporárias (pilha)
     
     private int DS; // Registrador DS -> aponta para o início do segmento de dados na memória
     private int CS; // Registrador CS -> aponta para o início do segmento de instruções na memória
     private int SP; // Registrador SP -> armazena o endereço atual da pilha
     private int SS; // Registrador SS -> aponta para o inídio do segmento de pilha na memória
 
-    public Memoria (int tamanhoDados, int tamanhoCodigo, int tamanhoPilha) {
-        int tamanhoTotal = tamanhoDados + tamanhoCodigo + tamanhoPilha;
+    public Memoria (int tamanhoCodigo) {
+        codigo_dados_pilha = new int[TAMANHO_MAXIMO];
         
-        // Impede que os três segmentos juntos não ultrapassem 64 K
-        if (tamanhoTotal > TAMANHO_MAXIMO) { 
-            throw new IllegalArgumentException("O tamanho total dos segmentos excede o limite máximo de 64K");
-        }
-        
-        dados = new int[tamanhoDados];
-        codigo = new int[tamanhoCodigo];
-        pilha = new int[tamanhoPilha];
-        
-        DS = 0;                     //Inicio
-        CS = tamanhoDados;          // Aponta o início do segmento de código após o segmento de dados
+        CS = 0;                     // Inicio 
+        DS = tamanhoCodigo;         // Aponta o início segmento de dados após o segmento de código
         SP = TAMANHO_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
-        SS = TAMANHO_MAXIMO - tamanhoPilha; // Aponta o início do segmento de pilha
-    }
-   
-// Métodos para obter o tamanho dos segmentos de memória
-    public int tamanhoDados() {
-        return dados.length;
+        SS = TAMANHO_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
     }
     
-    public int tamanhoCodigo() {
-        return codigo.length;
+    // Métodos para obter o tamanho dos segmentos de memória
+    public int getInicioSegmentoDados() {
+        return DS;
+    }
+    public int getInicioSegmentoInstrucoes() {
+        return CS;
     }
     
-    public int tamanhoPilha() {
-        return pilha.length;
+    public int lerCodigo(int endereco) {
+        return codigo_dados_pilha[endereco];
     }
     
+    public int getPosicaoAtualPilha() {
+        return SP;
+    }
+    
+    public void escreverCodigo(int endereco, int valor) {
+        codigo_dados_pilha[endereco] = valor;
+    }
+    
+    //Função para ver funcionamento
+    public void printAreaCodigo(){
+        System.out.println("\nMemoria Area de Codigo: ");
+        for(int i = 0; i < DS - 1; i++){
+            System.out.print(" | "+ codigo_dados_pilha[i]);
+        }
+    }
+    
+    /*
     // Métodos para acessar a memória e os registradores
     public void escreverDados(int endereco, int valor) {
         dados[endereco] = valor;
@@ -64,13 +71,7 @@ public class Memoria {
         return codigo[endereco];
     }
 
-    public void escreverPilha(int endereco, int valor) {
-        pilha[endereco] = valor;
-    }
-
-    public int lerPilha(int endereco) {
-        return pilha[endereco];
-    }
-    
+  
+    */
 }
 

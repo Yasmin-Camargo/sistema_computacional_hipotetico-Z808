@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
  *  Yasmin Souza Camargo
  */
 public class Z808 {
-
     String caminho_arquivo;
     
     public Z808(String caminho_arquivo) {
@@ -30,238 +29,681 @@ public class Z808 {
         iniciarZ808();
     }
     
-    //public static void main(String[] args) throws InterruptedException {
     public void iniciarZ808() {
         Registradores registrador = new Registradores();
         JanelaZ808 gui = new JanelaZ808(caminho_arquivo);
+        int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
+        Memoria memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
+        System.out.println(tam_area_instrucoes);
+        armazena_instrucoes(caminho_arquivo, memoria);  // coloca dados do arquivo na memória
+        
+        // Inicialização dos registradores
+        registrador.setCL(memoria.getInicioSegmentoInstrucoes());  // pega endereço (indice) da primeira instrução na memória
+        registrador.setRI(memoria.lerCodigo(registrador.getCL())); // pega o código da instrução
+        registrador.setIP(registrador.getCL() + 1); // atualiza o apontador de instrução para o endereço da próxima instrução
 
-        int flag_final_arquivo = 0;
-
-        // Leitura do arquivo
+        // while que percorre a area de codigo(instruções) da memória
+        while (registrador.getIP() != tam_area_instrucoes){
+            switch (registrador.getRI()){
+                case 3: // add AX,AX  e add AX,DX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) { 
+                        System.out.println("add AX,AX ");   
+                        registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getAX(), registrador));
+                    } else if (registrador.getRI() == 194) {
+                        System.out.println("add AX,DX ");   
+                        registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getDX(), registrador));
+                    }
+                    break;
+                
+                case 4: // add AX, opd  (imediato)
+                    System.out.println("add AX,opd (imediato)");  
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRI(), registrador));
+                    break;
+                    
+                case 5: // add AX, opd  (direto)
+                    System.out.println("add AX,opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR 
+                    break;
+                    
+                case 43: // sub AX,AX e sub AX,DX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("sub AX,AX ");
+                        registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getAX(), registrador));
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("sub AX,DX ");  
+                        registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getDX(), registrador));
+                    }
+                    break;
+                 
+                case 44: // sub AX,opd  (imediato)
+                    System.out.println("sub AX,opd  (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRI(), registrador));
+                    break;
+                    
+                case 45: // sub AX,opd  (direto)
+                    System.out.println("sub AX,opd  (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR 
+                    break;
+                
+                case 247: // div AX, SI | div AX, AX | mul AX, SI | mul AX, AX 
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 246) {  
+                        System.out.println("div AX, SI ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 192) {
+                        System.out.print("div AX, AX "); 
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 246) {  
+                        System.out.println("mul AX, SI ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 240) {
+                        System.out.print("mul AX, AX "); 
+                        //ADICIONAR
+                    }
+                    break;
+                    
+                case 60: // cmp AX,opd (imediato)
+                    System.out.println("cmp AX,opd   (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR 
+                    break;
+                    
+                case 61: // cmp AX,opd (direto)
+                    System.out.println("cmp AX,opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR 
+                    break;
+                    
+                case 59: // cmp AX,DX 
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 194) {  
+                        System.out.println("cmp AX,DX ");
+                        //ADICIONAR
+                    }
+                    break;
+                    
+                // ----> Instruções lógicas
+                case 35: // and AX,AX e and AX,DX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("and AX,AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("and AX,DX ");  
+                        //ADICONAR
+                    }
+                    break;
+                    
+                case 36: // and AX,opd (imediato)
+                    System.out.println("and AX,opd   (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                    
+                case 37: // and AX,opd (direto)
+                    System.out.println("and AX,opd  (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR
+                    break;               
+                
+                case 11: // or AX,AX e or AX,DX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("or AX,AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("or AX,DX ");  
+                        //ADICONAR
+                    }
+                    break;
+                    
+                case 12: // or AX,opd (imediato)
+                    System.out.println("or AX,opd  (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                case 13: // or AX,opd (direto)
+                    System.out.println("or AX,opd   (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR
+                    break;
+                    
+                case 248: // not AX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("not AX ");
+                        //ADICIONAR
+                    }
+                    break;
+                    
+                case 51: // xor AX,AX e xor AX,DX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("xor AX,AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("xor AX,DX ");  
+                        //ADICONAR
+                    }
+                    break;
+                    
+                case 52: // xor AX,opd (imediato)
+                    System.out.println("xor AX,opd (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                case 53: // xor AX,opd (direto)
+                    System.out.println("xor AX,opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                // ----> Instruções de desvio 
+                case 235: // jmp opd (direto)
+                    System.out.println("jmp opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    break;
+                
+                case 116: // jz opd (direto)
+                    System.out.println("jz opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    break;
+                    
+                case 117: // jnz opd (direto)
+                    System.out.println("jnz opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    break;
+                    
+                case 122: // jp opd (direto)
+                    System.out.println("jp opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    break;
+                    
+                // ----> Instruções da pilha 
+                case 232: // call opd (imediato)
+                    System.out.println("call opd (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    break;
+                    
+                case 231: // call opd (direto)
+                    System.out.println("jp opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    break;
+                    
+                case 239: // ret
+                    System.out.println("ret");        
+                    break;
+                    
+                case 87: // pop DX e pop AX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("pop AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("pop DX ");  
+                        //ADICONAR
+                    }
+                    break;
+                    
+                case 88: // pop opd (imediato)
+                    System.out.println("pop opd (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                case 89: // pop opd (direto)
+                    System.out.println("pop opd (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR
+                    break;
+                    
+                case 157: // popf 
+                    System.out.println("popf");    
+                    break;
+                    
+                case 80: // push DX e push AX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("push AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("push DX ");  
+                        //ADICONAR
+                    }
+                    break;
+                    
+                case 156: // pushf 
+                    System.out.println("pushf");    
+                    break;
+                    
+                // ----> Memória
+                case 7: // store DX e store AX
+                    atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
+                    if (registrador.getRI() == 192) {  
+                        System.out.println("store AX ");
+                        //ADICIONAR
+                    } else if (registrador.getRI() == 194) {
+                        System.out.print("store DX ");  
+                        //ADICONAR
+                    }
+                    break; 
+                    
+                case 18: // read opd (imediato)
+                    System.out.println("read opd  (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                case 19: // read opd (direto)
+                    System.out.println("read opd   (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    //ADICIONAR
+                    break;
+                    
+                case 9: // write opd (direto)
+                    System.out.println("write opd  (direto)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
+                    //ADICIONAR
+                    break;
+                
+                case 8: // write opd (imediato)
+                    System.out.println("write opd   (imediato)");        
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    //ADICIONAR
+                    break;
+                    
+                case 238: // hlt
+                    System.out.println("hlt");        
+                    break;
+                    
+                default:
+                    JOptionPane.showMessageDialog(null, "Intrução [" + registrador.getRI() + "] não é aceita");
+                    break;
+            }
+            
+            // atualiza apontadores de instruções
+            registrador.setCL(registrador.getIP());
+            registrador.setRI(memoria.lerCodigo(registrador.getCL()));
+            registrador.setIP(registrador.getIP() + 1);
+        }
+        
+        memoria.printAreaCodigo();
+    }
+    
+    public void atualiza_CL_RI_IP(Registradores registrador, Memoria memoria){
+        registrador.setCL(registrador.getIP());
+        registrador.setRI(memoria.lerCodigo(registrador.getCL()));
+        registrador.setIP(registrador.getIP() + 1);
+    }
+    
+    public int conta_quantidade_instrucoes(String caminho_arquivo){
+        char[] opd = new char[4];
+        char[] ch = new char[2];
+        int flag_final_arquivo = 0, quantidade_memoria = 0;
+        String instrucao;
+        
         File arquivo = new File(caminho_arquivo);
-        try {
-            FileInputStream arquivo_leitura = new FileInputStream(arquivo);
-            char[] ch = new char[2];
-            while (flag_final_arquivo != 1) {
-                //lê primeiro byte (8 bits) da instrução
-                ch[0] = (char) arquivo_leitura.read();
-                ch[1] = (char) arquivo_leitura.read();
-                String instrucao = new String(ch);
+        if (!arquivo.exists()) {
+            JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
+        } else {
+            try {
+                FileInputStream arquivo_leitura = new FileInputStream(arquivo);
+                while (flag_final_arquivo != 1) {
+                    //lê primeiro byte (8 bits) da instrução
+                    ch[0] = (char) arquivo_leitura.read();
+                    ch[1] = (char) arquivo_leitura.read();
+                    quantidade_memoria += 1;
+                    // Verifica se chegou no Fim do arquivo
+                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
+                        flag_final_arquivo = 1;
+                    } else {
+                         instrucao = new String(ch);
 
-                // Verifica se chegou no Fim do arquivo
-                if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
-                    flag_final_arquivo = 1;
-                } else {
-                    // Identificando qual é a intrução
-                    switch (instrucao) {
-                        // ----> Instruções aritméticas
-                        case "03":
+                        // Instruções que armazenam + 8 bits
+                        if (instrucao.equals("03") || instrucao.equals("F7") || instrucao.equals("2B") || instrucao.equals("3B") ||
+                            instrucao.equals("23") || instrucao.equals("F8") || instrucao.equals("0B") || instrucao.equals("33") ||
+                            instrucao.equals("57") || instrucao.equals("50") || instrucao.equals("07")){
+                            ch[0] = (char) arquivo_leitura.read();
+                            ch[1] = (char) arquivo_leitura.read();
+                            quantidade_memoria += 1;
+                        } 
+                        // Instruções que armazenam + 16 bits
+                        else if(instrucao.equals("05") || instrucao.equals("04") || instrucao.equals("2D") || instrucao.equals("2C") ||
+                                instrucao.equals("3D") || instrucao.equals("3C") || instrucao.equals("25") || instrucao.equals("24") ||
+                                instrucao.equals("0D") || instrucao.equals("0C") || instrucao.equals("35") || instrucao.equals("34") ||
+                                instrucao.equals("EB") || instrucao.equals("74") || instrucao.equals("75") || instrucao.equals("7A") || 
+                                instrucao.equals("E8") || instrucao.equals("E7") || instrucao.equals("59") || instrucao.equals("58") ||
+                                instrucao.equals("12") || instrucao.equals("13") || instrucao.equals("08") || instrucao.equals("09")){   
+                            //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                        }
+                        // Instruções que armazenam + nada
+                        else if(instrucao.equals("EF") || instrucao.equals("EE")|| instrucao.equals("9D") || instrucao.equals("9C")) {
+                        }
+                    }
+                }
+                arquivo_leitura.close();
+            } catch (IOException e) {
+                System.out.println("Erro: ao manipular o arquivo");
+            }
+        }
+        return (quantidade_memoria);
+    }
+            
+    /*
+    //-------------------------------------------------------------------------------------------
+    // Varios reads para saber quanto de espaço vai ocupar as intruções
+    public int conta_quantidade_instrucoes(String caminho_arquivo){
+        int quantidade_memoria = 0, flag_final_arquivo = 0;
+        char[] opd = new char[4];
+        char[] ch = new char[2];
+        
+        File arquivo = new File(caminho_arquivo);
+        if (!arquivo.exists()) {
+            JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
+        } else {
+            try {
+                FileInputStream arquivo_leitura = new FileInputStream(arquivo);
+                while (flag_final_arquivo != 1) {
+                    //lê primeiro byte (8 bits) da instrução
+                    ch[0] = (char) arquivo_leitura.read();
+                    ch[1] = (char) arquivo_leitura.read();
+                    quantidade_memoria += 1;
+                    String instrucao = new String(ch);
+
+                    // Verifica se chegou no Fim do arquivo
+                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
+                        flag_final_arquivo = 1;
+                    } else {
+                        // Identificando qual é a intrução
+                        switch (instrucao) {
+                            // ----> Instruções aritméticas
+                            case "03":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "05":                                     // add AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+
+                            case "2B":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "2D":                                     // sub AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "F7":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "3D":                                     // cmp AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "3B":                                     // cmp AX,DX
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            // ----> Instruções lógicas
+                            case "23":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "25":                                     // and AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "0B":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "0D":                                     // or AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "33":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "35":                                     // xor AX,opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            // ----> Instruções de desvio
+                            case "EB":                                     // jmp opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "75":                                     // jnz opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "74":                                     // jz opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "7A":                                     // jp opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "E8":                                     // call opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            // ----> Instruções da pilha
+                            case "58":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "59":                                     // pop opd
+                                //leitura do operando (16 bits)
+                                opd[0] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                opd[2] = (char) arquivo_leitura.read();
+                                opd[3] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "50":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "9D":                                     // popf AX
+                                break;
+
+                            case "9C":                                     // pushf AX
+                                break;
+
+                            // ----> Outras Instruções
+                            case "07":
+                                ch[0] = (char) arquivo_leitura.read();
+                                ch[1] = (char) arquivo_leitura.read();
+                                quantidade_memoria += 1;
+                                break;
+
+                            case "12":                                     // read input stream
+                                // VERIFICAR DEPOIS COMO ESSA INSTRUÇÃO FUNCIONA
+                                break;
+
+                            case "08":                                     // write Output stream
+                                // VERIFICAR DEPOIS COMO ESSA INSTRUÇÃO FUNCIONA
+                                break;
+
+                            case "EE":                                     // hlt(fim do programa)
+                                break;
+
+                            case "EF":                                     // ret
+                                break;
+                        }
+                    }
+                }
+                arquivo_leitura.close();
+            } catch (IOException e) {
+                System.out.println("Erro: ao manipular o arquivo");
+            }
+        }
+        return (quantidade_memoria);
+    }*/
+    
+    // Coloca cada uma das intruções na memória
+    public void armazena_instrucoes(String caminho_arquivo, Memoria memoria){
+        char[] opd = new char[4];
+        char[] ch = new char[2];
+        int flag_final_arquivo = 0, quant_instrucoes = 0;
+        String instrucao;
+        
+        File arquivo = new File(caminho_arquivo);
+        if (!arquivo.exists()) {
+            JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
+        } else {
+            try {
+                FileInputStream arquivo_leitura = new FileInputStream(arquivo);
+                while (flag_final_arquivo != 1) {
+                    //lê primeiro byte (8 bits) da instrução
+                    ch[0] = (char) arquivo_leitura.read();
+                    ch[1] = (char) arquivo_leitura.read();
+                  
+                    // Verifica se chegou no Fim do arquivo
+                    if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
+                        flag_final_arquivo = 1;
+                    } else {
+                         instrucao = new String(ch);
+                         memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                         quant_instrucoes += 1;
+
+                        // Instruções que armazenam + 8 bits
+                        if (instrucao.equals("03") || instrucao.equals("F7") || instrucao.equals("2B") || instrucao.equals("3B") ||
+                            instrucao.equals("23") || instrucao.equals("F8") || instrucao.equals("0B") || instrucao.equals("33") ||
+                            instrucao.equals("57") || instrucao.equals("50") || instrucao.equals("07")){
                             ch[0] = (char) arquivo_leitura.read();
                             ch[1] = (char) arquivo_leitura.read();
                             instrucao = new String(ch);
-                            if ((instrucao.equals("C2"))) {      // add AX,DX
-                                System.out.println("add AX,DX");
-                                registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getAX(), registrador));
-                            } else if (instrucao.equals("C0")) {   // add AX,AX
-                                System.out.println("add AX,AX");
-                                registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getDX(), registrador));
-                            }
-                            break;
-
-                    case "05":                                     // add AX,opd
-                        System.out.print("add AX,opd");
-                        //leitura do operando (16 bits)
-                        char[] opd = new char[4];
-                        opd[0] = (char) arquivo_leitura.read();
-                        opd[1] = (char) arquivo_leitura.read();
-                        opd[2] = (char) arquivo_leitura.read();
-                        opd[3] = (char) arquivo_leitura.read();
-                        instrucao = new String(opd);
-
-                        //converte para inteiro e chama função add  
-                        System.out.println("(" + (int) Integer.parseInt(instrucao, 16) + ")");
-                        registrador.setAX(Instrucoes.add(registrador.getAX(), (int) Integer.parseInt(instrucao, 16), registrador));
-                        break;
-
-                    case "2B":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // sub AX,DX
-                                System.out.println("sub AX,DX");
-                        } else if (instrucao.equals("C0")) {   // sub AX,AX
-                                System.out.println("sub AX,AX");
+                            memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                            //AQUI
+                            quant_instrucoes += 1;
+                        } 
+                        // Instruções que armazenam + 16 bits
+                        else if(instrucao.equals("05") || instrucao.equals("04") || instrucao.equals("2D") || instrucao.equals("2C") ||
+                                instrucao.equals("3D") || instrucao.equals("3C") || instrucao.equals("25") || instrucao.equals("24") ||
+                                instrucao.equals("0D") || instrucao.equals("0C") || instrucao.equals("35") || instrucao.equals("34") ||
+                                instrucao.equals("EB") || instrucao.equals("74") || instrucao.equals("75") || instrucao.equals("7A") || 
+                                instrucao.equals("E8") || instrucao.equals("E7") || instrucao.equals("59") || instrucao.equals("58") ||
+                                instrucao.equals("12") || instrucao.equals("13") || instrucao.equals("08") || instrucao.equals("09")){ 
+                            opd[0] = (char) arquivo_leitura.read();
+                            opd[1] = (char) arquivo_leitura.read();
+                            opd[2] = (char) arquivo_leitura.read();
+                            opd[3] = (char) arquivo_leitura.read();
+                            instrucao = new String(opd);
+                            memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                            quant_instrucoes += 1;
                         }
-                        break;
-
-                    case "2D":                                     // sub AX,opd
-                        System.out.println("sub AX,opd");
-                        break;
-
-                    case "F7":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("F6"))) {      // div SI
-                                System.out.println("div SI");
-                        } else if (instrucao.equals("F0")) {   // div AX
-                                System.out.println("div AX");
-                        } else if ((instrucao.equals("E6"))) { // mul SI
-                                System.out.println("mul SI");
-                        } else if (instrucao.equals("E0")) {   // mul AX
-                                System.out.println("mul AX");
-                        } else if (instrucao.equals("D0")) {   // not AX
-                                System.out.println("not AX");
+                        // Instruções que armazenam + nada
+                        else if(instrucao.equals("EF") || instrucao.equals("EE")|| instrucao.equals("9D") || instrucao.equals("9C")) {
                         }
-                        break;
-
-                    case "3D":                                     // cmp AX,opd
-                        System.out.println("cmp AX,opd");
-                        break;
-
-                    case "3B":                                     // cmp AX,DX
-                        System.out.println("cmp AX,DX");
-                        break;
-
-                    // ----> Instruções lógicas
-                    case "23":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // and AX,DX
-                                System.out.println("and AX,DX");
-                        } else if (instrucao.equals("C0")) {   // and AX,AX
-                                System.out.println("and AX,AX");
-                        }
-                        break;
-
-                    case "25":                                     // and AX,opd
-                        System.out.println("and AX,opd");
-                        break;
-
-                    case "0B":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // or AX,DX
-                                System.out.println("or AX,DX");
-                        } else if (instrucao.equals("C0")) {   // or AX,AX
-                                System.out.println("or AX,AX");
-                        }
-                        break;
-
-                    case "0D":                                     // or AX,opd
-                        System.out.println("or AX,opd");
-                        break;
-
-                    case "33":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // xor AX,DX
-                                System.out.println("xor AX,DX");
-                        } else if (instrucao.equals("C0")) {   // xor AX,AX
-                                System.out.println("xor AX,AX");
-                        }
-                        break;
-
-                    case "35":                                     // xor AX,opd
-                        System.out.println("xor AX,opd");
-                        break;
-
-                    // ----> Instruções de desvio
-                    case "EB":                                     // jmp opd
-                        System.out.println("jmp opd");
-                        break;
-
-                    case "75":                                     // jnz opd
-                        System.out.println("jnz opd");
-                        break;
-
-                    case "74":                                     // jz opd
-                        System.out.println("jZ opd");
-                        break;
-
-                    case "7A":                                     // jp opd
-                        System.out.println("jp opd");
-                        break;
-
-                    case "E8":                                     // call opd
-                        System.out.println("call opd");
-                        break;
-
-                    // ----> Instruções da pilha
-                    case "58":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // pop DX
-                                System.out.println("xor AX,DX");
-                        } else if (instrucao.equals("C0")) {   // pop AX
-                                System.out.println("xor AX,AX");
-                        }
-                        break;
-
-                    case "59":                                     // pop opd
-                        System.out.println("pop opd");
-                        break;
-
-                    case "50":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // push DX
-                                System.out.println("xor AX,DX");
-                        } else if (instrucao.equals("C0")) {   // push AX
-                                System.out.println("xor AX,AX");
-                        }
-                        break;
-
-                    case "9D":                                     // popf AX
-                        System.out.println("popf AX");
-                        break;
-
-                    case "9C":                                     // pushf AX
-                        System.out.println("pushf AX");
-                        break;
-
-                    // ----> Outras Instruções
-                    case "07":
-                        ch[0] = (char) arquivo_leitura.read();
-                        ch[1] = (char) arquivo_leitura.read();
-                        instrucao = new String(ch);
-                        if ((instrucao.equals("C2"))) {      // store DX
-                                System.out.println("store DX");
-                        } else if (instrucao.equals("C0")) {   // store AX
-                                System.out.println("store AX");
-                        }
-                        break;
-
-                    case "12":                                     // read input stream
-                        System.out.println("read input stream");
-                        break;
-
-                    case "08":                                     // write Output stream
-                        System.out.println("write Output stream");
-                        break;
-
-                    case "EE":                                     // hlt(fim do programa)
-                        System.out.println("hlt");
-                        break;
-
-                    case "EF":                                     // ret
-                        System.out.println("ret");
-                        break;
-
-                    default:
-                        JOptionPane.showMessageDialog(null, "Intrução [" + instrucao + "] não é aceita");
-                        break;
                     }
                 }
+                arquivo_leitura.close();
+            } catch (IOException e) {
+                System.out.println("Erro: ao manipular o arquivo");
             }
-            arquivo_leitura.close();
-        } catch (IOException e) {
-            System.out.println("Erro: ao manipular o arquivo");
         }
     }
 }
