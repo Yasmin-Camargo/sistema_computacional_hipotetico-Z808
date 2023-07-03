@@ -34,7 +34,6 @@ public class JanelaZ808 extends JFrame{
         JFrame frame = new JFrame("Z808 Emulator");
         frame.setMinimumSize(new Dimension(900, 600)); 
         frame.setLocationRelativeTo(null); // Centralizando como padrão.
-        frame.setLocationRelativeTo(null);
         frame.setBackground(Color.GRAY);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
