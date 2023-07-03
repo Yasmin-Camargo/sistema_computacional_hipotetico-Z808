@@ -11,3 +11,7 @@ Sistema Computacional Hiipotetico Z808 baseado na arquitetura dos processadores 
 :woman_technologist: [@juliaveiga](https://github.com/juliaveiga) <br />
 :woman_technologist: [@majudlorenzoni](https://github.com/majudlorenzoni) <br />
 :woman_technologist: [@Yasmin-Camargo](https://github.com/Yasmin-Camargo) <br />
+
+### Como Executar
+Este projeto foi desenvolvido com o auxílio da IDE _Apache Netbeans 17.0_ com o _JDK 17_.<br>
+Para executar o programa, clone o repositório (`git@github.com:Yasmin-Camargo/sistema_computacional_hipotetico-Z808.git`).<br> A execução do projeto deve ser feita a partir da classe JanelaInicia.java.
