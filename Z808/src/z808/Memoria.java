@@ -31,6 +31,11 @@ public class Memoria {
             SP = TAMANHO_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
             SS = TAMANHO_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
         }
+        
+        // area de dados é inicializada com -1 (código para saber que não tem nenhum dado armazenado)
+        for (int i = DS; i < SP; i++){    
+            codigo_dados_pilha[i] = -1;
+        }
     }
     
     // Métodos para obter o tamanho dos segmentos de memória
@@ -72,11 +77,17 @@ public class Memoria {
         }
     }
     
-    public void escreverDados(int endereco, int valor) {
-        if (endereco >= DS && endereco < SP){
-            codigo_dados_pilha[endereco] = valor;
-        } else{
-            System.out.println("!!! Não é possivel armazenar um dado fora da area de dados");
+    public void escreverDados(int valor) {
+        int flag = 0;
+        for (int i = DS; i < SP; i++){          // armazena dado na próxima posição livre
+            if (codigo_dados_pilha[i] == -1){
+                codigo_dados_pilha[i] = valor;
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0){
+            JOptionPane.showMessageDialog(null, "Erro!! a area de dados excedeu a capacidade de armazenamento");
         }
     }
     
@@ -87,5 +98,16 @@ public class Memoria {
             System.out.print(" | "+ codigo_dados_pilha[i]);
         }
     }
+    
+    public void printAreaDados(){
+        System.out.println("\nMemoria Area de dados: ");
+        for(int i = DS; i < SP; i++){
+            if (codigo_dados_pilha[i] == -1){
+                break;
+            }
+            System.out.print(" | "+ codigo_dados_pilha[i]);
+        }
+    }
+    
 }
 

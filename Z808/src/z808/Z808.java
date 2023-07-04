@@ -7,6 +7,7 @@ package z808;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import static java.lang.System.exit;
 import javax.swing.JOptionPane;
 
 /*
@@ -295,39 +296,53 @@ public class Z808 {
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
                     if (registrador.getRI() == 192) {  
                         System.out.println("store AX ");
-                        //ADICIONAR
+                        Instrucoes.store(registrador.getAX(), memoria);
                     } else if (registrador.getRI() == 194) {
                         System.out.print("store DX ");  
-                        //ADICONAR
+                        Instrucoes.store(registrador.getDX(), memoria);
                     }
                     break; 
                     
                 case 18: // read opd (imediato)
                     System.out.println("read opd  (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    //ADICIONAR
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(Instrucoes.read(registrador.getREM(), memoria)); // coloca conteudo no registrador de Buffer da Memória
                     break;
                 
                 case 19: // read opd (direto)
                     System.out.println("read opd   (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                    //ADICIONAR
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(Instrucoes.read(registrador.getREM(), memoria)); // coloca conteudo no registrador de Buffer da Memória
                     break;
                     
                 case 9: // write opd (direto)
                     System.out.println("write opd  (direto)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                    //ADICIONAR
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    Instrucoes.store(registrador.getRBM(), memoria);
                     break;
                 
                 case 8: // write opd (imediato)
                     System.out.println("write opd   (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    //ADICIONAR
+                    Instrucoes.store(registrador.getRI(), memoria);
+                    break;
+                
+                case 20:    // move AX,AX
+                    
                     break;
                     
+                case 21:    // move AX,SI
+                    break;
+                    
+                    
+                    
                 case 238: // hlt
-                    System.out.println("hlt");        
+                    System.out.println("hlt");  
+                    exit(0);
                     break;
                     
                 default:
@@ -341,6 +356,7 @@ public class Z808 {
         }
         
         memoria.printAreaCodigo();
+        memoria.printAreaDados();
     }
     
     public void atualiza_CL_RI_IP(Registradores registrador, Memoria memoria){

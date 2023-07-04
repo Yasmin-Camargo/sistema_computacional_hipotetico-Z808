@@ -7,8 +7,7 @@ package z808;
 import javax.swing.JOptionPane;
 
 public class Instrucoes {
-    // Aqui vão estar os métodos referente a cada uma das instruções add, sub, mul, div ..
-    
+    // --> Instruções aritméticas
     public static int add(int num1, int num2, Registradores registrador){
         int soma = num1 + num2;
         verificacao_OF(soma, registrador);  // verificação das flags afetadas
@@ -65,43 +64,32 @@ public class Instrucoes {
         }
     }
     
+    // --> Instruções lógicas
+    
     public static int and(int num1, int num2){
         int resultado = num1 & num2;
         return (resultado);
     }
     
-    public static void clear(Registradores registrador1){
-        registrador1.setAX(0);
-        registrador1.setDX(0);
+    // --> Instruções de desvio
+    
+    
+    // --> Instruções de pilha
+    
+    
+    // --> Instruções de acesso a memória
+    public static void store(int num1, Memoria memoria){
+        memoria.escreverDados(num1);
     }
     
-    public static int comp(int num1, int num2){
-        if(num1 == num2){
-            return 1;
-        }else{
-            return 0;
-        }
+    public static int read(int endereco, Memoria memoria){
+        return memoria.lerDados(endereco);
     }
     
-    public static int compr(Registradores registrador1, Registradores registrador2){
-        if(registrador1.getAX() == registrador2.getAX()){
-            return 1;
-        }else{
-            return 0;
-        }
-    }
+
     
-    public static int div(int num1, int num2){
-        int resultado = num1/num2;
-        return resultado;
-    }
     
-    public static void divr(Registradores registrador1, Registradores registrador2){
-        int resultado = registrador1.getAX()/registrador2.getAX();
-        registrador1.setAX(resultado);
-    }
- 
-    
+    // ----------------- VERIFICAÇÕES REGISTRADOR DE FLAG -----------------------
     //Verificação de Overflow (registrador OF)
     private static  void verificacao_OF(int num, Registradores registrador){
         int numeroCom15Bits = num & 0x7FFF;     // Deixa só os 15 bits (ultimo bit reservado para sinal)
