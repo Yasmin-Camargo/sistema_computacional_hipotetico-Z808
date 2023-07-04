@@ -85,7 +85,7 @@ public class Instrucoes {
     public static int read(int endereco, Memoria memoria){
         return memoria.lerDados(endereco);
     }
-    
+   
 
     
     

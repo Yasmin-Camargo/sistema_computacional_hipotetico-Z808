@@ -64,7 +64,7 @@ public class Memoria {
         if (endereco >= DS && endereco < SP){
             return codigo_dados_pilha[endereco];
         } else{
-            System.out.println("O endereco fornecido esta fora da area de dados: ");
+            System.out.println("O endereco fornecido esta fora da area de dados");
             return -1;
         }
     }
@@ -93,8 +93,8 @@ public class Memoria {
     
     //Função para ver funcionamento
     public void printAreaCodigo(){
-        System.out.println("\nMemoria Area de Codigo: ");
-        for(int i = 0; i < DS - 1; i++){
+        System.out.println("\nMemoria Area de codigo: ");
+        for(int i = 0; i < DS; i++){
             System.out.print(" | "+ codigo_dados_pilha[i]);
         }
     }
@@ -107,6 +107,7 @@ public class Memoria {
             }
             System.out.print(" | "+ codigo_dados_pilha[i]);
         }
+        System.out.println("");
     }
     
 }
