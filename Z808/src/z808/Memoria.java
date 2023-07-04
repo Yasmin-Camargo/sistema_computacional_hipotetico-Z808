@@ -59,7 +59,7 @@ public class Memoria {
         if (endereco >= DS && endereco < SP){
             return codigo_dados_pilha[endereco];
         } else{
-            System.out.println("O endereco fornecido esta fora da area de dados");
+            System.out.println("O endereco fornecido esta fora da area de dados: ");
             return -1;
         }
     }

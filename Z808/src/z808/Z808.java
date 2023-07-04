@@ -64,10 +64,10 @@ public class Z808 {
                     
                 case 5: // add AX, opd  (direto)
                     System.out.println("add AX,opd (direto)");  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                     registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRBM(), registrador));  
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     break;
                     
                 case 43: // sub AX,AX e sub AX,DX
@@ -89,20 +89,20 @@ public class Z808 {
                     
                 case 45: // sub AX,opd  (direto)
                     System.out.println("add AX,opd (direto)");  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                     registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRBM(), registrador));  
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     break;
                 
                 case 247: // div AX, SI | div AX, AX | mul AX, SI | mul AX, AX 
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
                     if (registrador.getRI() == 246) {  
                         System.out.println("div AX, SI ");
-                        //ADICIONAR
+                        registrador.setAX(Instrucoes.div(registrador.getAX(), registrador.getSI(), registrador));
                     } else if (registrador.getRI() == 192) {
                         System.out.print("div AX, AX "); 
-                        //ADICIONAR
+                        registrador.setAX(Instrucoes.div(registrador.getAX(), registrador.getAX(), registrador));
                     } else if (registrador.getRI() == 246) {  
                         System.out.println("mul AX, SI ");
                         //ADICIONAR

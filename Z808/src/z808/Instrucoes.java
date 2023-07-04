@@ -27,6 +27,20 @@ public class Instrucoes {
         return (subtracao);
     }
     
+    public static int div(int num1, int num2, Registradores registrador){
+        int divisao = 0;
+        if (num2 != 0){
+            divisao = num1 / num2;
+            registrador.setAX(num1 % num2); // resto da divisão é colocado em AX
+        } 
+        verificacao_OF(divisao, registrador);  // verificação das flags afetadas
+        verificacao_PF(divisao, registrador);
+        verificacao_ZF(divisao, registrador);
+        verificacao_SF(divisao, registrador);
+        
+        return divisao;
+    }
+    
     public static int and(int num1, int num2){
         int resultado = num1 & num2;
         return (resultado);
