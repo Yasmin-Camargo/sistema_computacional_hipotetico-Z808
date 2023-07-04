@@ -14,4 +14,5 @@ Sistema Computacional Hiipotetico Z808 baseado na arquitetura dos processadores 
 
 ### Como Executar
 Este projeto foi desenvolvido com o auxílio da IDE _Apache Netbeans 17.0_ com o _JDK 17_.<br>
+Caso encontre dificuldades para executar, experimente baixar por este [link](https://www.oracle.com/java/technologies/downloads/) <br>
 Para executar o programa, clone o repositório (`git@github.com:Yasmin-Camargo/sistema_computacional_hipotetico-Z808.git`).<br> A execução do projeto deve ser feita a partir da classe JanelaInicia.java.
