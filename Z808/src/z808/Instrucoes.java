@@ -31,14 +31,38 @@ public class Instrucoes {
         int divisao = 0;
         if (num2 != 0){
             divisao = num1 / num2;
-            registrador.setAX(num1 % num2); // resto da divisão é colocado em AX
+            registrador.setAX(num1 % num2);       // resto da divisão é colocado em AX
         } 
         verificacao_OF(divisao, registrador);  // verificação das flags afetadas
         verificacao_PF(divisao, registrador);
         verificacao_ZF(divisao, registrador);
         verificacao_SF(divisao, registrador);
-        
         return divisao;
+    }
+    
+    public static int mult(int num1, int num2, Registradores registrador){
+        int multiplicacao = num1 * num2;
+        verificacao_OF(multiplicacao, registrador);  // verificação das flags afetadas
+        verificacao_PF(multiplicacao, registrador);
+        verificacao_ZF(multiplicacao, registrador);
+        verificacao_SF(multiplicacao, registrador);
+        if (registrador.getSR("of") == 1){          // Se deu overflow uma parte do número vai para o registrador AX e a outra para DX
+            int parteAlta = multiplicacao >> 16;        // Desloca 16 bits para direita
+            int parteBaixa = multiplicacao & 0xFFFF;    // Máscara de 16 bits
+            registrador.setDX(parteAlta);
+            return parteBaixa;
+        } else{
+            registrador.setDX(0);
+            return multiplicacao;
+        }        
+    }
+    
+    public static void cmp(int num1, Registradores registrador){
+        if (num1 == registrador.getAX()){   // compara se os valores são iguais
+            registrador.setSR("zf", 1);
+        } else {
+            registrador.setSR("zf", 0);
+        }
     }
     
     public static int and(int num1, int num2){

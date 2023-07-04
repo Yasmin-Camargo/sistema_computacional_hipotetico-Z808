@@ -105,30 +105,32 @@ public class Z808 {
                         registrador.setAX(Instrucoes.div(registrador.getAX(), registrador.getAX(), registrador));
                     } else if (registrador.getRI() == 246) {  
                         System.out.println("mul AX, SI ");
-                        //ADICIONAR
+                        registrador.setAX(Instrucoes.mult(registrador.getAX(), registrador.getSI(), registrador));
                     } else if (registrador.getRI() == 240) {
                         System.out.print("mul AX, AX "); 
-                        //ADICIONAR
-                    }
+                        registrador.setAX(Instrucoes.mult(registrador.getAX(), registrador.getAX(), registrador));                    }
                     break;
                     
                 case 60: // cmp AX,opd (imediato)
                     System.out.println("cmp AX,opd   (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    //ADICIONAR 
+                    Instrucoes.cmp(registrador.getRI(), registrador);
                     break;
                     
                 case 61: // cmp AX,opd (direto)
                     System.out.println("cmp AX,opd (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                    //ADICIONAR 
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    Instrucoes.cmp(registrador.getRBM(), registrador);
                     break;
                     
                 case 59: // cmp AX,DX 
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
                     if (registrador.getRI() == 194) {  
                         System.out.println("cmp AX,DX ");
-                        //ADICIONAR
+                        Instrucoes.cmp(registrador.getDX(), registrador);
                     }
                     break;
                     
