@@ -238,15 +238,22 @@ public class Z808 {
                 case 232: // call opd (imediato)
                     System.out.println("call opd (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
+                    memoria.push_pilha(registrador.getIP());
+                    registrador.setIP(registrador.getRI());
                     break;
                     
                 case 231: // call opd (direto)
                     System.out.println("jp opd (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    memoria.push_pilha(registrador.getIP());
+                    registrador.setIP(registrador.getRBM());
                     break;
                     
                 case 239: // ret
-                    System.out.println("ret");        
+                    System.out.println("ret");   
+                    registrador.setSP(memoria.pop_pilha());
                     break;
                     
                 case 87: // pop DX e pop AX
