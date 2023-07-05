@@ -65,16 +65,9 @@ public class Instrucoes {
     }
     
     // --> Instruções lógicas
-    
-    public static int and(int num1, int num2){
-        int resultado = num1 & num2;
-        return (resultado);
-    }
+   
     
     // --> Instruções de desvio
-    
-    
-    // --> Instruções de pilha
     
     
     // --> Instruções de acesso a memória
@@ -86,8 +79,6 @@ public class Instrucoes {
         return memoria.lerDados(endereco);
     }
    
-
-    
     
     // ----------------- VERIFICAÇÕES REGISTRADOR DE FLAG -----------------------
     //Verificação de Overflow (registrador OF)

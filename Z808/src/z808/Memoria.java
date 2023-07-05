@@ -33,7 +33,7 @@ public class Memoria {
         }
         
         // area de dados é inicializada com -1 (código para saber que não tem nenhum dado armazenado)
-        for (int i = DS; i < SP; i++){    
+        for (int i = DS; i <= SP; i++){    
             codigo_dados_pilha[i] = -1;
         }
     }
@@ -77,9 +77,10 @@ public class Memoria {
         }
     }
     
+    // armazena na próxima posição livre
     public void escreverDados(int valor) {
         int flag = 0;
-        for (int i = DS; i < SP; i++){          // armazena dado na próxima posição livre
+        for (int i = DS; i < SP; i++){        
             if (codigo_dados_pilha[i] == -1){
                 codigo_dados_pilha[i] = valor;
                 flag = 1;
@@ -91,6 +92,45 @@ public class Memoria {
         }
     }
     
+    // armazena em um endereço especificado
+    public void escreverDados(int valor, int endereco) {
+        if (endereco >= DS && endereco < SP){
+            codigo_dados_pilha[endereco] = valor;
+        } else{
+            JOptionPane.showMessageDialog(null, "Erro!! endereco fornecido esta fora da area de dados");
+        }
+    }
+    
+    // ´Pilha (implementa o sistema de crescimento de pilha para baixo)
+    public void push_pilha(int valor){
+        if (SP == SS && codigo_dados_pilha[SP] == -1){
+            codigo_dados_pilha[SP] = valor;
+        }
+        else if (codigo_dados_pilha[SP - 1] == -1){
+            SP = SP - 1;
+            codigo_dados_pilha[SP] = valor;
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!! a pilha atingiu sua capacidade máxima");
+        }
+    }
+    public int pop_pilha(){
+        int valor = 0;
+        if ((SP + 1) > SS){
+            JOptionPane.showMessageDialog(null, "Erro!! Nao existem elementos para ser removidos da pilha");
+            return 0;
+        } else if ((SP + 1) == SS){
+            SP = SP + 1;
+            codigo_dados_pilha[SP] = -1;
+            return valor;
+        } else {
+            SP = SP + 1;
+            valor = codigo_dados_pilha[SP];
+            codigo_dados_pilha[SP] = -1;
+            return valor;
+        }
+    }
+    
+    
     //Função para ver funcionamento
     public void printAreaCodigo(){
         System.out.println("\nMemoria Area de codigo: ");
@@ -101,7 +141,17 @@ public class Memoria {
     
     public void printAreaDados(){
         System.out.println("\nMemoria Area de dados: ");
-        for(int i = DS; i < SP; i++){
+        for(int i = DS; i < TAMANHO_MAXIMO; i++){
+            if (codigo_dados_pilha[i] == -1){
+                break;
+            }
+            System.out.print(" | "+ codigo_dados_pilha[i]);
+        }
+    }
+    
+    public void printPilha(){
+        System.out.println("\nMemoria Pilha:");
+        for(int i = TAMANHO_MAXIMO - 1; i > DS; i--){
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
@@ -109,6 +159,5 @@ public class Memoria {
         }
         System.out.println("");
     }
-    
 }
 

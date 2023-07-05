@@ -253,42 +253,44 @@ public class Z808 {
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
                     if (registrador.getRI() == 192) {  
                         System.out.println("pop AX ");
-                        //ADICIONAR
+                        registrador.setAX(memoria.pop_pilha());
                     } else if (registrador.getRI() == 194) {
                         System.out.print("pop DX ");  
-                        //ADICONAR
+                        registrador.setDX(memoria.pop_pilha());
                     }
                     break;
                     
                 case 88: // pop opd (imediato)
                     System.out.println("pop opd (imediato)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    //ADICIONAR
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    memoria.escreverDados(memoria.pop_pilha(), registrador.getRI());
                     break;
                 
                 case 89: // pop opd (direto)
                     System.out.println("pop opd (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                    //ADICIONAR
+                    memoria.escreverDados(memoria.pop_pilha(), registrador.getRI());
                     break;
                     
                 case 157: // popf 
-                    System.out.println("popf");    
+                    System.out.println("popf");
+                    registrador.desconcatena_SR(memoria.pop_pilha());
                     break;
                     
                 case 80: // push DX e push AX
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
                     if (registrador.getRI() == 192) {  
                         System.out.println("push AX ");
-                        //ADICIONAR
+                        memoria.push_pilha(registrador.getAX());
                     } else if (registrador.getRI() == 194) {
                         System.out.print("push DX ");  
-                        //ADICONAR
+                        memoria.push_pilha(registrador.getDX());
                     }
                     break;
                     
                 case 156: // pushf 
-                    System.out.println("pushf");    
+                    System.out.println("pushf");   
+                    memoria.push_pilha(registrador.concatena_SR());
                     break;
                     
                 // ----> Memória
@@ -350,9 +352,6 @@ public class Z808 {
                         registrador.setDX(registrador.getAX());
                     }
                     break;
-               
-                    
-                    
                     
                 case 238: // hlt
                     System.out.println("hlt");  
@@ -369,8 +368,14 @@ public class Z808 {
             registrador.setIP(registrador.getIP() + 1);
         }
         
+        // Prints
+        System.out.println("\n-------------------\n");
+        System.out.println("Registrador AX: "+registrador.getAX());
+        System.out.println("Registrador DX: "+registrador.getDX());
+        System.out.println("Registrador SR: "+registrador.print_SR());
         memoria.printAreaCodigo();
         memoria.printAreaDados();
+        memoria.printPilha();
     }
     
     // Atualiza Contador de Localização, Registrador de Instruções e o Apontador de instrução
