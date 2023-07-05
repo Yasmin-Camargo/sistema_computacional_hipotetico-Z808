@@ -72,7 +72,40 @@ public class Instrucoes {
     }
     
     // --> Instruções de desvio
+    public static void jmp(int endereco, Registradores registrador){
+        if (endereco >= 0 && endereco <= 64*1024) {
+            registrador.setIP(endereco);
+        } else {
+            System.out.println("Endereço de destino inválido.");
+        }
+    }
     
+    public static void jz(int endereco, Registradores registrador){
+        verificacao_ZF(endereco, registrador);
+        if (endereco >= 0 && registrador.getSR("zf") == 1 && endereco <= 64*1024) {
+            registrador.setIP(endereco);
+        } else {
+            System.out.println("Endereço de destino inválido.");
+        }
+    }
+     
+    public static void jnz(int endereco, Registradores registrador){
+        verificacao_ZF(endereco, registrador);
+        if (endereco >= 0 && registrador.getSR("zf") != 1 && endereco <= 64*1024) {
+            registrador.setIP(endereco);
+        } else {
+            System.out.println("Endereço de destino inválido.");
+        }
+    }
+    
+    public static void jp(int endereco, Registradores registrador){
+        verificacao_SF(endereco, registrador);
+        if (endereco >= 0 && registrador.getSR("sf") == 0 && endereco <= 64*1024) {
+            registrador.setIP(endereco);
+        } else {
+            System.out.println("Endereço de destino inválido.");
+        }
+    }
     
     // --> Instruções de pilha
     
