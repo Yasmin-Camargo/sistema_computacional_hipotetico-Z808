@@ -51,11 +51,19 @@ public class Memoria {
         return SP;
     }
     
+    public int getCS() {
+        return CS;
+    }
+    
+    public int getDS() {
+        return DS;
+    }
+    
     public int lerCodigo(int endereco) {
-        if (endereco < DS){
+        if (endereco <= DS){
             return codigo_dados_pilha[endereco];
         } else{
-            System.out.println("O endereco fornecido esta fora da area de codigo");
+            System.err.println("O endereco fornecido esta fora da area de codigo");
             return -1;
         }
     }
@@ -64,7 +72,7 @@ public class Memoria {
         if (endereco >= DS && endereco < SP){
             return codigo_dados_pilha[endereco];
         } else{
-            System.out.println("O endereco fornecido esta fora da area de dados");
+            System.err.println("O endereco fornecido esta fora da area de dados");
             return -1;
         }
     }
@@ -73,7 +81,7 @@ public class Memoria {
         if (endereco < DS){
             codigo_dados_pilha[endereco] = valor;
         } else{
-            System.out.println("!!! Não é possivel armazenar uma instrução fora da area de codigo");
+            System.err.println("!!! Não é possivel armazenar uma instrução fora da area de codigo");
         }
     }
     
@@ -135,7 +143,7 @@ public class Memoria {
     public void printAreaCodigo(){
         System.out.println("\nMemoria Area de codigo: ");
         for(int i = 0; i < DS; i++){
-            System.out.print(" | "+ codigo_dados_pilha[i]);
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
         }
     }
     
@@ -145,7 +153,7 @@ public class Memoria {
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
-            System.out.print(" | "+ codigo_dados_pilha[i]);
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
         }
     }
     
@@ -155,7 +163,7 @@ public class Memoria {
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
-            System.out.print(" | "+ codigo_dados_pilha[i]);
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
         }
         System.out.println("");
     }

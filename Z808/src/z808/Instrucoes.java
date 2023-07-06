@@ -68,38 +68,51 @@ public class Instrucoes {
    
     
     // --> Instruções de desvio
-    public static void jmp(int endereco, Registradores registrador){
-        if (endereco >= 0 && endereco <= 64*1024) {
-            registrador.setIP(endereco);
+    public static int jmp(int endereco, Registradores registrador, Memoria memoria){
+        if (endereco >= memoria.getCS() && endereco <= memoria.getDS()) {
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
+            registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
+            registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima           
+            return 1;
         } else {
-            System.out.println("Endereço de destino inválido.");
+            System.err.println("Endereco de destino invalido.");
+            return 0;
         }
     }
     
-    public static void jz(int endereco, Registradores registrador){
-        verificacao_ZF(endereco, registrador);
-        if (endereco >= 0 && registrador.getSR("zf") == 1 && endereco <= 64*1024) {
-            registrador.setIP(endereco);
+    public static int jz(int endereco, Registradores registrador, Memoria memoria){
+        if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("zf") == 1) {
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
+            registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
+            registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima                 
+            return 1;
         } else {
-            System.out.println("Endereço de destino inválido.");
+            System.err.println("Endereco de destino invalido.");
+            return 0;
         }
     }
      
-    public static void jnz(int endereco, Registradores registrador){
-        verificacao_ZF(endereco, registrador);
-        if (endereco >= 0 && registrador.getSR("zf") != 1 && endereco <= 64*1024) {
-            registrador.setIP(endereco);
+    public static int jnz(int endereco, Registradores registrador, Memoria memoria){
+       if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("zf") != 1) {
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
+            registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
+            registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima         
+            return 1;
         } else {
-            System.out.println("Endereço de destino inválido.");
+            System.err.println("Endereco de destino invalido.");
+            return 0;
         }
     }
     
-    public static void jp(int endereco, Registradores registrador){
-        verificacao_SF(endereco, registrador);
-        if (endereco >= 0 && registrador.getSR("sf") == 0 && endereco <= 64*1024) {
-            registrador.setIP(endereco);
+    public static int jp(int endereco, Registradores registrador, Memoria memoria){
+        if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("sf") == 0) {
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
+            registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
+            registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima        
+            return 1;
         } else {
-            System.out.println("Endereço de destino inválido.");
+            System.err.println("Endereco de destino invalido.");
+            return 0;
         }
     }
     

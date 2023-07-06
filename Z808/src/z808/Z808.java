@@ -34,9 +34,11 @@ public class Z808 {
     
     public void iniciarZ808() {
         Registradores registrador = new Registradores();
-        int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
-        Memoria memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
         
+        int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
+        int flag_jump = 0;
+        
+        Memoria memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
         armazena_instrucoes(caminho_arquivo, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
@@ -49,6 +51,7 @@ public class Z808 {
 
         // while que percorre a area de codigo(instruções) da memória
         while (registrador.getIP() != tam_area_instrucoes){
+            flag_jump = 0;
             switch (registrador.getRI()){
                 case 3: // add AX,AX  e add AX,DX
                     atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
@@ -224,24 +227,36 @@ public class Z808 {
                     break;
                 
                 // ----> Instruções de desvio 
-                case 235: // jmp opd (direto)
-                    System.out.println("jmp opd (direto)");        
+                case 235: // jmp opd (direto)       
+                    System.out.println("jmp opd (direto)");
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    flag_jump = Instrucoes.jmp(registrador.getRBM(), registrador, memoria);
                     break;
                 
                 case 116: // jz opd (direto)
-                    System.out.println("jz opd (direto)");        
+                    System.out.println("jz opd (direto)");    
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    flag_jump = Instrucoes.jz(registrador.getRBM(), registrador, memoria);
                     break;
                     
                 case 117: // jnz opd (direto)
                     System.out.println("jnz opd (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    flag_jump = Instrucoes.jnz(registrador.getRBM(), registrador, memoria);
                     break;
                     
                 case 122: // jp opd (direto)
                     System.out.println("jp opd (direto)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
+                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    flag_jump = Instrucoes.jp(registrador.getRBM(), registrador, memoria);
                     break;
                     
                 // ----> Instruções da pilha 
@@ -379,10 +394,15 @@ public class Z808 {
                     JOptionPane.showMessageDialog(null, "Intrução [" + registrador.getRI() + "] não é aceita");
                     break;
             }
-            // atualiza apontadores de instruções
-            registrador.setCL(registrador.getIP());
-            registrador.setRI(memoria.lerCodigo(registrador.getCL()));
-            registrador.setIP(registrador.getIP() + 1);
+            
+            // se o jump foi acionado não atualiza apontadores de instrução
+            if (flag_jump == 0){
+                // atualiza apontadores de instruções
+                registrador.setCL(registrador.getIP());
+                registrador.setRI(memoria.lerCodigo(registrador.getCL()));
+                registrador.setIP(registrador.getIP() + 1);
+            }
+            
             gui.atualizarRegCL(registrador.getCL());
             gui.atualizarRegRI(registrador.getRI());
             gui.atualizarRegIP(registrador.getIP());  
