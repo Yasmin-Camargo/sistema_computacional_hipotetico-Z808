@@ -151,4 +151,27 @@ public class Registradores {
             }
         }
     } 
+    
+    public int concatena_SR(){
+        StringBuilder string_concatenado = new StringBuilder();
+        for (int i = 0; i < SR.length; i++) {
+            string_concatenado.append(SR[i]);
+        }
+        return (Integer.parseInt(string_concatenado.toString(),2));
+    }
+    
+    public void desconcatena_SR(int valor){
+        String binario = Integer.toBinaryString(valor);
+        String[] valor_separado = binario.split("");
+        
+        for (int i = 0; i < SR.length; i++) {
+            SR[i] = Integer.parseInt(valor_separado[i]);
+        }
+    }
+    
+    public String print_SR(){
+        return ("CF:"+ SR[0] + " PF:" + SR[6] +  " IF:" + SR[7] + " ZF:" + SR[8] + " SF:" + SR[9] + " OF:" + SR[12]);
+    }
+    
+    
 }

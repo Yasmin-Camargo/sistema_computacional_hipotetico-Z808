@@ -4,6 +4,9 @@
  */
 package z808;
 
+import static java.lang.System.exit;
+import javax.swing.JOptionPane;
+
 public class Memoria {
    private static final int TAMANHO_MAXIMO = 64 * 1024; // Tamanho da memória 64K
 
@@ -14,64 +17,147 @@ public class Memoria {
     private int DS; // Registrador DS -> aponta para o início do segmento de dados na memória
     private int CS; // Registrador CS -> aponta para o início do segmento de instruções na memória
     private int SP; // Registrador SP -> armazena o endereço atual da pilha
-    private int SS; // Registrador SS -> aponta para o inídio do segmento de pilha na memória
+    private int SS; // Registrador SS -> aponta para o início do segmento de pilha na memória
 
     public Memoria (int tamanhoCodigo) {
         codigo_dados_pilha = new int[TAMANHO_MAXIMO];
         
-        CS = 0;                     // Inicio 
-        DS = tamanhoCodigo;         // Aponta o início segmento de dados após o segmento de código
-        SP = TAMANHO_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
-        SS = TAMANHO_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
+        if (tamanhoCodigo > TAMANHO_MAXIMO){
+            JOptionPane.showMessageDialog(null, "Erro!! O programa excedeu a capacidade de armazenamento");
+            exit(0);
+        } else {
+            CS = 0;                     // Inicio 
+            DS = tamanhoCodigo;         // Aponta o início segmento de dados após o segmento de código
+            SP = TAMANHO_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
+            SS = TAMANHO_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
+        }
+        
+        // area de dados é inicializada com -1 (código para saber que não tem nenhum dado armazenado)
+        for (int i = DS; i <= SP; i++){    
+            codigo_dados_pilha[i] = -1;
+        }
     }
     
     // Métodos para obter o tamanho dos segmentos de memória
     public int getInicioSegmentoDados() {
         return DS;
     }
+    
     public int getInicioSegmentoInstrucoes() {
         return CS;
-    }
-    
-    public int lerCodigo(int endereco) {
-        return codigo_dados_pilha[endereco];
     }
     
     public int getPosicaoAtualPilha() {
         return SP;
     }
     
-    public void escreverCodigo(int endereco, int valor) {
-        codigo_dados_pilha[endereco] = valor;
+    public int lerCodigo(int endereco) {
+        if (endereco < DS){
+            return codigo_dados_pilha[endereco];
+        } else{
+            System.out.println("O endereco fornecido esta fora da area de codigo");
+            return -1;
+        }
     }
+    
+    public int lerDados(int endereco) {
+        if (endereco >= DS && endereco < SP){
+            return codigo_dados_pilha[endereco];
+        } else{
+            System.out.println("O endereco fornecido esta fora da area de dados");
+            return -1;
+        }
+    }
+    
+    public void escreverCodigo(int endereco, int valor) {
+        if (endereco < DS){
+            codigo_dados_pilha[endereco] = valor;
+        } else{
+            System.out.println("!!! Não é possivel armazenar uma instrução fora da area de codigo");
+        }
+    }
+    
+    // armazena na próxima posição livre
+    public void escreverDados(int valor) {
+        int flag = 0;
+        for (int i = DS; i < SP; i++){        
+            if (codigo_dados_pilha[i] == -1){
+                codigo_dados_pilha[i] = valor;
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0){
+            JOptionPane.showMessageDialog(null, "Erro!! a area de dados excedeu a capacidade de armazenamento");
+        }
+    }
+    
+    // armazena em um endereço especificado
+    public void escreverDados(int valor, int endereco) {
+        if (endereco >= DS && endereco < SP){
+            codigo_dados_pilha[endereco] = valor;
+        } else{
+            JOptionPane.showMessageDialog(null, "Erro!! endereco fornecido esta fora da area de dados");
+        }
+    }
+    
+    // ´Pilha (implementa o sistema de crescimento de pilha para baixo)
+    public void push_pilha(int valor){
+        if (SP == SS && codigo_dados_pilha[SP] == -1){
+            codigo_dados_pilha[SP] = valor;
+        }
+        else if (codigo_dados_pilha[SP - 1] == -1){
+            SP = SP - 1;
+            codigo_dados_pilha[SP] = valor;
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!! a pilha atingiu sua capacidade máxima");
+        }
+    }
+    public int pop_pilha(){
+        int valor = 0;
+        if ((SP + 1) > SS){
+            JOptionPane.showMessageDialog(null, "Erro!! Nao existem elementos para ser removidos da pilha");
+            return 0;
+        } else if ((SP + 1) == SS){
+            SP = SP + 1;
+            codigo_dados_pilha[SP] = -1;
+            return valor;
+        } else {
+            SP = SP + 1;
+            valor = codigo_dados_pilha[SP];
+            codigo_dados_pilha[SP] = -1;
+            return valor;
+        }
+    }
+    
     
     //Função para ver funcionamento
     public void printAreaCodigo(){
-        System.out.println("\nMemoria Area de Codigo: ");
-        for(int i = 0; i < DS - 1; i++){
+        System.out.println("\nMemoria Area de codigo: ");
+        for(int i = 0; i < DS; i++){
             System.out.print(" | "+ codigo_dados_pilha[i]);
         }
     }
     
-    /*
-    // Métodos para acessar a memória e os registradores
-    public void escreverDados(int endereco, int valor) {
-        dados[endereco] = valor;
+    public void printAreaDados(){
+        System.out.println("\nMemoria Area de dados: ");
+        for(int i = DS; i < TAMANHO_MAXIMO; i++){
+            if (codigo_dados_pilha[i] == -1){
+                break;
+            }
+            System.out.print(" | "+ codigo_dados_pilha[i]);
+        }
     }
-
-    public int lerDados(int endereco) {
-        return dados[endereco];
+    
+    public void printPilha(){
+        System.out.println("\nMemoria Pilha:");
+        for(int i = TAMANHO_MAXIMO - 1; i > DS; i--){
+            if (codigo_dados_pilha[i] == -1){
+                break;
+            }
+            System.out.print(" | "+ codigo_dados_pilha[i]);
+        }
+        System.out.println("");
     }
-
-    public void escreverCodigo(int endereco, int valor) {
-        codigo[endereco] = valor;
-    }
-
-    public int lerCodigo(int endereco) {
-        return codigo[endereco];
-    }
-
-  
-    */
 }
 
