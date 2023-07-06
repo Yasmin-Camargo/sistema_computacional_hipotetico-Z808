@@ -23,15 +23,16 @@ import javax.swing.JOptionPane;
  */
 public class Z808 {
     String caminho_arquivo;
+    JanelaZ808 gui;
     
     public Z808(String caminho_arquivo) {
         this.caminho_arquivo = caminho_arquivo;
+        gui = new JanelaZ808(caminho_arquivo);
         iniciarZ808();
     }
     
     public void iniciarZ808() {
         Registradores registrador = new Registradores();
-        JanelaZ808 gui = new JanelaZ808(caminho_arquivo);
         int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
         Memoria memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
         System.out.println(tam_area_instrucoes);
@@ -41,6 +42,9 @@ public class Z808 {
         registrador.setCL(memoria.getInicioSegmentoInstrucoes());  // pega endereço (indice) da primeira instrução na memória
         registrador.setRI(memoria.lerCodigo(registrador.getCL())); // pega o código da instrução
         registrador.setIP(registrador.getCL() + 1); // atualiza o apontador de instrução para o endereço da próxima instrução
+        gui.atualizarRegCL(registrador.getCL());
+        gui.atualizarRegRI(registrador.getRI());
+        gui.atualizarRegIP(registrador.getIP());
 
         // while que percorre a area de codigo(instruções) da memória
         while (registrador.getIP() != tam_area_instrucoes){
@@ -50,9 +54,11 @@ public class Z808 {
                     if (registrador.getRI() == 192) { 
                         System.out.println("add AX,AX ");   
                         registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getAX(), registrador));
+                        gui.atualizarRegAX(registrador.getAX());
                     } else if (registrador.getRI() == 194) {
                         System.out.println("add AX,DX ");   
                         registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getDX(), registrador));
+                        gui.atualizarRegAX(registrador.getAX());
                     }
                     break;
                 
@@ -60,6 +66,7 @@ public class Z808 {
                     System.out.println("add AX,opd (imediato)");  
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                     registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRI(), registrador));
+                    gui.atualizarRegAX(registrador.getAX());
                     break;
                     
                 case 5: // add AX, opd  (direto)
@@ -73,9 +80,11 @@ public class Z808 {
                     if (registrador.getRI() == 192) {  
                         System.out.println("sub AX,AX ");
                         registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getAX(), registrador));
+                        gui.atualizarRegAX(registrador.getAX());
                     } else if (registrador.getRI() == 194) {
                         System.out.print("sub AX,DX ");  
                         registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getDX(), registrador));
+                        gui.atualizarRegAX(registrador.getAX());
                     }
                     break;
                  
@@ -83,6 +92,7 @@ public class Z808 {
                     System.out.println("sub AX,opd  (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                     registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRI(), registrador));
+                    gui.atualizarRegAX(registrador.getAX());
                     break;
                     
                 case 45: // sub AX,opd  (direto)
@@ -333,6 +343,14 @@ public class Z808 {
             registrador.setCL(registrador.getIP());
             registrador.setRI(memoria.lerCodigo(registrador.getCL()));
             registrador.setIP(registrador.getIP() + 1);
+            gui.atualizarRegCL(registrador.getCL());
+            gui.atualizarRegRI(registrador.getRI());
+            gui.atualizarRegIP(registrador.getIP());  
+            //
+            //
+            // SE O INICIO DE TODOS OS CASOS CHAMA ATUALIZA_CL_RI_IP
+            // ISSO NAO FICARIA ERRADO?
+            //
         }
         
         memoria.printAreaCodigo();
@@ -342,6 +360,9 @@ public class Z808 {
         registrador.setCL(registrador.getIP());
         registrador.setRI(memoria.lerCodigo(registrador.getCL()));
         registrador.setIP(registrador.getIP() + 1);
+        gui.atualizarRegCL(registrador.getCL());
+        gui.atualizarRegRI(registrador.getRI());
+        gui.atualizarRegIP(registrador.getIP());  
     }
     
     public int conta_quantidade_instrucoes(String caminho_arquivo){

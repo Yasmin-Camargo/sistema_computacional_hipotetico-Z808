@@ -6,7 +6,7 @@ package z808;
 
 /**
  *
- * @author Duda
+ * @author Duda & Júlia Veiga & Júlia Junqueira
  */
 import java.awt.Color;
 import java.awt.Container;
