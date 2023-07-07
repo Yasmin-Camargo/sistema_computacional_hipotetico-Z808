@@ -2,7 +2,7 @@
 Sistema Computacional Hiipotetico Z808 baseado na arquitetura dos processadores da família INTEL 8086/88 desenvolvido como trabalho avaliativo da disciplina de Programação de Sistemas
 
 ### Grupo Adas & CG
-:woman_technologist: [@Bpeb](https://github.com/Bpeb) <br />
+:woman_technologist: [@BiancaBDullius](https://github.com/BiancaBDullius) <br />
 :woman_technologist: [@Caroline-Camargo](https://github.com/Caroline-Camargo) <br />
 :man_technologist: [@CloudioJ](https://github.com/CloudioJ) <br />
 :woman_technologist: [@dudaac1](https://github.com/dudaac1) <br />
