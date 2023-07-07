@@ -65,7 +65,43 @@ public class Instrucoes {
     }
     
     // --> Instruções lógicas
-   
+    public static int and(int num1, int num2, Registradores registrador){
+        int operacaoAND = num1 & num2;
+        verificacao_OF(operacaoAND, registrador);  // verificação das flags afetadas
+        verificacao_PF(operacaoAND, registrador);
+        verificacao_ZF(operacaoAND, registrador);
+        verificacao_SF(operacaoAND, registrador);
+        return (operacaoAND);
+    }
+    
+    public static int not(int num1, Registradores registrador){
+        int numeroBits = Integer.toBinaryString(num1).length(); // Número de bits do valor decimal
+        int maxValor = (1 << numeroBits) - 1; // Valor máximo representável com o mesmo número de bits
+        int operacaoNOT = maxValor - num1; // Operação NOT sem alterar o sinal
+        verificacao_OF(operacaoNOT, registrador);  // verificação das flags afetadas
+        verificacao_PF(operacaoNOT, registrador);
+        verificacao_ZF(operacaoNOT, registrador);
+        verificacao_SF(operacaoNOT, registrador);
+        return (operacaoNOT);
+    }
+    
+    public static int or(int num1, int num2, Registradores registrador){
+        int operacaoOR = num1 | num2;
+        verificacao_OF(operacaoOR, registrador);  // verificação das flags afetadas
+        verificacao_PF(operacaoOR, registrador);
+        verificacao_ZF(operacaoOR, registrador);
+        verificacao_SF(operacaoOR, registrador);
+        return (operacaoOR);
+    }
+    
+    public static int xor(int num1, int num2, Registradores registrador){
+        int operacaoXOR = num1 ^ num2;
+        verificacao_OF(operacaoXOR, registrador);  // verificação das flags afetadas
+        verificacao_PF(operacaoXOR, registrador);
+        verificacao_ZF(operacaoXOR, registrador);
+        verificacao_SF(operacaoXOR, registrador);
+        return (operacaoXOR);
+    }
     
     // --> Instruções de desvio
     public static int jmp(int endereco, Registradores registrador, Memoria memoria){
