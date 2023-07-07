@@ -394,8 +394,9 @@ public class Z808 {
                     break;
                     
                 case 238: // hlt
-                    System.out.println("hlt");  
-                    exit(0);
+                    System.out.println("hlt");
+                    registrador.setIP(tam_area_instrucoes);
+                    flag_jump = 1;
                     break;
                     
                 default:
