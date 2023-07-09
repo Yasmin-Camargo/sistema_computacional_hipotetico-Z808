@@ -14,12 +14,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.PrintStream;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -32,6 +34,9 @@ import javax.swing.SwingConstants;
 public class JanelaZ808 extends JFrame{
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
+    private JTable tableMemCod;
+    Container container;
+    private GridBagConstraints gbc;
     
     @SuppressWarnings("empty-statement")
     public JanelaZ808(String pathArquivo){ 
@@ -45,11 +50,12 @@ public class JanelaZ808 extends JFrame{
         setBackground(Color.GRAY);
         
         // onde todos os itens são inseridos        
-        GridBagConstraints gbc = new GridBagConstraints();
-        Container container = getContentPane();
+        gbc = new GridBagConstraints();
+        container = getContentPane();
         
         // painel superior - onde o path do arquivo tá listado
         JPanel panelArquivo = new JPanel();
+        panelArquivo.setLayout(new GridBagLayout());
         panelArquivo.setBackground(Color.WHITE);
         
         JLabel labelArquivo = new JLabel("Arquivo Fonte:");
@@ -72,42 +78,24 @@ public class JanelaZ808 extends JFrame{
         
         container.add( panelArquivo);
         
-        
-        
-        // painel superior esquerdo - dos registradores 
-        JPanel panelRegistr = criarRegistradores(gbc);
+        JPanel panelRegistr = criarRegistradores();
         container.add(panelRegistr);
         
-        
-        JTable tableMemoria = new JTable();
-        //String[] colunas = {"", ""};
-        //Object[][] dadis = {
-            //{"", ""},
-            //{"", ""},
-            //{"", ""}
-        //};
-        //container.tableMemoria;
-        
-
-        //JTable tablePilha = new JTable();
-        
-        
-        
         /*
-        // painel da direita
-        JPanel panelPrincipal = new JPanel();
-        panelPrincipal.setBounds(560, 55, 200, 450);
-        panelPrincipal.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        //panelPrincipal.add(areaInstrucoes);
-        panelPrincipal.setBackground(Color.GREEN);
+        JPanel panelMemoriaCod = criarTabela(gbc);
+        container.add(panelMemoriaCod);
         
-           
-        container.add(panelPrincipal);
+        JPanel panelMemoriaDados = criarTabela(gbc);
+        container.add(panelMemoriaDados);
+        
+        JPanel panelPilha = criarTabela(gbc);
+        container.add(panelPilha);
         */
     }
     
-    JPanel criarRegistradores(GridBagConstraints gbc) {
+    JPanel criarRegistradores() {
         JPanel panelRegistr = new JPanel(new GridBagLayout());
+        panelRegistr.setLayout(new GridBagLayout());
         
         JLabel labelRegistr = new JLabel("REGISTRADORES");
         labelRegistr.setFont(new Font("Arial", Font.BOLD, 16));
@@ -218,4 +206,46 @@ public class JanelaZ808 extends JFrame{
     public void atualizarRegSP(int value) {
         fieldRegSP.setText(Integer.toString(value));
     }
+    
+    public void criarTabela(Object[][] data) {
+        JPanel panelTabela = new JPanel(new GridBagLayout());
+        panelTabela.setLayout(new GridBagLayout());
+        
+        PrintStream stream = new PrintStream(System.out);
+        for (Object[] data1 : data) {
+            stream.print(data1[0]);
+        }
+        stream.flush();
+        
+        String[] colunas = {"Endereço", "Valor"};
+        //Object[][] data = {
+            /*{"Kathy", "Smith"},
+            {"John", "Doe"},
+            {"Sue", "Black"},
+            {"Jane", "White"},*/
+        //};
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 1;  
+        gbc.gridheight = 3;
+        JTable tableMemoria = new JTable(data, colunas);
+        JScrollPane barraRolagem = new JScrollPane(tableMemoria);
+        //panelTabela.add(tableMemoria, gbc);
+        panelTabela.add(barraRolagem, gbc);
+        container.add(panelTabela);
+
+        //return panelTabela;
+    }
+    
+    // a intenção era atualizar a memória conforme as instruções rodam
+    // mas acho que tem uma função que tu seta de X a Y
+    // e ele remove esses itens
+    // mas pensando agora, a memória pode atualizar em qualquer lugar
+    // então talvez seja necessário
+    //public void atualizarMemCodigo(Object[][] data) {
+        //tableMemCod.repaint();  
+    //}
+    
+    
 }

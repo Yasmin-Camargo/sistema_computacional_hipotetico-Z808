@@ -140,32 +140,57 @@ public class Memoria {
     
     
     //Função para ver funcionamento
-    public void printAreaCodigo(){
-        System.out.println("\nMemoria Area de codigo: ");
-        for(int i = 0; i < DS; i++){
+    public Object[][] printAreaCodigo(){
+        System.out.println("\nMEMORIA AREA DE CODIGO: ");
+        Object[][] data = new Object[DS][2];
+        int i;
+        for (i = 0; i < DS; i++) {
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
+        for (; i < DS; i++) {
+            data[i] = new Object[] {"["+i+"]", "null"};
+        }
+        return data;
+        
     }
     
-    public void printAreaDados(){
-        System.out.println("\nMemoria Area de dados: ");
-        for(int i = DS; i < TAMANHO_MAXIMO; i++){
+    public Object[][] printAreaDados(){
+        System.out.println("\n\nMEMORIA AREA DE DADOS: ");
+        Object[][] data = new Object[TAMANHO_MAXIMO][2];
+        int i;
+        for(i = DS; i < TAMANHO_MAXIMO; i++){
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
-            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            //System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
+        for (; i < TAMANHO_MAXIMO; i++) {
+            data[i] = new Object[] {"["+i+"]", "null"};
+        }
+        return data;
     }
     
-    public void printPilha(){
-        System.out.println("\nMemoria Pilha:");
-        for(int i = TAMANHO_MAXIMO - 1; i > DS; i--){
+    public Object[][] printPilha(){
+        System.out.println("\n\nMEMORIA PILHA:");
+        Object[][] data = new Object[TAMANHO_MAXIMO][2];
+        System.out.println(TAMANHO_MAXIMO +"---"+ DS);
+        int i;
+        for(i = TAMANHO_MAXIMO - 1; i > DS; i--){
             if (codigo_dados_pilha[i] == -1){
+                System.out.println("break");
                 break;
             }
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
+        }
+        for (; i > DS; i--) {
+            System.out.print(" | ["+i+"]: "+ "null");
+            data[i] = new Object[] {"["+i+"]", "null"};
         }
         System.out.println("");
+        return data;
     }
 }
 

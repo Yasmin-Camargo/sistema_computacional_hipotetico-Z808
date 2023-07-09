@@ -427,9 +427,15 @@ public class Z808 {
         System.out.println("Registrador AX: "+registrador.getAX());
         System.out.println("Registrador DX: "+registrador.getDX());
         System.out.println("Registrador SR: "+registrador.print_SR());
-        memoria.printAreaCodigo();
-        memoria.printAreaDados();
-        memoria.printPilha();
+        
+        Object[][] data = memoria.printAreaCodigo();
+        gui.criarTabela(data);
+        
+        data = memoria.printAreaDados();
+        gui.criarTabela(data);
+        
+        data = memoria.printPilha();
+        gui.criarTabela(data);
     }
     
     // Atualiza Contador de Localização, Registrador de Instruções e o Apontador de instrução
