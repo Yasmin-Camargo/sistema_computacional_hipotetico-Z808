@@ -429,13 +429,13 @@ public class Z808 {
         System.out.println("Registrador SR: "+registrador.print_SR());
         
         Object[][] data = memoria.printAreaCodigo();
-        gui.criarTabela(data);
+        gui.criarTabelaCodigo(data);
         
         data = memoria.printAreaDados();
-        gui.criarTabela(data);
+        gui.criarTabelaDados(data);
         
         data = memoria.printPilha();
-        gui.criarTabela(data);
+        gui.criarTabelaPilha(data);
     }
     
     // Atualiza Contador de Localização, Registrador de Instruções e o Apontador de instrução

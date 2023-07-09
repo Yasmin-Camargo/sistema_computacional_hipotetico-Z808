@@ -8,7 +8,7 @@ import static java.lang.System.exit;
 import javax.swing.JOptionPane;
 
 public class Memoria {
-   private static final int TAMANHO_MAXIMO = 64 * 1024; // Tamanho da memória 64K
+   public static final int TAM_MAXIMO = 64 * 1024; // Tamanho da memória 64K
 
     private int[] codigo_dados_pilha;   // primeira parte da memória armazena as instruções do programa
                                         // entre dados e pilha estão as variáveis e constantes (dados)
@@ -20,16 +20,16 @@ public class Memoria {
     private int SS; // Registrador SS -> aponta para o início do segmento de pilha na memória
 
     public Memoria (int tamanhoCodigo) {
-        codigo_dados_pilha = new int[TAMANHO_MAXIMO];
+        codigo_dados_pilha = new int[TAM_MAXIMO];
         
-        if (tamanhoCodigo > TAMANHO_MAXIMO){
+        if (tamanhoCodigo > TAM_MAXIMO){
             JOptionPane.showMessageDialog(null, "Erro!! O programa excedeu a capacidade de armazenamento");
             exit(0);
         } else {
             CS = 0;                     // Inicio 
             DS = tamanhoCodigo;         // Aponta o início segmento de dados após o segmento de código
-            SP = TAMANHO_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
-            SS = TAMANHO_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
+            SP = TAM_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
+            SS = TAM_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
         }
         
         // area de dados é inicializada com -1 (código para saber que não tem nenhum dado armazenado)
@@ -148,25 +148,22 @@ public class Memoria {
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
             data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
-        for (; i < DS; i++) {
-            data[i] = new Object[] {"["+i+"]", "null"};
-        }
         return data;
         
     }
     
     public Object[][] printAreaDados(){
         System.out.println("\n\nMEMORIA AREA DE DADOS: ");
-        Object[][] data = new Object[TAMANHO_MAXIMO][2];
+        Object[][] data = new Object[TAM_MAXIMO][2];
         int i;
-        for(i = DS; i < TAMANHO_MAXIMO; i++){
+        for(i = DS; i < TAM_MAXIMO; i++){
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
             //System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
             data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
-        for (; i < TAMANHO_MAXIMO; i++) {
+        for (; i < TAM_MAXIMO; i++) {
             data[i] = new Object[] {"["+i+"]", "null"};
         }
         return data;
@@ -174,19 +171,20 @@ public class Memoria {
     
     public Object[][] printPilha(){
         System.out.println("\n\nMEMORIA PILHA:");
-        Object[][] data = new Object[TAMANHO_MAXIMO][2];
-        System.out.println(TAMANHO_MAXIMO +"---"+ DS);
+        Object[][] data = new Object[TAM_MAXIMO][2];
+        System.out.println(TAM_MAXIMO +"---"+ DS);
         int i;
-        for(i = TAMANHO_MAXIMO - 1; i > DS; i--){
+        for(i = TAM_MAXIMO - 1; i > DS; i--){
             if (codigo_dados_pilha[i] == -1){
                 System.out.println("break");
                 break;
             }
-            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            //System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
             data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
+        
         for (; i > DS; i--) {
-            System.out.print(" | ["+i+"]: "+ "null");
+            //System.out.print(" | ["+i+"]: "+ "null");
             data[i] = new Object[] {"["+i+"]", "null"};
         }
         System.out.println("");

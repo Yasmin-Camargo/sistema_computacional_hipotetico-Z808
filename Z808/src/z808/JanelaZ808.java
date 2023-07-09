@@ -12,9 +12,12 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -33,6 +36,8 @@ import javax.swing.SwingConstants;
  */
 public class JanelaZ808 extends JFrame{
     
+    private final int TAM_MAX_TABELAS = 1000;
+    
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
     private JTable tableMemCod;
     Container container;
@@ -48,25 +53,34 @@ public class JanelaZ808 extends JFrame{
         setMinimumSize(new Dimension(900, 600)); 
         setVisible(true);
         setBackground(Color.GRAY);
+        setLayout(new GridBagLayout());
+        //setLayout(new GridLayout(2, 4, 25, 25));
         
         // onde todos os itens são inseridos        
         gbc = new GridBagConstraints();
         container = getContentPane();
         
         // painel superior - onde o path do arquivo tá listado
+        criarPainelArquivo(pathArquivo);
+        
+        criarRegistradores();
+    }
+    
+    private void criarPainelArquivo(String pathArquivo) {
         JPanel panelArquivo = new JPanel();
         panelArquivo.setLayout(new GridBagLayout());
-        panelArquivo.setBackground(Color.WHITE);
+        //panelArquivo.setBackground(Color.WHITE);
         
-        JLabel labelArquivo = new JLabel("Arquivo Fonte:");
+        JLabel labelArquivo = new JLabel("FILE PATH: ");
         labelArquivo.setForeground(Color.GRAY);
         panelArquivo.add(labelArquivo);
         
-        JTextField fieldArquivo = new JTextField(45);
+        JTextField fieldArquivo = new JTextField(30);
         fieldArquivo.setText(pathArquivo);
         fieldArquivo.setEditable(false); // read only
         fieldArquivo.setCaretColor(Color.WHITE);
         fieldArquivo.setFont(new Font("Arial", Font.PLAIN, 14));
+        fieldArquivo.setBackground(Color.WHITE);
         fieldArquivo.setForeground(Color.GRAY);
         panelArquivo.add(fieldArquivo);
         
@@ -76,43 +90,36 @@ public class JanelaZ808 extends JFrame{
         //btnReturn.addActionListener(this);
         panelArquivo.add(btnReturn);
         
-        container.add( panelArquivo);
-        
-        JPanel panelRegistr = criarRegistradores();
-        container.add(panelRegistr);
-        
-        /*
-        JPanel panelMemoriaCod = criarTabela(gbc);
-        container.add(panelMemoriaCod);
-        
-        JPanel panelMemoriaDados = criarTabela(gbc);
-        container.add(panelMemoriaDados);
-        
-        JPanel panelPilha = criarTabela(gbc);
-        container.add(panelPilha);
-        */
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 4;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        container.add( panelArquivo, gbc);
     }
     
-    JPanel criarRegistradores() {
+    private void criarRegistradores() {
         JPanel panelRegistr = new JPanel(new GridBagLayout());
         panelRegistr.setLayout(new GridBagLayout());
         
-        JLabel labelRegistr = new JLabel("REGISTRADORES");
+        JLabel labelRegistr = new JLabel("REGISTERS");
         labelRegistr.setFont(new Font("Arial", Font.BOLD, 16));
         labelRegistr.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         panelRegistr.add(labelRegistr, gbc);
         
         JLabel labelRegAX = new JLabel("AX");
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         panelRegistr.add(labelRegAX, gbc);
-        fieldRegAX = new JTextField(10);
+        fieldRegAX = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegAX, gbc);
         
@@ -120,7 +127,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 2;
         panelRegistr.add(labelRegDX, gbc);
-        fieldRegDX = new JTextField(10);
+        fieldRegDX = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegDX, gbc);
         
@@ -128,7 +135,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 3;
         panelRegistr.add(labelRegCL, gbc);
-        fieldRegCL = new JTextField(10);
+        fieldRegCL = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegCL, gbc);
         
@@ -136,7 +143,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 4;
         panelRegistr.add(labelRegRI, gbc);
-        fieldRegRI = new JTextField(10);
+        fieldRegRI = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegRI, gbc);
         
@@ -144,7 +151,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 5;
         panelRegistr.add(labelRegSI, gbc);
-        fieldRegSI = new JTextField(10);
+        fieldRegSI = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegSI, gbc);
         
@@ -152,7 +159,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 6;
         panelRegistr.add(labelRegIP, gbc);
-        fieldRegIP = new JTextField(10);
+        fieldRegIP = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegIP, gbc);
         
@@ -160,7 +167,7 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 7;
         panelRegistr.add(labelRegSR, gbc);
-        fieldRegSR = new JTextField(10);
+        fieldRegSR = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegSR, gbc);
         
@@ -168,11 +175,16 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 8;
         panelRegistr.add(labelRegSP, gbc);
-        fieldRegSP = new JTextField(10);
+        fieldRegSP = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegSP, gbc);
         
-        return panelRegistr;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        //gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelRegistr, gbc);
     }
     
     public void atualizarRegCL(int value) {
@@ -207,35 +219,83 @@ public class JanelaZ808 extends JFrame{
         fieldRegSP.setText(Integer.toString(value));
     }
     
-    public void criarTabela(Object[][] data) {
-        JPanel panelTabela = new JPanel(new GridBagLayout());
-        panelTabela.setLayout(new GridBagLayout());
+    public void criarTabelaCodigo(Object[][] data) {
+        JPanel panelTabela = criarTabela(data, "CODE AREA MEMORY");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    public void criarTabelaDados(Object[][] data) {        
+        // tem que ignorar as posições que já foram usadas
+        // talvez manter um contador global
+        Object[][] aux;
+        if (Array.getLength(data) > TAM_MAX_TABELAS) 
+            aux = Arrays.copyOfRange(data, 0, 1000);
+        else
+            aux = data;
         
-        PrintStream stream = new PrintStream(System.out);
-        for (Object[] data1 : data) {
-            stream.print(data1[0]);
-        }
-        stream.flush();
+        JPanel panelTabela = criarTabela(aux, "DATA AREA MEMORY");
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    public void criarTabelaPilha(Object[][] data) {
+        Object[][] aux;
+        if (Array.getLength(data) > TAM_MAX_TABELAS) 
+            aux = Arrays.copyOfRange(data, Memoria.TAM_MAXIMO - TAM_MAX_TABELAS, Memoria.TAM_MAXIMO);
+        else
+            aux = data;
         
-        String[] colunas = {"Endereço", "Valor"};
-        //Object[][] data = {
-            /*{"Kathy", "Smith"},
-            {"John", "Doe"},
-            {"Sue", "Black"},
-            {"Jane", "White"},*/
-        //};
+        JPanel panelTabela = criarTabela(aux, "STACK");
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    private JPanel criarTabela(Object[][] data, String nomeTabela) {
+        JPanel panelTabela = new JPanel();
+        panelTabela.setName(nomeTabela);
+        //panelTabela.setLayout(new GridBagLayout());
+        
+        JLabel labelTabela = new JLabel(nomeTabela);
+        labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 1;  
-        gbc.gridheight = 3;
+        gbc.gridheight = 1;
+        panelTabela.add(labelTabela, gbc);
+        
+        String[] colunas = {"Address", "Value"};
+        
         JTable tableMemoria = new JTable(data, colunas);
+        //tableMemoria.getColumnModel().getColumn(0).setPreferredWidth(50);
+        //tableMemoria.getColumnModel().getColumn(1).setPreferredWidth(50);
         JScrollPane barraRolagem = new JScrollPane(tableMemoria);
-        //panelTabela.add(tableMemoria, gbc);
+        //panelTabela.add(tableMemoria, gbc);      
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 1;  
+        gbc.gridheight = 3;
         panelTabela.add(barraRolagem, gbc);
-        container.add(panelTabela);
+        
+        
+        //container.add(panelTabela);
 
-        //return panelTabela;
+        return panelTabela;
     }
     
     // a intenção era atualizar a memória conforme as instruções rodam
@@ -246,6 +306,10 @@ public class JanelaZ808 extends JFrame{
     //public void atualizarMemCodigo(Object[][] data) {
         //tableMemCod.repaint();  
     //}
+    
+    // TALVEZ CRIAR UMA FUNÇÃO DE UPDATE!!!
+    // VERIFICA O QUE FOI MUDADO
+    // E ATUALIZA APENAS O QUE FOI MUDADO
     
     
 }
