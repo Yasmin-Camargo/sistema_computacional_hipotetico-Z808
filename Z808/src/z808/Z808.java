@@ -7,7 +7,6 @@ package z808;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import static java.lang.System.exit;
 import java.lang.reflect.Array;
 import javax.swing.JOptionPane;
 
@@ -46,9 +45,7 @@ public class Z808 {
         registrador.setCL(memoria.getInicioSegmentoInstrucoes());  // pega endereço (indice) da primeira instrução na memória
         registrador.setRI(memoria.lerCodigo(registrador.getCL())); // pega o código da instrução
         registrador.setIP(registrador.getCL() + 1); // atualiza o apontador de instrução para o endereço da próxima instrução
-        gui.atualizarRegCL(registrador.getCL());
-        gui.atualizarRegRI(registrador.getRI());
-        gui.atualizarRegIP(registrador.getIP());
+        gui.atualizarRegistradores(registrador);
 
         // while que percorre a area de codigo(instruções) da memória
         while (registrador.getIP() != tam_area_instrucoes){
@@ -59,11 +56,9 @@ public class Z808 {
                     if (registrador.getRI() == 192) { 
                         System.out.println("add AX,AX ");   
                         registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getAX(), registrador));
-                        gui.atualizarRegAX(registrador.getAX());
                     } else if (registrador.getRI() == 194) {
                         System.out.println("add AX,DX ");   
                         registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getDX(), registrador));
-                        gui.atualizarRegAX(registrador.getAX());
                     }
                     break;
                 
@@ -71,7 +66,6 @@ public class Z808 {
                     System.out.println("add AX,opd (imediato)");  
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                     registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRI(), registrador));
-                    gui.atualizarRegAX(registrador.getAX());
                     break;
                     
                 case 5: // add AX, opd  (direto)
@@ -87,11 +81,9 @@ public class Z808 {
                     if (registrador.getRI() == 192) {  
                         System.out.println("sub AX,AX ");
                         registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getAX(), registrador));
-                        gui.atualizarRegAX(registrador.getAX());
                     } else if (registrador.getRI() == 194) {
                         System.out.print("sub AX,DX ");  
                         registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getDX(), registrador));
-                        gui.atualizarRegAX(registrador.getAX());
                     }
                     break;
                  
@@ -99,7 +91,6 @@ public class Z808 {
                     System.out.println("sub AX,opd (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                     registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRI(), registrador));
-                    gui.atualizarRegAX(registrador.getAX());
                     break;
                     
                 case 45: // sub AX,opd  (direto)
@@ -363,6 +354,8 @@ public class Z808 {
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    //gui.atualizarSaida(""+registrador.getRBM());
+                    gui.atualizarSaida("teste write opd direto");
                     Instrucoes.store(registrador.getRBM(), memoria);
                     break;
                 
@@ -370,6 +363,8 @@ public class Z808 {
                     System.out.println("write opd (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                     Instrucoes.store(registrador.getRI(), memoria);
+                    //gui.atualizarSaida(""+registrador.getRI());
+                    gui.atualizarSaida("teste write opd imediato");
                     break;
                 
                 case 21:    // move AX,opd (direto)
@@ -413,9 +408,7 @@ public class Z808 {
                 registrador.setIP(registrador.getIP() + 1);
             }
             
-            gui.atualizarRegCL(registrador.getCL());
-            gui.atualizarRegRI(registrador.getRI());
-            gui.atualizarRegIP(registrador.getIP());  
+              
             //
             //
             // SE O INICIO DE TODOS OS CASOS CHAMA ATUALIZA_CL_RI_IP
@@ -428,7 +421,7 @@ public class Z808 {
         System.out.println("Registrador AX: "+registrador.getAX());
         System.out.println("Registrador DX: "+registrador.getDX());
         System.out.println("Registrador SR: "+registrador.print_SR());
-        gui.atualizarFlagsSR(registrador.getSR());
+        gui.atualizarRegistradores(registrador);
         
         Object[][] data = memoria.printAreaCodigo();
         gui.criarTabelaCodigo(data);
@@ -447,9 +440,7 @@ public class Z808 {
         registrador.setCL(registrador.getIP());
         registrador.setRI(memoria.lerCodigo(registrador.getCL()));
         registrador.setIP(registrador.getIP() + 1);
-        gui.atualizarRegCL(registrador.getCL());
-        gui.atualizarRegRI(registrador.getRI());
-        gui.atualizarRegIP(registrador.getIP());  
+        gui.atualizarRegistradores(registrador);
     }
     
     // Conta quantos espaços de memória deverão ser reservados para área de instruções

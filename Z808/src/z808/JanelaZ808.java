@@ -42,7 +42,7 @@ public class JanelaZ808 extends JFrame{
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
-    private JTextField fieldSaida;
+    private JLabel labelSaida;
     
     Container container;
     private GridBagConstraints gbc;
@@ -179,17 +179,10 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 1;
         panelRegistr.add(fieldRegIP, gbc);
         
-        JLabel labelRegSR = new JLabel("SR");
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        panelRegistr.add(labelRegSR, gbc);
-        fieldRegSR = new JTextField(5);
-        gbc.gridx = 1;
-        panelRegistr.add(fieldRegSR, gbc);
         
         JLabel labelRegSP = new JLabel("SP");
         gbc.gridx = 0;
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         panelRegistr.add(labelRegSP, gbc);
         fieldRegSP = new JTextField(5);
         gbc.gridx = 1;
@@ -200,7 +193,7 @@ public class JanelaZ808 extends JFrame{
         // FLAGS
         JLabel labelRegFlagCF = new JLabel("Flag CF");
         gbc.gridx = 0;
-        gbc.gridy = 9;        
+        gbc.gridy = 10;        
         panelRegistr.add(labelRegFlagCF, gbc);
         fieldRegFlagCF = new JTextField(5);
         gbc.gridx = 1;
@@ -208,7 +201,7 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelRegFlagPF = new JLabel("Flag PF");
         gbc.gridx = 0;
-        gbc.gridy = 10;
+        gbc.gridy = 11;
         panelRegistr.add(labelRegFlagPF, gbc);
         fieldRegFlagPF = new JTextField(5);
         gbc.gridx = 1;
@@ -216,7 +209,7 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelRegFlagIF = new JLabel("Flag IF");
         gbc.gridx = 0;
-        gbc.gridy = 11;
+        gbc.gridy = 12;
         panelRegistr.add(labelRegFlagIF, gbc);
         fieldRegFlagIF = new JTextField(5);
         gbc.gridx = 1;
@@ -224,7 +217,7 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelRegFlagZF = new JLabel("Flag ZF");
         gbc.gridx = 0;
-        gbc.gridy = 12;
+        gbc.gridy = 13;
         panelRegistr.add(labelRegFlagZF, gbc);
         fieldRegFlagZF = new JTextField(5);
         gbc.gridx = 1;
@@ -232,7 +225,7 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelRegFlagSF = new JLabel("Flag SF");
         gbc.gridx = 0;
-        gbc.gridy = 13;
+        gbc.gridy = 14;
         panelRegistr.add(labelRegFlagSF, gbc);
         fieldRegFlagSF = new JTextField(5);
         gbc.gridx = 1;
@@ -240,7 +233,7 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelRegFlagOF = new JLabel("Flag OF");
         gbc.gridx = 0;
-        gbc.gridy = 14;
+        gbc.gridy = 15;
         panelRegistr.add(labelRegFlagOF, gbc);
         fieldRegFlagOF = new JTextField(5);
         gbc.gridx = 1;
@@ -254,39 +247,16 @@ public class JanelaZ808 extends JFrame{
         container.add( panelRegistr, gbc);
     }
     
-    public void atualizarRegCL(int value) {
-        fieldRegCL.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegRI(int value) {
-        fieldRegRI.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegIP(int value) {
-        fieldRegIP.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegSI(int value) {
-        fieldRegSI.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegAX(int value) {
-        fieldRegAX.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegDX(int value) {
-        fieldRegDX.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegSR(int value) {
-        fieldRegSR.setText(Integer.toString(value));
-    }
-    
-    public void atualizarRegSP(int value) {
-        fieldRegSP.setText(Integer.toString(value));
-    }
-    
-    public void atualizarFlagsSR(int[] regSR) {
+    public void atualizarRegistradores(Registradores reg) {
+        fieldRegCL.setText(""+reg.getCL());
+        fieldRegRI.setText(""+reg.getRI());
+        fieldRegIP.setText(""+reg.getIP());
+        fieldRegSI.setText(""+reg.getSI());
+        fieldRegAX.setText(""+reg.getAX());
+        fieldRegDX.setText(""+reg.getDX());
+        //fieldRegSR.setText(""+reg.getSR());
+        fieldRegSP.setText(""+reg.getSP());
+        int[] regSR = reg.getSR();
         fieldRegFlagCF.setText(""+regSR[0]);
         fieldRegFlagPF.setText(""+regSR[6]);
         fieldRegFlagIF.setText(""+regSR[7]);
@@ -306,8 +276,6 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void criarTabelaDados(Object[][] data, int tamCod) {        
-        // tem que ignorar as posições que já foram usadas
-        // talvez manter um contador global
         Object[][] aux;
         if (Array.getLength(data) > TAM_MAX_TABELAS) 
             aux = Arrays.copyOfRange(data, tamCod, 1000+tamCod);
@@ -357,7 +325,6 @@ public class JanelaZ808 extends JFrame{
     private JPanel criarTabela(Object[][] data, String nomeTabela) {
         JPanel panelTabela = new JPanel();
         panelTabela.setName(nomeTabela);
-        //panelTabela.setLayout(new GridBagLayout());
         
         JLabel labelTabela = new JLabel(nomeTabela);
         labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
@@ -371,12 +338,10 @@ public class JanelaZ808 extends JFrame{
         String[] colunas = {"Address", "Value"};
         
         JTable tableMemoria = new JTable(data, colunas);
-        
         tableMemoria.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
-        //tableMemoria.setMaximumSize(new Dimension(200, 100));
         
         JScrollPane barraRolagem = new JScrollPane(tableMemoria); 
-        barraRolagem.setPreferredSize(new Dimension(170, 280));
+        barraRolagem.setPreferredSize(new Dimension(170, 260));
         
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -384,9 +349,6 @@ public class JanelaZ808 extends JFrame{
         gbc.gridwidth = 1;  
         gbc.gridheight = 3;
         panelTabela.add(barraRolagem, gbc);
-        
-        
-        //container.add(panelTabela);
 
         return panelTabela;
     }
@@ -407,29 +369,35 @@ public class JanelaZ808 extends JFrame{
     private void criarPanelSaida() {
         JPanel panelSaida = new JPanel();
         panelSaida.setLayout(new GridBagLayout());
-        //panelWrite.setBackground(Color.WHITE);
+        panelSaida.setSize(new Dimension(200, 400));
         
-        JLabel labelSaida = new JLabel("OUTPUT:");
-        //labelSaida.setForeground(Color.GRAY);
+        JLabel labelSaidaTitulo = new JLabel("OUTPUT:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridheight = 1;
         gbc.gridwidth = 4;
         
-        panelSaida.add(labelSaida, gbc);
+        panelSaida.add(labelSaidaTitulo, gbc);
         
-        fieldSaida = new JTextField(60);
-        fieldSaida.setText("");
-        fieldSaida.setEditable(false); // read only       
-        fieldSaida.setFont(new Font("Arial", Font.PLAIN, 12));
-        fieldSaida.setBackground(Color.WHITE);
+        labelSaida = new JLabel();
+        labelSaida.setFont(new Font("Arial", Font.PLAIN, 12));
+        labelSaida.setBackground(Color.WHITE);
+        labelSaida.setSize(200, 500);
+        labelSaida.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        labelSaida.setMinimumSize(new Dimension(600, 100));
+        labelSaida.setPreferredSize(new Dimension(600, 100));
+        labelSaida.setMaximumSize(new Dimension(600, 100));
+        
+        //JScrollPane scroll = new JScrollPane(areaSaida); 
+        //scroll.setSize (300,600) ; 
        
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 1;
         gbc.gridwidth = 4;
-        panelSaida.add(fieldSaida, gbc);
+        panelSaida.add(labelSaida, gbc);
+        //panelSaida.add(scroll);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -441,11 +409,11 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void resetarSaida() {
-        fieldSaida.setText("");
+        labelSaida.setText("");
     }
     
     public void atualizarSaida(String novoTexto) {
-        fieldSaida.setText(fieldSaida.getText() + novoTexto);
+        labelSaida.setText(labelSaida.getText() + novoTexto + "\n");
     }
     
     private void criarBotoes() {
