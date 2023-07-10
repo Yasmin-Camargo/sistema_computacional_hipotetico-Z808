@@ -160,7 +160,7 @@ public class Memoria {
             if (codigo_dados_pilha[i] == -1){
                 break;
             }
-            //System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
             data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
         for (; i < TAM_MAXIMO; i++) {
@@ -172,14 +172,13 @@ public class Memoria {
     public Object[][] printPilha(){
         System.out.println("\n\nMEMORIA PILHA:");
         Object[][] data = new Object[TAM_MAXIMO][2];
-        System.out.println(TAM_MAXIMO +"---"+ DS);
         int i;
         for(i = TAM_MAXIMO - 1; i > DS; i--){
             if (codigo_dados_pilha[i] == -1){
-                System.out.println("break");
+                //System.out.println("break");
                 break;
             }
-            //System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
             data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
         }
         

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import static java.lang.System.exit;
+import java.lang.reflect.Array;
 import javax.swing.JOptionPane;
 
 /*
@@ -427,12 +428,15 @@ public class Z808 {
         System.out.println("Registrador AX: "+registrador.getAX());
         System.out.println("Registrador DX: "+registrador.getDX());
         System.out.println("Registrador SR: "+registrador.print_SR());
+        gui.atualizarFlagsSR(registrador.getSR());
         
         Object[][] data = memoria.printAreaCodigo();
         gui.criarTabelaCodigo(data);
         
+        int tamCod = Array.getLength(data);
+        
         data = memoria.printAreaDados();
-        gui.criarTabelaDados(data);
+        gui.criarTabelaDados(data, tamCod);
         
         data = memoria.printPilha();
         gui.criarTabelaPilha(data);

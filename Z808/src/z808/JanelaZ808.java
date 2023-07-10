@@ -29,6 +29,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -39,7 +41,9 @@ public class JanelaZ808 extends JFrame{
     private final int TAM_MAX_TABELAS = 1000;
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
-    private JTable tableMemCod;
+    private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
+    private JTextField fieldSaida;
+    
     Container container;
     private GridBagConstraints gbc;
     
@@ -50,11 +54,10 @@ public class JanelaZ808 extends JFrame{
         setSize(800, 600);
         setLocationRelativeTo(null); 
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
-        setMinimumSize(new Dimension(900, 600)); 
+        setMinimumSize(new Dimension(1000, 600)); 
         setVisible(true);
         setBackground(Color.GRAY);
         setLayout(new GridBagLayout());
-        //setLayout(new GridLayout(2, 4, 25, 25));
         
         // onde todos os itens são inseridos        
         gbc = new GridBagConstraints();
@@ -64,6 +67,10 @@ public class JanelaZ808 extends JFrame{
         criarPainelArquivo(pathArquivo);
         
         criarRegistradores();
+        
+        criarPanelSaida();
+        
+        criarBotoes();
     }
     
     private void criarPainelArquivo(String pathArquivo) {
@@ -84,11 +91,12 @@ public class JanelaZ808 extends JFrame{
         fieldArquivo.setForeground(Color.GRAY);
         panelArquivo.add(fieldArquivo);
         
-        JButton btnReturn = new JButton("Return");
-        btnReturn.setName("return-button");
-        // PARA FAZER!!!
-        //btnReturn.addActionListener(this);
-        panelArquivo.add(btnReturn);
+        JButton btnVoltar = new JButton("return");
+        //btnVoltar.setName("return-button");
+        btnVoltar.addActionListener((ActionEvent e) -> {
+            btnVoltar();
+        }); 
+        panelArquivo.add(btnVoltar);
         
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -99,11 +107,18 @@ public class JanelaZ808 extends JFrame{
         container.add( panelArquivo, gbc);
     }
     
+    private void btnVoltar() {
+        System.out.println("VOLTAR   -- Janela Inicial sera reaberta.");
+        System.out.println("\t -- Janela do Emulador sera fechada.");
+        System.out.println("\t -- Usuario podera escolher novo arquivo para ser aberto.");
+    }
+    
     private void criarRegistradores() {
         JPanel panelRegistr = new JPanel(new GridBagLayout());
         panelRegistr.setLayout(new GridBagLayout());
         
         JLabel labelRegistr = new JLabel("REGISTERS");
+        //labelRegistr.setPreferredSize(new Dimension(150, 30));
         labelRegistr.setFont(new Font("Arial", Font.BOLD, 16));
         labelRegistr.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -111,10 +126,11 @@ public class JanelaZ808 extends JFrame{
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        gbc.insets = new Insets(1, 1, 1, 1);
         panelRegistr.add(labelRegistr, gbc);
         
         JLabel labelRegAX = new JLabel("AX");
-        gbc.fill = GridBagConstraints.NONE;
+        //gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -179,9 +195,60 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 1;
         panelRegistr.add(fieldRegSP, gbc);
         
+        
+        // registradores SR
+        // FLAGS
+        JLabel labelRegFlagCF = new JLabel("Flag CF");
+        gbc.gridx = 0;
+        gbc.gridy = 9;        
+        panelRegistr.add(labelRegFlagCF, gbc);
+        fieldRegFlagCF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagCF, gbc);
+        
+        JLabel labelRegFlagPF = new JLabel("Flag PF");
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        panelRegistr.add(labelRegFlagPF, gbc);
+        fieldRegFlagPF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagPF, gbc);
+        
+        JLabel labelRegFlagIF = new JLabel("Flag IF");
+        gbc.gridx = 0;
+        gbc.gridy = 11;
+        panelRegistr.add(labelRegFlagIF, gbc);
+        fieldRegFlagIF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagIF, gbc);
+        
+        JLabel labelRegFlagZF = new JLabel("Flag ZF");
+        gbc.gridx = 0;
+        gbc.gridy = 12;
+        panelRegistr.add(labelRegFlagZF, gbc);
+        fieldRegFlagZF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagZF, gbc);
+        
+        JLabel labelRegFlagSF = new JLabel("Flag SF");
+        gbc.gridx = 0;
+        gbc.gridy = 13;
+        panelRegistr.add(labelRegFlagSF, gbc);
+        fieldRegFlagSF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagSF, gbc);
+        
+        JLabel labelRegFlagOF = new JLabel("Flag OF");
+        gbc.gridx = 0;
+        gbc.gridy = 14;
+        panelRegistr.add(labelRegFlagOF, gbc);
+        fieldRegFlagOF = new JTextField(5);
+        gbc.gridx = 1;
+        panelRegistr.add(fieldRegFlagOF, gbc);
+        
         gbc.gridx = 0;
         gbc.gridy = 1;
-        //gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelRegistr, gbc);
@@ -219,29 +286,38 @@ public class JanelaZ808 extends JFrame{
         fieldRegSP.setText(Integer.toString(value));
     }
     
+    public void atualizarFlagsSR(int[] regSR) {
+        fieldRegFlagCF.setText(""+regSR[0]);
+        fieldRegFlagPF.setText(""+regSR[6]);
+        fieldRegFlagIF.setText(""+regSR[7]);
+        fieldRegFlagZF.setText(""+regSR[8]);
+        fieldRegFlagSF.setText(""+regSR[9]);
+        fieldRegFlagOF.setText(""+regSR[12]);
+    }
+    
     public void criarTabelaCodigo(Object[][] data) {
-        JPanel panelTabela = criarTabela(data, "CODE AREA MEMORY");
+        JPanel panelTabela = criarTabela(data, " CODE  AREA  MEMORY ");
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelTabela, gbc);
     }
     
-    public void criarTabelaDados(Object[][] data) {        
+    public void criarTabelaDados(Object[][] data, int tamCod) {        
         // tem que ignorar as posições que já foram usadas
         // talvez manter um contador global
         Object[][] aux;
         if (Array.getLength(data) > TAM_MAX_TABELAS) 
-            aux = Arrays.copyOfRange(data, 0, 1000);
+            aux = Arrays.copyOfRange(data, tamCod, 1000+tamCod);
         else
             aux = data;
         
-        JPanel panelTabela = criarTabela(aux, "DATA AREA MEMORY");
+        JPanel panelTabela = criarTabela(aux, " DATA  AREA  MEMORY ");
         gbc.gridx = 2;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelTabela, gbc);
@@ -249,18 +325,33 @@ public class JanelaZ808 extends JFrame{
     
     public void criarTabelaPilha(Object[][] data) {
         Object[][] aux;
-        if (Array.getLength(data) > TAM_MAX_TABELAS) 
+        if (Array.getLength(data) > TAM_MAX_TABELAS) {
             aux = Arrays.copyOfRange(data, Memoria.TAM_MAXIMO - TAM_MAX_TABELAS, Memoria.TAM_MAXIMO);
-        else
-            aux = data;
+            aux = reverterVetor(aux);
+        }
+        else {
+            aux = reverterVetor(data);
+        }
         
-        JPanel panelTabela = criarTabela(aux, "STACK");
+        // MUDAR PARA CRIARTABELA(DATA) CASO QUEIRA TODAS AS LINHAS
+        JPanel panelTabela = criarTabela(aux, " STACK  MEMORY ");
         gbc.gridx = 3;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.VERTICAL;
+        //gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelTabela, gbc);
+    }
+    
+    private Object[][] reverterVetor(Object[][] data) {
+        Object aux[];
+        int tamanho = Array.getLength(data) - 1;
+        for (int i = 0; i < Math.floor(tamanho/2); i++) {
+            aux = data[i];
+            data[i] = data[tamanho - i];
+            data[tamanho - i] = aux;
+        }
+        return data;
     }
     
     private JPanel criarTabela(Object[][] data, String nomeTabela) {
@@ -272,7 +363,7 @@ public class JanelaZ808 extends JFrame{
         labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridwidth = 1;  
         gbc.gridheight = 1;
         panelTabela.add(labelTabela, gbc);
@@ -280,14 +371,16 @@ public class JanelaZ808 extends JFrame{
         String[] colunas = {"Address", "Value"};
         
         JTable tableMemoria = new JTable(data, colunas);
-        //tableMemoria.getColumnModel().getColumn(0).setPreferredWidth(50);
-        //tableMemoria.getColumnModel().getColumn(1).setPreferredWidth(50);
-        JScrollPane barraRolagem = new JScrollPane(tableMemoria);
-        //panelTabela.add(tableMemoria, gbc);      
+        
+        tableMemoria.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
+        //tableMemoria.setMaximumSize(new Dimension(200, 100));
+        
+        JScrollPane barraRolagem = new JScrollPane(tableMemoria); 
+        barraRolagem.setPreferredSize(new Dimension(170, 280));
         
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridwidth = 1;  
         gbc.gridheight = 3;
         panelTabela.add(barraRolagem, gbc);
@@ -311,5 +404,82 @@ public class JanelaZ808 extends JFrame{
     // VERIFICA O QUE FOI MUDADO
     // E ATUALIZA APENAS O QUE FOI MUDADO
     
+    private void criarPanelSaida() {
+        JPanel panelSaida = new JPanel();
+        panelSaida.setLayout(new GridBagLayout());
+        //panelWrite.setBackground(Color.WHITE);
+        
+        JLabel labelSaida = new JLabel("OUTPUT:");
+        //labelSaida.setForeground(Color.GRAY);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 4;
+        
+        panelSaida.add(labelSaida, gbc);
+        
+        fieldSaida = new JTextField(60);
+        fieldSaida.setText("");
+        fieldSaida.setEditable(false); // read only       
+        fieldSaida.setFont(new Font("Arial", Font.PLAIN, 12));
+        fieldSaida.setBackground(Color.WHITE);
+       
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 4;
+        panelSaida.add(fieldSaida, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 4;
+        gbc.insets = new Insets(15, 5, 5, 5);
+        container.add( panelSaida, gbc);
+    }
     
+    public void resetarSaida() {
+        fieldSaida.setText("");
+    }
+    
+    public void atualizarSaida(String novoTexto) {
+        fieldSaida.setText(fieldSaida.getText() + novoTexto);
+    }
+    
+    private void criarBotoes() {
+        JPanel panelBotoes = new JPanel(new GridBagLayout());
+        
+        JButton btnIniciar = new JButton("start");
+        btnIniciar.addActionListener((ActionEvent e) -> {
+            btnIniciar();
+        });
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelBotoes.add(btnIniciar, gbc);
+        
+        JButton btnResetar = new JButton("reset");
+        btnResetar.addActionListener((ActionEvent e) -> {
+            btnResetar();
+        });
+        gbc.gridx = 3;
+        panelBotoes.add(btnResetar, gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        container.add(panelBotoes, gbc);
+    }
+    
+    private void btnIniciar() {
+        System.out.println("INICIAR -- Programa sera executado.");
+    }
+    
+     private void btnResetar() {
+        System.out.println("RESETAR -- Programa sera resetado para seu estado inicial.");
+    } 
 }

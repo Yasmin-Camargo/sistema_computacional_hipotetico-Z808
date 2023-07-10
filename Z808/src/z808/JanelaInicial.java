@@ -24,7 +24,7 @@ import java.io.File;
 import javax.swing.*;
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
-    private String pathArquivo = "src\\z808\\arquivo_teste.txt";
+    private String pathArquivo = "src\\z808\\resources\\teste1.txt";
     private JTextField fieldArquivo = new JTextField(45);
     private JLabel labAux;
     

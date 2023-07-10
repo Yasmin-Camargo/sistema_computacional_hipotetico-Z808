@@ -152,10 +152,16 @@ public class Registradores {
         }
     } 
     
+    public int[] getSR() {
+        return SR;
+    }
+    
     public int concatena_SR(){
         StringBuilder string_concatenado = new StringBuilder();
+        System.out.println("FLAGS SR");
         for (int i = 0; i < SR.length; i++) {
             string_concatenado.append(SR[i]);
+            System.out.println(SR[i]);
         }
         return (Integer.parseInt(string_concatenado.toString(),2));
     }
