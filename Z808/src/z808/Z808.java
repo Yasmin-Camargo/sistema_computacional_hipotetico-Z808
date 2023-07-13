@@ -339,14 +339,18 @@ public class Z808 {
                     
                 case 18: // read opd (imediato)
                     System.out.println("read opd (imediato)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    registrador.setAX(Instrucoes.read(registrador.getRI(), memoria)); // coloca conteudo no registrador de Buffer da Memória
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
+                    // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
+                    int endereco_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Em qual endereço de memória você \ndeseja armazenar o valor "+registrador.getRI()+"? \n"));
+                    memoria.escreverDados(registrador.getRI(), endereco_armazenado);
                     break;
                 
                 case 19: // read opd (direto)
                     System.out.println("read opd (direto)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                    registrador.setAX(Instrucoes.read(registrador.getRI(), memoria)); // coloca conteudo no registrador de Buffer da Memória
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
+                    // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
+                    int valor_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Qual valor você deseja armazenar \n no endereço de memória "+registrador.getRI()+"? \n"));
+                    memoria.escreverDados(valor_armazenado, registrador.getRI());
                     break;
                     
                 case 9: // write opd (direto)
@@ -354,7 +358,6 @@ public class Z808 {
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
                     registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
-                    System.err.println(registrador.getRBM());
                     gui.atualizarSaida("dataAreaMemory[" + (registrador.getRBM() + memoria.getDS())+ "] = " + memoria.lerDados(registrador.getRBM()));
                     break;
                 
@@ -407,12 +410,6 @@ public class Z808 {
                 registrador.setIP(registrador.getIP() + 1);
             }
             
-              
-            //
-            //
-            // SE O INICIO DE TODOS OS CASOS CHAMA ATUALIZA_CL_RI_IP
-            // ISSO NAO FICARIA ERRADO?
-            //
         }
         
         // Prints
@@ -465,7 +462,7 @@ public class Z808 {
                         flag_final_arquivo = 1;
                     } else {
                          instrucao = new String(ch);
-
+                        
                         // Instruções que armazenam + 8 bits
                         if (instrucao.equals("03") || instrucao.equals("F7") || instrucao.equals("2B") || instrucao.equals("3B") ||
                             instrucao.equals("23") || instrucao.equals("F8") || instrucao.equals("0B") || instrucao.equals("33") ||
@@ -484,6 +481,9 @@ public class Z808 {
                                 instrucao.equals("14") || instrucao.equals("15")){  
                             //leitura do operando (16 bits)
                                 opd[0] = (char) arquivo_leitura.read();
+                                if (opd[0] == '-'){              //verifica se é um número negativo
+                                    opd[0] = (char) arquivo_leitura.read();
+                                }
                                 opd[1] = (char) arquivo_leitura.read();
                                 opd[2] = (char) arquivo_leitura.read();
                                 opd[3] = (char) arquivo_leitura.read();
@@ -506,7 +506,7 @@ public class Z808 {
     public void armazena_instrucoes(String caminho_arquivo, Memoria memoria){
         char[] opd = new char[4];
         char[] ch = new char[2];
-        int flag_final_arquivo = 0, quant_instrucoes = 0;
+        int flag_final_arquivo = 0, quant_instrucoes = 0, numNegativo = 0;
         String instrucao;
         
         File arquivo = new File(caminho_arquivo);
@@ -547,11 +547,20 @@ public class Z808 {
                                 instrucao.equals("12") || instrucao.equals("13") || instrucao.equals("08") || instrucao.equals("09") ||
                                 instrucao.equals("14") || instrucao.equals("15")){ 
                             opd[0] = (char) arquivo_leitura.read();
+                            if (opd[0] == '-'){ //verifica se é um número negativo
+                                opd[0] = (char) arquivo_leitura.read();
+                                numNegativo = 1;
+                            }
                             opd[1] = (char) arquivo_leitura.read();
                             opd[2] = (char) arquivo_leitura.read();
                             opd[3] = (char) arquivo_leitura.read();
                             instrucao = new String(opd);
-                            memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                            if (numNegativo == 1){
+                                numNegativo = 0;
+                                memoria.escreverCodigo(quant_instrucoes, -((int) Integer.parseInt(instrucao, 16)));
+                            } else{
+                                memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                            }
                             quant_instrucoes += 1;
                         }
                         // Instruções que armazenam + nada
