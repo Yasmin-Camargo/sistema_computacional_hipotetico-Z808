@@ -350,21 +350,20 @@ public class Z808 {
                     break;
                     
                 case 9: // write opd (direto)
-                    System.out.println("write opd (direto)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                    registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                    System.out.println("write opd (direto)"); // primeiro vai na memória no endereço indicado na instrução, lê o dado, neste dado esta o endereço que quer acessar    
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
-                    //gui.atualizarSaida(""+registrador.getRBM());
-                    gui.atualizarSaida("teste write opd direto");
-                    Instrucoes.store(registrador.getRBM(), memoria);
+                    System.err.println(registrador.getRBM());
+                    gui.atualizarSaida("dataAreaMemory[" + (registrador.getRBM() + memoria.getDS())+ "] = " + memoria.lerDados(registrador.getRBM()));
                     break;
                 
                 case 8: // write opd (imediato)
-                    System.out.println("write opd (imediato)");        
-                    atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                    Instrucoes.store(registrador.getRI(), memoria);
-                    //gui.atualizarSaida(""+registrador.getRI());
-                    gui.atualizarSaida("teste write opd imediato");
+                    System.out.println("write opd (imediato)"); // mostra para o usuário valor armazenado no endereço de memória indicado na instrução 
+                    atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits) 
+                    registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                    registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                    gui.atualizarSaida("dataAreaMemory[" + (memoria.getDS() + registrador.getREM()) + "] = " + registrador.getRBM());
                     break;
                 
                 case 21:    // move AX,opd (direto)

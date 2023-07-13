@@ -20,65 +20,65 @@ Para executar o programa, clone o repositório: <br>  `git@github.com:Yasmin-Cam
 
 ## :mag_right: Códigos das Instruções
 
-| Operação |  Código de Máquina | Modo de endereçamento |
-| -------- | -------------------- | --------------------- |
-|dd AX, AX | 03 C0 | Registrador |
-add AX, DX | 03 C2 | Registrador
-add AX, opd | 05 | Direto
-add AX, opd | 04 | Imediato
-div AX, SI | F7 F6 | Registrador
-div SI | F7 F6  | Registrador
-div AX, AX | F7 C0 | Registrador
-div AX | F7 C0 | Registrador
-sub AX, AX | 2B C0 | Registrador
-sub AX, DX | 2B C2 | Registrador
-sub AX, opd | 2D  | Direto
-sub AX, opd  | 2C | Imediato
-mul AX, SI | F7 F6 | Registrador
-mul DX | F7 F6 | Registrador
-mul AX, AX | F7 F0 | Registrador
-mul DX | F7 F0 | Registrador
-cmp AX,opd | 3D | Direto
-cmp AX,opd | 3C | Imediato
-cmp AX,DX 3B | C2 | Registrador
-and AX,AX | 23 C0 | Registrador
-and AX,DX | 23 C2 | Registrador
-and AX,opd | 25  | Direto
-and AX,opd | 24  | Imediato 
-not AX | F8 C0 | Registrador
-or AX, AX | 0B C0 | Registrador
-or AX, DX | 0B C2  | Registrador
-or AX,opd | 0D | Direto
-or AX,opd | 0C | Imediato
-xor AX,AX | 33 C0 | Registrador
-xor AX,DX | 33 C2  | Registrador
-xor AX,opd | 35  | Direto
-xor AX,opd | 34  | Imediato
-jmp opd  | EB | Direto
-jz opd | 74 | Direto
-jnz opd  | 75 | Direto
-jp opd | 7A | Direto
-call opd | E8 | Imediato
-call opd | E7 | Direto
-ret | EF | -
-hlt | EE | -
-pop reg | 57 C0  | Registrador
-pop reg | 57 C2  | Registrador
-pop opd  | 59  | Direto
-pop opd | 58 | Imediato
-popf | 9D | Registrador
-push reg | 50 C0  | Registrador
-push reg | 50 C2  | Registrador
-pushf | 9C | Registrador
-store reg | 07 C0  | Registrador
-store reg | 07 C2 | Registrador
-read opd | 12 | Imediato
-read opd | 13 | Direto
-write opd | 08 | Imediato
-write opd | 09 | Direto
-mov AX, opd | 14 | Imediato
-mov AX, opd | 15 | Direto
-mov AX, DX | 16 C2 | Registrador
+| Operação  |  Código de Máquina| Modo de endereçamento |
+| --------  | ------------------| --------------------- |
+add AX, AX  | 03 C0             | Registrador           
+add AX, DX  | 03 C2             | Registrador
+add AX, opd | 05                | Direto
+add AX, opd | 04                | Imediato
+div AX, SI  | F7 F6             | Registrador
+div SI      | F7 F6             | Registrador
+div AX, AX  | F7 C0             | Registrador
+div AX      | F7 C0             | Registrador
+sub AX, AX  | 2B C0             | Registrador
+sub AX, DX  | 2B C2             | Registrador
+sub AX, opd | 2D                | Direto
+sub AX, opd | 2C                | Imediato
+mul AX, SI  | F7 F6             | Registrador
+mul DX      | F7 F6             | Registrador
+mul AX, AX  | F7 F0             | Registrador
+mul DX      | F7 F0             | Registrador
+cmp AX,opd  | 3D                | Direto
+cmp AX,opd  | 3C                | Imediato
+cmp AX,DX 3B| C2                | Registrador
+and AX,AX   | 23 C0             | Registrador
+and AX,DX   | 23 C2             | Registrador
+and AX,opd  | 25                | Direto
+and AX,opd  | 24                | Imediato 
+not AX      | F8 C0             | Registrador
+or AX, AX   | 0B C0             | Registrador
+or AX, DX   | 0B C2             | Registrador
+or AX,opd   | 0D                | Direto
+or AX,opd   | 0C                | Imediato
+xor AX,AX   | 33 C0             | Registrador
+xor AX,DX   | 33 C2             | Registrador
+xor AX,opd  | 35                | Direto
+xor AX,opd  | 34                | Imediato
+jmp opd     | EB                | Direto
+jz opd      | 74                | Direto
+jnz opd     | 75                | Direto
+jp opd      | 7A                | Direto
+call opd    | E8                | Imediato
+call opd    | E7                | Direto
+ret         | EF                | -
+hlt         | EE                | -
+pop reg     | 57 C0             | Registrador
+pop reg     | 57 C2             | Registrador
+pop opd     | 59                | Direto
+pop opd     | 58                | Imediato
+popf        | 9D                | Registrador
+push reg    | 50 C0             | Registrador
+push reg    | 50 C2             | Registrador
+pushf       | 9C                | Registrador
+store reg   | 07 C0             | Registrador
+store reg   | 07 C2             | Registrador
+read opd    | 12                | Imediato
+read opd    | 13                | Direto
+write opd   | 08                | Imediato
+write opd   | 09                | Direto
+mov AX, opd | 14                | Imediato
+mov AX, opd | 15                | Direto
+mov AX, DX  | 16 C2             | Registrador
 
 
 

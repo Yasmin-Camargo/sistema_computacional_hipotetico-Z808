@@ -69,6 +69,7 @@ public class Memoria {
     }
     
     public int lerDados(int endereco) {
+        endereco = endereco + DS ;
         if (endereco >= DS && endereco < SP){
             return codigo_dados_pilha[endereco];
         } else{
@@ -102,6 +103,7 @@ public class Memoria {
     
     // armazena em um endereço especificado
     public void escreverDados(int valor, int endereco) {
+        endereco = endereco + DS;
         if (endereco >= DS && endereco < SP){
             codigo_dados_pilha[endereco] = valor;
         } else{
