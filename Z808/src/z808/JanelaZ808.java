@@ -386,7 +386,6 @@ public class JanelaZ808 extends JFrame{
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 1;
         gbc.gridwidth = 4;
-        gbc.insets = new Insets(10,10, 10, 10);
         panelSaida.add(areaSaida, gbc);        
 
         gbc.gridx = 0;
