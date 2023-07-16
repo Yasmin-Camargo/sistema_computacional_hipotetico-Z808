@@ -4,23 +4,18 @@
  */
 package z808;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,8 +24,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -43,6 +36,7 @@ public class JanelaZ808 extends JFrame{
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
     private JLabel labelSaida;
+    private JTextArea areaSaida;
     
     Container container;
     private GridBagConstraints gbc;
@@ -379,25 +373,21 @@ public class JanelaZ808 extends JFrame{
         gbc.gridwidth = 4;
         
         panelSaida.add(labelSaidaTitulo, gbc);
+        panelSaida.setPreferredSize(new Dimension(500, 200));
         
-        labelSaida = new JLabel();
-        labelSaida.setFont(new Font("Arial", Font.PLAIN, 12));
-        labelSaida.setBackground(Color.WHITE);
-        labelSaida.setSize(200, 500);
-        labelSaida.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        labelSaida.setMinimumSize(new Dimension(600, 100));
-        labelSaida.setPreferredSize(new Dimension(600, 100));
-        labelSaida.setMaximumSize(new Dimension(600, 100));
-        
-        //JScrollPane scroll = new JScrollPane(areaSaida); 
-        //scroll.setSize (300,600) ; 
+        areaSaida = new JTextArea();
+        areaSaida.setLineWrap(true);
+        areaSaida.setWrapStyleWord(true);
+        areaSaida.setFont(new Font("Monospaced", 0, 10));
+        areaSaida.setEditable(false);
+        areaSaida.setSize(new Dimension(800, 50));        
        
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 1;
         gbc.gridwidth = 4;
-        panelSaida.add(labelSaida, gbc);
-        //panelSaida.add(scroll);
+        gbc.insets = new Insets(10,10, 10, 10);
+        panelSaida.add(areaSaida, gbc);        
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -409,11 +399,12 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void resetarSaida() {
-        labelSaida.setText("");
+        areaSaida.setText("");
     }
     
     public void atualizarSaida(String novoTexto) {
-        labelSaida.setText(labelSaida.getText() + novoTexto + "\n");
+        //labelSaida.setText(labelSaida.getText() + "; " + novoTexto);
+        areaSaida.append(novoTexto + '\n');
     }
     
     private void criarBotoes() {

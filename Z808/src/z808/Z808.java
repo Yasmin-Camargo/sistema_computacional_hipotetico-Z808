@@ -30,6 +30,7 @@ public class Z808 {
         this.caminho_arquivo = caminho_arquivo;
         gui = new JanelaZ808(caminho_arquivo);
         iniciarZ808();
+        gui.setVisible(true);
     }
     
     public void iniciarZ808() {
@@ -341,6 +342,9 @@ public class Z808 {
                     System.out.println("read opd (imediato)");        
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
                     // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
+                    
+                    //int endereco_armazenado = Null;
+                    //System.out.println(endereco_armazenado);
                     int endereco_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Em qual endereço de memória você \ndeseja armazenar o valor "+registrador.getRI()+"? \n"));
                     memoria.escreverDados(registrador.getRI(), endereco_armazenado);
                     break;
@@ -409,7 +413,6 @@ public class Z808 {
                 registrador.setRI(memoria.lerCodigo(registrador.getCL()));
                 registrador.setIP(registrador.getIP() + 1);
             }
-            
         }
         
         // Prints
@@ -417,6 +420,7 @@ public class Z808 {
         System.out.println("Registrador AX: "+registrador.getAX());
         System.out.println("Registrador DX: "+registrador.getDX());
         System.out.println("Registrador SR: "+registrador.print_SR());
+        
         gui.atualizarRegistradores(registrador);
         
         Object[][] data = memoria.printAreaCodigo();
