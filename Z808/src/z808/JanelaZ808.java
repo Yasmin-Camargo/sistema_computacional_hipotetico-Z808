@@ -57,14 +57,11 @@ public class JanelaZ808 extends JFrame{
         gbc = new GridBagConstraints();
         container = getContentPane();
         
-        // painel superior - onde o path do arquivo tá listado
-        criarPainelArquivo(pathArquivo);
-        
-        criarRegistradores();
-        
-        criarPanelSaida();
-        
-        criarBotoes();
+        criarPainelArquivo(pathArquivo); // cria painel superior com localização do arquivo
+        criarRegistradores(); // cria JTextFields dos registradores
+        // tabelas são criadas por chamadas em Z808.java
+        criarPanelSaida(); // cria painel que mostra infos
+        criarBotoes(); // cria botões na parte inferior
     }
     
     private void criarPainelArquivo(String pathArquivo) {
@@ -74,7 +71,12 @@ public class JanelaZ808 extends JFrame{
         
         JLabel labelArquivo = new JLabel("FILE PATH: ");
         labelArquivo.setForeground(Color.GRAY);
-        panelArquivo.add(labelArquivo);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        panelArquivo.add(labelArquivo, gbc);
         
         JTextField fieldArquivo = new JTextField(30);
         fieldArquivo.setText(pathArquivo);
@@ -83,21 +85,29 @@ public class JanelaZ808 extends JFrame{
         fieldArquivo.setFont(new Font("Arial", Font.PLAIN, 14));
         fieldArquivo.setBackground(Color.WHITE);
         fieldArquivo.setForeground(Color.GRAY);
-        panelArquivo.add(fieldArquivo);
-        
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        panelArquivo.add(fieldArquivo, gbc);
+     
         JButton btnVoltar = new JButton("return");
         //btnVoltar.setName("return-button");
         btnVoltar.addActionListener((ActionEvent e) -> {
             btnVoltar();
         }); 
-        panelArquivo.add(btnVoltar);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelArquivo.add(btnVoltar, gbc);
         
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridheight = 1;
-        gbc.gridwidth = 4;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridwidth = 4;        
         container.add( panelArquivo, gbc);
     }
     
@@ -105,6 +115,9 @@ public class JanelaZ808 extends JFrame{
         System.out.println("VOLTAR   -- Janela Inicial sera reaberta.");
         System.out.println("\t -- Janela do Emulador sera fechada.");
         System.out.println("\t -- Usuario podera escolher novo arquivo para ser aberto.");
+        JanelaInicial janelaInicial = new JanelaInicial();
+        janelaInicial.setVisible(true);
+        this.dispose();
     }
     
     private void criarRegistradores() {
@@ -360,10 +373,16 @@ public class JanelaZ808 extends JFrame{
     // VERIFICA O QUE FOI MUDADO
     // E ATUALIZA APENAS O QUE FOI MUDADO
     
+    private void criarPanelInstrucoes() {
+        JPanel panelInstr = new JPanel();
+        panelInstr.setLayout(new GridBagLayout());
+        //panelInstr.setSize(new Dimension)
+    }
+    
     private void criarPanelSaida() {
         JPanel panelSaida = new JPanel();
         panelSaida.setLayout(new GridBagLayout());
-        panelSaida.setSize(new Dimension(200, 400));
+        //panelSaida.setSize(new Dimension(200, 400));
         
         JLabel labelSaidaTitulo = new JLabel("OUTPUT:");
         gbc.gridx = 0;

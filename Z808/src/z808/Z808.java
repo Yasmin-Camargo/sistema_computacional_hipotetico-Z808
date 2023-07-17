@@ -402,7 +402,9 @@ public class Z808 {
                     break;
                     
                 default:
-                    JOptionPane.showMessageDialog(null, "Intrução [" + registrador.getRI() + "] não é aceita");
+                    JOptionPane.showMessageDialog(
+                        null, "Instrução ["+registrador.getRI()+"] não é aceita.", "ERRO", JOptionPane.ERROR_MESSAGE
+                    );
                     break;
             }
             
@@ -435,6 +437,20 @@ public class Z808 {
         gui.criarTabelaPilha(data);
     }
     
+    /*
+    public void executar_passo() {
+    
+    }
+    */
+    
+    /*
+    public void executar_codigo_1x() {
+        while (registrador.getIP() != tam_area_instrucoes) {
+            executar_passo();
+        }
+    }
+    */
+    
     // Atualiza Contador de Localização, Registrador de Instruções e o Apontador de instrução
     public void atualiza_CL_RI_IP(Registradores registrador, Memoria memoria){
         registrador.setCL(registrador.getIP());
@@ -452,7 +468,9 @@ public class Z808 {
         
         File arquivo = new File(caminho_arquivo);
         if (!arquivo.exists()) {
-            JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
+            JOptionPane.showMessageDialog(
+                    null, "Falha ao abrir o arquivo.", "ERRO", JOptionPane.ERROR
+            );
         } else {
             try {
                 FileInputStream arquivo_leitura = new FileInputStream(arquivo);
@@ -574,7 +592,7 @@ public class Z808 {
                 }
                 arquivo_leitura.close();
             } catch (IOException e) {
-                System.out.println("Erro: ao manipular o arquivo");
+                JOptionPane.showMessageDialog(null, "Erro ao manipular o arquivo.", "ERRO", JOptionPane.ERROR);
             }
         }
     }

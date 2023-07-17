@@ -23,7 +23,9 @@ public class Memoria {
         codigo_dados_pilha = new int[TAM_MAXIMO];
         
         if (tamanhoCodigo > TAM_MAXIMO){
-            JOptionPane.showMessageDialog(null, "Erro!! O programa excedeu a capacidade de armazenamento");
+            JOptionPane.showMessageDialog(
+                    null, "O programa excedeu a capacidade de armazenamento.", "ERRO", JOptionPane.ERROR
+            );
             exit(0);
         } else {
             CS = 0;                     // Inicio 
@@ -97,7 +99,9 @@ public class Memoria {
             }
         }
         if (flag == 0){
-            JOptionPane.showMessageDialog(null, "Erro!! a area de dados excedeu a capacidade de armazenamento");
+            JOptionPane.showMessageDialog(
+                    null, "A area de dados excedeu a capacidade de armazenamento.", "ERRO", JOptionPane.ERROR
+            );
         }
     }
     
@@ -107,7 +111,10 @@ public class Memoria {
         if (endereco >= DS && endereco < SP){
             codigo_dados_pilha[endereco] = valor;
         } else{
-            JOptionPane.showMessageDialog(null, "Erro!! endereco fornecido esta fora da area de dados");
+            JOptionPane.showMessageDialog(
+                    null, "Endereco fornecido esta fora da area de dados.", "ERRO", JOptionPane.ERROR
+            );
+            
         }
     }
     
@@ -120,13 +127,17 @@ public class Memoria {
             SP = SP - 1;
             codigo_dados_pilha[SP] = valor;
         } else {
-            JOptionPane.showMessageDialog(null, "Erro!! a pilha atingiu sua capacidade máxima");
+            JOptionPane.showMessageDialog(
+                    null, "Pilha atingiu a capacidade máxima.", "ERRO", JOptionPane.ERROR
+            );
         }
     }
     public int pop_pilha(){
         int valor = 0;
         if ((SP + 1) > SS){
-            JOptionPane.showMessageDialog(null, "Erro!! Nao existem elementos para ser removidos da pilha");
+            JOptionPane.showMessageDialog(
+                    null, "Não existem elementos para serem removidos da pilha.", "ERRO", JOptionPane.ERROR
+            );
             return 0;
         } else if ((SP + 1) == SS){
             SP = SP + 1;

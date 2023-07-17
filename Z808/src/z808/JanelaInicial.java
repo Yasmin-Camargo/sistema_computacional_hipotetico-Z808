@@ -84,7 +84,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         // botão de procurar arquivo no pc
         JButton btnProcurar = new JButton("Search");
         btnProcurar.addActionListener((ActionEvent e) -> {
-            JFileChooser arquivo = new JFileChooser("src\\z808");
+            JFileChooser arquivo = new JFileChooser(".\\src\\z808");
             int escolha = arquivo.showOpenDialog(this);
             if (escolha == JFileChooser.APPROVE_OPTION){
                 File arquivo_selecionado = arquivo.getSelectedFile();
@@ -98,7 +98,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         // botão pra confirmar que é aquele arquivo que a gente quer
         JButton btnConfirmar = new JButton("Confirm");
         btnConfirmar.addActionListener((ActionEvent e) -> {
-            carregar();
+            btnCarregar();
         }); 
         gbc.insets = new Insets(15, 100, 0, 0);
         container.add(btnConfirmar, gbc);
@@ -113,19 +113,28 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         container.add(labAux, gbc);    
     }
     
-    public void carregar() {
+    public void btnCarregar() {
         pathArquivo = fieldArquivo.getText();
         File arquivo = new File(pathArquivo);
         if (!arquivo.exists()) {
             //JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
-            labAux.setFont(new Font("Arial", Font.BOLD, 11));
-            labAux.setForeground(Color.RED);
-            labAux.setText("File not found. Try again.");
+            btnCarregarErro("File not found. Try again.");            
         }
         else {
-            Z808 z808 = new Z808(pathArquivo); // chamar Z808
-            this.setVisible(false); // matar janela atual
-        }
+            if (!pathArquivo.contains(".txt")) {
+                btnCarregarErro("File must be of type .TXT. Try again.");
+            }
+            else {
+                Z808 z808 = new Z808(pathArquivo); // chamar Z808
+                this.dispose();
+            }
+        }    
+    }
+    
+    public void btnCarregarErro(String mensagem) {
+        labAux.setFont(new Font("Arial", Font.BOLD, 11));
+        labAux.setForeground(Color.RED);
+        labAux.setText(mensagem);
     }
     
     @Override public void actionPerformed(ActionEvent event) {}
@@ -134,7 +143,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     @Override 
     public void keyReleased(KeyEvent event) {
         if (event.getKeyCode() == 10) { // ENTER
-            carregar();
+            btnCarregar();
         }
     }
     
