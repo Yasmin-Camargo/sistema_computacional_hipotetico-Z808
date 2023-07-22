@@ -4,6 +4,10 @@
 //      ex.: add AX, A      A vai ser interpretado como um label
 //           add AX,0A      0A vai ser interpretado como o número 10
 
+// 2) para indicar que é o modo de endereçamento direto (passar um endereço) usar "[]"
+//      ex.: add AX, [20]
+
+
 package z808;
 
 import java.io.BufferedReader;
@@ -32,7 +36,7 @@ public class Montador {
     
     // primeiro passo do montador de dois passos: criar tabela de simbolos
     private String [][] primeiroPasso(String caminho_arquivo) throws IOException{
-        // matriz para estruturar o código                                                             colunas: [0]     [1]        [2]     [3]        [4]          [6]
+        // matriz para estruturar o código                                                             colunas: [0]     [1]        [2]     [3]        [4]          [5]
         String [][] textScanned = new String [contarLinhasArquivo(caminho_arquivo)][6];    //          linha | endereço | label | operação | operando 1 | operando 2
         
         // Abre o arquivo
@@ -104,8 +108,9 @@ public class Montador {
                         textScanned[LC][5] = linhaSeparada[1].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linhaSeparada[1].split(",")[1].equals("AX") && !linhaSeparada[1].split(",")[1].equals("DX") && ( // se o operando 2 não é um registrador e o
-                            !(Character.isDigit( linhaSeparada[1].split(",")[1].charAt(0))) )){                 // primeiro caracter não é um número, então é um label
+                        if (!linhaSeparada[1].split(",")[1].equals("AX") && !linhaSeparada[1].split(",")[1].equals("DX") && // se o operando 2 não é um registrador, 
+                            !linhaSeparada[1].split(",")[1].contains("[") && (                                                              // não é endereçamento direto e o
+                            !(Character.isDigit( linhaSeparada[1].split(",")[1].charAt(0))) )){                                       // primeiro caracter não é um número, então é um label
                               
                             if (!tabelaSimbolos.containsKey(linhaSeparada[1].split(",")[1])){   // verifica se label já esta na tabela de simbolos
                                 tabelaSimbolos.put(linhaSeparada[1].split(",")[1], -1);    
@@ -186,8 +191,69 @@ public class Montador {
     
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
- 
-       
+        String nomeArquivo = "codigoObjeto.txt";
+
+        try {
+            FileWriter fileWriter = new FileWriter(nomeArquivo);        // Cria um objeto FileWriter para o arquivo específico
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter); // Cria um objeto BufferedWriter para escrever no arquivo
+
+            // Percorrendo tabela do codigo
+            for (int i = 0; i < textScanned.length; i++) {
+                switch (textScanned[i][3]) {
+                    case "equ": 
+                        bufferedWriter.write(textScanned[i][4]);
+                    break;
+                    case "add":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("03C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("03C2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("05");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("05");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("04");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    
+                }
+            }
+            
+            // Fecha o BufferedWriter
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("Ocorreu um erro ao criar o arquivo: " + e.getMessage());
+        }
+        
+        // LER ARQUIVO
+        System.out.println("\nARQUIVO CODIGO OBJETO: ");
+        try {
+            // Cria um objeto FileReader para ler o arquivo
+            FileReader fileReader = new FileReader(nomeArquivo);
+
+            // Cria um objeto BufferedReader para ler o arquivo de forma mais eficiente
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            // Variável para armazenar cada linha lida do arquivo
+            String linha;
+
+            // Loop para ler cada linha do arquivo até encontrar o final (null)
+            while ((linha = bufferedReader.readLine()) != null) {
+                System.out.println(linha); // Exibe a linha no console
+            }
+
+            // Fecha o BufferedReader
+            bufferedReader.close();
+
+        } catch (IOException e) {
+            System.out.println("Ocorreu um erro ao ler o arquivo: " + e.getMessage());
+        }
+      
     }
     
     // Conta  o número de linhas do arquivo

@@ -35,9 +35,10 @@ public class Z808 {
     
     public void iniciarZ808() throws IOException {
         // TESTE MONTADOR
+        System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
         Montador novoMontador = new Montador("C:\\Users\\yasmi\\codigos_github\\sistema_computacional_hipotetico-Z808\\Z808\\src\\z808\\resources\\teste1_montador.txt");
-       
-        System.out.println("\n--------------------------\n\n\n");
+        System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
+      
         //----------------------------
         
         Registradores registrador = new Registradores();

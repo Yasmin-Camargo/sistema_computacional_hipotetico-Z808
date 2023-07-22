@@ -1,7 +1,6 @@
-labelA add AX,DX
-mov AX,mem1
-mem1 equ 5
-labelB sub AX,mem1
-add AX,labelA
-div AX
-labelA sub AX,DX
+add AX,DX
+add AX,AX
+add AX,10
+add AX,[4]
+add AX,label
+label equ 5
