@@ -26,14 +26,20 @@ public class Z808 {
     String caminho_arquivo;
     JanelaZ808 gui;
     
-    public Z808(String caminho_arquivo) {
+    public Z808(String caminho_arquivo) throws IOException {
         this.caminho_arquivo = caminho_arquivo;
         gui = new JanelaZ808(caminho_arquivo);
         iniciarZ808();
         gui.setVisible(true);
     }
     
-    public void iniciarZ808() {
+    public void iniciarZ808() throws IOException {
+        // TESTE MONTADOR
+        Montador novoMontador = new Montador("C:\\Users\\yasmi\\codigos_github\\sistema_computacional_hipotetico-Z808\\Z808\\src\\z808\\resources\\teste1_montador.txt");
+       
+        System.out.println("\n--------------------------\n\n\n");
+        //----------------------------
+        
         Registradores registrador = new Registradores();
         
         int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções

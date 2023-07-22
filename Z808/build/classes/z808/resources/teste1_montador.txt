@@ -1,0 +1,7 @@
+labelA add AX,DX
+mov AX,mem1
+mem1 equ 5
+labelB sub AX,mem1
+add AX,labelA
+div AX
+labelA sub AX,DX
