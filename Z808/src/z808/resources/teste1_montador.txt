@@ -11,5 +11,9 @@ sub AX,label2
 mul AX,SI
 not AX
 push AX
+store AX
+store DX
+read [2]
+write 2
 label equ 5
 label2 equ 99

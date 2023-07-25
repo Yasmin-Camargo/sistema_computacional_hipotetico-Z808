@@ -12,12 +12,9 @@ package z808;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,6 +163,7 @@ public class Montador {
             textScanned[LC][0]  = String.valueOf(LC);   // coloca num linhas
             LC += 1;        // ataualiza contador de lihas
         } 
+        PC += 1;
         
         // PARTE VISUAL PARA VER O QUE ESTA ACONTECENDO
         // Print da matriz do código
@@ -192,6 +190,7 @@ public class Montador {
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
         String nomeArquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
+        int flag_terminouInstrucoes = 0;
 
         try {
             FileWriter fileWriter = new FileWriter(nomeArquivo);        // Cria um objeto FileWriter para o arquivo específico
@@ -201,7 +200,12 @@ public class Montador {
             for (int i = 0; i < textScanned.length; i++) {
                 switch (textScanned[i][3]) {
                     case "equ": 
-                        bufferedWriter.write(textScanned[i][4]);
+                        if (flag_terminouInstrucoes == 0){
+                            flag_terminouInstrucoes = 1;
+                            bufferedWriter.write("EE");
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
+                        }
+                        bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                     break;
                     case "add":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -210,13 +214,13 @@ public class Montador {
                             bufferedWriter.write("03C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("05");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("05");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("04");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     case "sub":                                   
@@ -226,13 +230,13 @@ public class Montador {
                             bufferedWriter.write("2BC2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("2D");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("2D");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("2C");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     case "div":                                   
@@ -254,13 +258,13 @@ public class Montador {
                             bufferedWriter.write("3BC2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("3D");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("3D");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("3C");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     case "and":                                   
@@ -270,13 +274,13 @@ public class Montador {
                             bufferedWriter.write("23C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("25");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("25");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("24");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     case "or":                                   
@@ -286,13 +290,13 @@ public class Montador {
                             bufferedWriter.write("0BC2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("0D");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("0D");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("0C");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     case "xor":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -301,64 +305,64 @@ public class Montador {
                             bufferedWriter.write("33C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("35");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("35");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("34");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     case "not":                                   
                         bufferedWriter.write("F8C0");
                     break;
                     case "jmp":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("EB");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("EB");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         }
                     break;
                     case "jz":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("74");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("74");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         }
                     break;
                     case "jnz":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("75");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("75");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         }
                     break;
                     case "jp":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("7A");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("7A");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         }
                     break;
                     case "call":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("E7");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("E7");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("E8");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                         }
                     break;
                     case "ret":                                   
@@ -368,28 +372,28 @@ public class Montador {
                         bufferedWriter.write("EE");
                     break;
                     case "pop":                                   
-                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                        if (textScanned[i][4].equals("AX")){  // endereçamento via registrador AX
                             bufferedWriter.write("57C0");
-                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                        } else  if (textScanned[i][4].equals("DX")){ // endereçamento via registrador DX
                             bufferedWriter.write("57C2");
-                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("59");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("59");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("58");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                         }
                     break;
                     case "popf":                                   
                         bufferedWriter.write("9D");
                     break;
                     case "push":                                   
-                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                        if (textScanned[i][4].equals("AX")){  // endereçamento via registrador AX
                             bufferedWriter.write("50C0");
-                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                        } else  if (textScanned[i][4].equals("DX")){ // endereçamento via registrador DX
                             bufferedWriter.write("50C2");
                         }
                     break;
@@ -397,22 +401,34 @@ public class Montador {
                         bufferedWriter.write("9C");
                     break;
                     case "store":                                   
-                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                        if (textScanned[i][4].equals("AX")){  // endereçamento via registrador AX
                             bufferedWriter.write("07C0");
-                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                        } else  if (textScanned[i][4].equals("DX")){ // endereçamento via registrador DX
                             bufferedWriter.write("07C2");
                         }
                     break;
                     case "read":                                   
-                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
                             bufferedWriter.write("13");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
-                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
                             bufferedWriter.write("13");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("12");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
+                        }
+                    break;
+                    case "write":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][4])){  // é uma label
+                            bufferedWriter.write("09");
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][4])));
+                        } else if (textScanned[i][4].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("09");
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4].replace("[", "").replace("]", "")));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("08");
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                         }
                     break;
                     case "mov":                                   
@@ -420,13 +436,13 @@ public class Montador {
                             bufferedWriter.write("16C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
                             bufferedWriter.write("15");
-                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][5])));
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("15");
-                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5].replace("[", "").replace("]", "")));
                         } else {    // endereçamento imediato
                             bufferedWriter.write("14");
-                            bufferedWriter.write(textScanned[i][5]);
+                            bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
                     
@@ -477,5 +493,20 @@ public class Montador {
             System.out.println("Erro");
         }
         return numeroLinhas;
+    }
+    
+    // formata operandos de entrada do arquivo no executor para ter 16 bits (4 números em hexadecimal)
+    private String formataPara16Bits(String operando) {
+        String novo_operando = operando;
+        if (operando.length() == 1){
+            novo_operando = "000" + operando;
+        } else if (operando.length() == 2){
+            novo_operando = "00" + operando;
+        } else if (operando.length() == 3){
+            novo_operando = "0" + operando;
+        } else if (operando.length() == 0){
+            novo_operando = "0000";
+        }
+        return novo_operando;
     }
 }

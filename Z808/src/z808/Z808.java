@@ -37,10 +37,11 @@ public class Z808 {
         // TESTE MONTADOR
         System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
         Montador novoMontador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
-        System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
-      
+        this.caminho_arquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
         //----------------------------
         
+        System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
+      
         Registradores registrador = new Registradores();
         
         int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
@@ -81,7 +82,7 @@ public class Z808 {
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
-                    registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRBM(), registrador));  
+                    registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRBM(), registrador));
                     break;
                     
                 case 43: // sub AX,AX e sub AX,DX
@@ -102,7 +103,7 @@ public class Z808 {
                     break;
                     
                 case 45: // sub AX,opd  (direto)
-                    System.out.println("add AX,opd (direto)");  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
+                    System.out.println("sub AX,opd (direto)");  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
                     atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
                     registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
                     registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
