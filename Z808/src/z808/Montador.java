@@ -179,11 +179,11 @@ public class Montador {
         
         // Print dos contadores
         System.out.println("\nLC =  "+LC+"\nPC =  "+ PC);
-        System.out.println("\nTabela de Simbolos: ");
+        System.out.println("\nTabela de Simbolos ");
         
         // Print da tabela de símbolos
         for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + ":    " + tabelaSimbolos.get(chave));
+            System.out.println(chave + ":  " + tabelaSimbolos.get(chave));
         }
         
         return textScanned;
@@ -191,7 +191,7 @@ public class Montador {
     
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
-        String nomeArquivo = "codigoObjeto.txt";
+        String nomeArquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
 
         try {
             FileWriter fileWriter = new FileWriter(nomeArquivo);        // Cria um objeto FileWriter para o arquivo específico
@@ -347,6 +347,86 @@ public class Montador {
                         } else if (textScanned[i][5].contains("[")){ // endereçamento direto
                             bufferedWriter.write("7A");
                             bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        }
+                    break;
+                    case "call":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("E7");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("E7");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("E8");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    case "ret":                                   
+                        bufferedWriter.write("EF");
+                    break;
+                    case "hlt":                                   
+                        bufferedWriter.write("EE");
+                    break;
+                    case "pop":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("57C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("57C2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("59");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("59");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("58");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    case "popf":                                   
+                        bufferedWriter.write("9D");
+                    break;
+                    case "push":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("50C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("50C2");
+                        }
+                    break;
+                    case "pushf":                                   
+                        bufferedWriter.write("9C");
+                    break;
+                    case "store":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("07C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("07C2");
+                        }
+                    break;
+                    case "read":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("13");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("13");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("12");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    case "mov":                                   
+                        if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("16C2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("15");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("15");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("14");
+                            bufferedWriter.write(textScanned[i][5]);
                         }
                     break;
                     
