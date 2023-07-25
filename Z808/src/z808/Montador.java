@@ -108,7 +108,7 @@ public class Montador {
                         textScanned[LC][5] = linhaSeparada[1].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linhaSeparada[1].split(",")[1].equals("AX") && !linhaSeparada[1].split(",")[1].equals("DX") && // se o operando 2 não é um registrador, 
+                        if (!linhaSeparada[1].split(",")[1].equals("AX") && !linhaSeparada[1].split(",")[1].equals("DX") && !linhaSeparada[1].split(",")[1].equals("SI") && // se o operando 2 não é um registrador, 
                             !linhaSeparada[1].split(",")[1].contains("[") && (                                                              // não é endereçamento direto e o
                             !(Character.isDigit( linhaSeparada[1].split(",")[1].charAt(0))) )){                                       // primeiro caracter não é um número, então é um label
                               
@@ -138,7 +138,7 @@ public class Montador {
                         textScanned[LC][5] = linhaSeparada[2].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linhaSeparada[2].split(",")[1].equals("AX") && !linhaSeparada[2].split(",")[1].equals("DX")  && ( // se o operando 2 não é um registrador e o
+                        if (!linhaSeparada[2].split(",")[1].equals("AX") && !linhaSeparada[2].split(",")[1].equals("DX") && !linhaSeparada[2].split(",")[1].equals("SI")  && ( // se o operando 2 não é um registrador e o
                             !(Character.isDigit( linhaSeparada[2].split(",")[1].charAt(0))) )){                 // primeiro caracter não é um número, então é um label
                               
                             if (!tabelaSimbolos.containsKey(linhaSeparada[2].split(",")[1])){   // verifica se rotulo já esta na tabela de simbolos
@@ -263,7 +263,56 @@ public class Montador {
                             bufferedWriter.write(textScanned[i][5]);
                         }
                     break;
-                    
+                    case "and":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("23C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("23C2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("25");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("25");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("24");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    case "or":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("0BC0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("0BC2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("0D");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("0D");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("0C");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    case "xor":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("33C0");
+                        } else  if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("33C2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("35");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("35");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("34");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    case "not":                                   
+                        bufferedWriter.write("F8C0");
+                    break;
                     
                 }
             }

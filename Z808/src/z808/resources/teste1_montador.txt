@@ -9,5 +9,6 @@ sub AX,10
 sub AX,[4]
 sub AX,label2
 mul AX,SI
+not AX
 label equ 5
 label2 equ 99
