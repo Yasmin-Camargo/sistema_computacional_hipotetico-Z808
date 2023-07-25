@@ -235,6 +235,20 @@ public class Montador {
                             bufferedWriter.write(textScanned[i][5]);
                         }
                     break;
+                    case "div":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("F7C0");
+                        } else  if (textScanned[i][5].equals("SI")){ // endereçamento via registrador SI
+                            bufferedWriter.write("F7F6");
+                        } 
+                    break;
+                    case "mul":                                   
+                        if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
+                            bufferedWriter.write("F7F0");
+                        } else  if (textScanned[i][5].equals("SI")){ // endereçamento via registrador SI
+                            bufferedWriter.write("F7F5");
+                        } 
+                    break;
                     
                 }
             }
