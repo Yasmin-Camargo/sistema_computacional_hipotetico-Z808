@@ -249,6 +249,21 @@ public class Montador {
                             bufferedWriter.write("F7F5");
                         } 
                     break;
+                    case "cmp":                                   
+                        if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
+                            bufferedWriter.write("3BC2");
+                        } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("3D");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("3D");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        } else {    // endereçamento imediato
+                            bufferedWriter.write("3C");
+                            bufferedWriter.write(textScanned[i][5]);
+                        }
+                    break;
+                    
                     
                 }
             }
