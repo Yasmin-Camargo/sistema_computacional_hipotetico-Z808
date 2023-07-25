@@ -36,7 +36,7 @@ public class Z808 {
     public void iniciarZ808() throws IOException {
         // TESTE MONTADOR
         System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
-        Montador novoMontador = new Montador("C:\\Users\\yasmi\\codigos_github\\sistema_computacional_hipotetico-Z808\\Z808\\src\\z808\\resources\\teste1_montador.txt");
+        Montador novoMontador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
         System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
       
         //----------------------------
@@ -117,7 +117,7 @@ public class Z808 {
                     } else if (registrador.getRI() == 192) {
                         System.out.print("div AX, AX "); 
                         registrador.setAX(Instrucoes.div(registrador.getAX(), registrador.getAX(), registrador));
-                    } else if (registrador.getRI() == 246) {  
+                    } else if (registrador.getRI() == 245) {  
                         System.out.println("mul AX, SI ");
                         registrador.setAX(Instrucoes.mult(registrador.getAX(), registrador.getSI(), registrador));
                     } else if (registrador.getRI() == 240) {

@@ -3,4 +3,10 @@ add AX,AX
 add AX,10
 add AX,[4]
 add AX,label
+sub AX,DX
+sub AX,AX
+sub AX,10
+sub AX,[4]
+sub AX,label2
 label equ 5
+label2 equ 99

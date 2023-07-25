@@ -21,6 +21,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
@@ -98,7 +101,11 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         // botão pra confirmar que é aquele arquivo que a gente quer
         JButton btnConfirmar = new JButton("Confirm");
         btnConfirmar.addActionListener((ActionEvent e) -> {
-            btnCarregar();
+            try {
+                btnCarregar();
+            } catch (IOException ex) {
+                Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }); 
         gbc.insets = new Insets(15, 100, 0, 0);
         container.add(btnConfirmar, gbc);
@@ -113,7 +120,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         container.add(labAux, gbc);    
     }
     
-    public void btnCarregar() {
+    public void btnCarregar() throws IOException {
         pathArquivo = fieldArquivo.getText();
         File arquivo = new File(pathArquivo);
         if (!arquivo.exists()) {
@@ -142,8 +149,12 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     @Override public void keyPressed(KeyEvent event) {}
     @Override 
     public void keyReleased(KeyEvent event) {
-        if (event.getKeyCode() == 10) { // ENTER
+        if (event.getKeyCode() == 10) { try {
+            // ENTER
             btnCarregar();
+            } catch (IOException ex) {
+                Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     

@@ -27,17 +27,13 @@ add AX, DX  | 03 C2             | Registrador
 add AX, opd | 05                | Direto
 add AX, opd | 04                | Imediato
 div AX, SI  | F7 F6             | Registrador
-div SI      | F7 F6             | Registrador
 div AX, AX  | F7 C0             | Registrador
-div AX      | F7 C0             | Registrador
 sub AX, AX  | 2B C0             | Registrador
 sub AX, DX  | 2B C2             | Registrador
 sub AX, opd | 2D                | Direto
 sub AX, opd | 2C                | Imediato
-mul AX, SI  | F7 F6             | Registrador
-mul DX      | F7 F6             | Registrador
+mul AX, SI  | F7 F5             | Registrador
 mul AX, AX  | F7 F0             | Registrador
-mul DX      | F7 F0             | Registrador
 cmp AX,opd  | 3D                | Direto
 cmp AX,opd  | 3C                | Imediato
 cmp AX,DX 3B| C2                | Registrador
