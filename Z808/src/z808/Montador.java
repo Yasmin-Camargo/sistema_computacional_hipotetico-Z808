@@ -313,6 +313,42 @@ public class Montador {
                     case "not":                                   
                         bufferedWriter.write("F8C0");
                     break;
+                    case "jmp":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("EB");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("EB");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        }
+                    break;
+                    case "jz":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("74");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("74");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        }
+                    break;
+                    case "jnz":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("75");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("75");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        }
+                    break;
+                    case "jp":                                   
+                        if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
+                            bufferedWriter.write("7A");
+                            bufferedWriter.write(""+tabelaSimbolos.get(textScanned[i][5]));
+                        } else if (textScanned[i][5].contains("[")){ // endereçamento direto
+                            bufferedWriter.write("7A");
+                            bufferedWriter.write(textScanned[i][5].replace("[", "").replace("]", ""));
+                        }
+                    break;
                     
                 }
             }
