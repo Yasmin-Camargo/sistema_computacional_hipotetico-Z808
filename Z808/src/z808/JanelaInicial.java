@@ -132,7 +132,9 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
                 btnCarregarErro("File must be of type .TXT. Try again.");
             }
             else {
-                Z808 z808 = new Z808(pathArquivo); // chamar Z808
+                //Z808 z808 = new Z808(pathArquivo); // chamar Z808
+                JanelaZ808 sistema = new JanelaZ808(pathArquivo);
+                sistema.setVisible(true);
                 this.dispose();
             }
         }    

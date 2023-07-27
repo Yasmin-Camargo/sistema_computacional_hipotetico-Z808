@@ -24,7 +24,10 @@ public class Memoria {
         
         if (tamanhoCodigo > TAM_MAXIMO){
             JOptionPane.showMessageDialog(
-                    null, "O programa excedeu a capacidade de armazenamento.", "ERRO", JOptionPane.ERROR
+                null, 
+                "O programa excedeu a capacidade de armazenamento.", 
+                "ERRO", 
+                JOptionPane.ERROR_MESSAGE
             );
             exit(0);
         } else {
@@ -65,7 +68,12 @@ public class Memoria {
         if (endereco <= DS){
             return codigo_dados_pilha[endereco];
         } else{
-            System.err.println("O endereco fornecido esta fora da area de codigo");
+            JOptionPane.showMessageDialog(
+                null, 
+                "O endereço fornecido esta fora da área de código.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
+            );
             return -1;
         }
     }
@@ -75,7 +83,12 @@ public class Memoria {
         if (endereco >= DS && endereco < SP){
             return codigo_dados_pilha[endereco];
         } else{
-            System.err.println("O endereco fornecido esta fora da area de dados");
+            JOptionPane.showMessageDialog(
+                null, 
+                "O endereço fornecido esta fora da área de dados.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
+            );
             return -1;
         }
     }
@@ -84,7 +97,12 @@ public class Memoria {
         if (endereco < DS){
             codigo_dados_pilha[endereco] = valor;
         } else{
-            System.err.println("!!! Não é possivel armazenar uma instrução fora da area de codigo");
+            JOptionPane.showMessageDialog(
+                null, 
+                "Não é possível armazenar uma instrução fora da área de código.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
     
@@ -100,7 +118,10 @@ public class Memoria {
         }
         if (flag == 0){
             JOptionPane.showMessageDialog(
-                    null, "A area de dados excedeu a capacidade de armazenamento.", "ERRO", JOptionPane.ERROR
+                null, 
+                "A área de dados excedeu a capacidade de armazenamento.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
             );
         }
     }
@@ -112,7 +133,10 @@ public class Memoria {
             codigo_dados_pilha[endereco] = valor;
         } else{
             JOptionPane.showMessageDialog(
-                    null, "Endereco fornecido esta fora da area de dados.", "ERRO", JOptionPane.ERROR
+                null, 
+                "Endereço fornecido esta fora da área de dados.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
             );
             
         }
@@ -128,7 +152,10 @@ public class Memoria {
             codigo_dados_pilha[SP] = valor;
         } else {
             JOptionPane.showMessageDialog(
-                    null, "Pilha atingiu a capacidade máxima.", "ERRO", JOptionPane.ERROR
+                    null, 
+                    "Pilha atingiu a capacidade máxima.", 
+                    "ERRO!", 
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }
@@ -136,7 +163,10 @@ public class Memoria {
         int valor = 0;
         if ((SP + 1) > SS){
             JOptionPane.showMessageDialog(
-                    null, "Não existem elementos para serem removidos da pilha.", "ERRO", JOptionPane.ERROR
+                null, 
+                "Não existem elementos para serem removidos da pilha.", 
+                "ERRO!", 
+                JOptionPane.ERROR_MESSAGE
             );
             return 0;
         } else if ((SP + 1) == SS){
@@ -151,7 +181,7 @@ public class Memoria {
         }
     }
     
-    
+    /*
     //Função para ver funcionamento
     public Object[][] printAreaCodigo(){
         System.out.println("\nMEMORIA AREA DE CODIGO: ");
@@ -202,5 +232,11 @@ public class Memoria {
         System.out.println("");
         return data;
     }
+    */
+    
+    public int[] getDadosMemoria() {
+        return codigo_dados_pilha;
+    }
+    
 }
 

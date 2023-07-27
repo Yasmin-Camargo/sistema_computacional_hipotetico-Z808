@@ -12,6 +12,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
@@ -23,26 +24,27 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 
-/**
- *
- * @author Claudio & Duda & Júlia Veiga & Júlia Junqueira
- */
 public class JanelaZ808 extends JFrame{
     
     private final int TAM_MAX_TABELAS = 1000;
+    Z808 sistema;
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
-    private JLabel labelSaida;
-    private JTextArea areaSaida;
+    private JTextArea areaInstr, areaSaida;
+    private JButton btnCarregarInstr, btnExecutar, btnResetar, btnPasso;
+    int[] dadosMemoria;
     
     Container container;
     private GridBagConstraints gbc;
     
     @SuppressWarnings("empty-statement")
-    public JanelaZ808(String pathArquivo){ 
+    public JanelaZ808(String pathArquivo) throws IOException { 
+        sistema = new Z808(pathArquivo);
+        
         // janela
         setTitle("Z808 Emulator");
         setSize(800, 600);
@@ -59,9 +61,9 @@ public class JanelaZ808 extends JFrame{
         
         criarPainelArquivo(pathArquivo); // cria painel superior com localização do arquivo
         criarRegistradores(); // cria JTextFields dos registradores
-        // tabelas são criadas por chamadas em Z808.java
-        criarPanelSaida(); // cria painel que mostra infos
+        criarTextAreas();
         criarBotoes(); // cria botões na parte inferior
+        btnCarregarInstr();
     }
     
     private void criarPainelArquivo(String pathArquivo) {
@@ -272,7 +274,151 @@ public class JanelaZ808 extends JFrame{
         fieldRegFlagOF.setText(""+regSR[12]);
     }
     
-    public void criarTabelaCodigo(Object[][] data) {
+    
+    private void criarTextAreas() {
+        JPanel panelInstr = criarTextArea(areaInstr, "INSTRUCTIONS");
+        pack();
+        JScrollPane scroll = (JScrollPane) panelInstr.getComponent(1);
+        JViewport viewport = scroll.getViewport(); 
+        areaInstr = (JTextArea) viewport.getView();
+        
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(15, 5, 15, 5);
+        container.add( panelInstr, gbc);
+
+        JPanel panelSaida = criarTextArea(areaSaida, "OUTPUT");
+        scroll = (JScrollPane) panelSaida.getComponent(1);
+        viewport = scroll.getViewport(); 
+        areaSaida = (JTextArea) viewport.getView();
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(15, 5, 15, 5);
+        container.add( panelSaida, gbc);
+    }
+    
+    private JPanel criarTextArea(JTextArea area, String title) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(5, 0, 5, 0);
+        JLabel label = new JLabel(title);
+        panel.add(label, gbc);
+        
+        area = new JTextArea();
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setFont(new Font("Monospaced", 0, 10));
+        area.setEditable(false);
+        area.setMinimumSize(new Dimension(250, 100));
+        area.setSize(250, 100);
+       // area.setPreferredSize(new Dimension(250, 1000));
+        
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setMinimumSize(new Dimension(270, 50));
+        scroll.setMaximumSize(new Dimension(270, 50));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 2;
+        gbc.gridwidth = 2;
+        panel.add(scroll, gbc);   
+        
+        return panel;
+    }
+    
+    public void resetarInstr() {
+        areaInstr.setText("");
+    }
+    
+    public void atualizarInstr(String novoTexto) {
+        areaInstr.append(novoTexto+"\n");
+    }
+    
+    public void resetarSaida() {
+        areaSaida.setText("");
+    }
+    
+    public void atualizarSaida(String novoTexto) {
+        areaSaida.append(novoTexto);
+    }
+    
+    private void criarBotoes() {
+        JPanel panelBotoes = new JPanel(new GridBagLayout());
+        
+        btnCarregarInstr = new JButton("load");
+        btnCarregarInstr.addActionListener((ActionEvent e) -> {
+            btnCarregarInstr();
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        panelBotoes.add(btnCarregarInstr, gbc);
+        
+        btnPasso = new JButton("step");
+        btnPasso.setEnabled(false);
+        btnPasso.addActionListener((ActionEvent e) -> {
+            btnPasso();
+        });
+        gbc.gridx = 1;
+        panelBotoes.add(btnPasso, gbc);
+        
+        btnExecutar = new JButton("execute");
+        btnExecutar.setEnabled(false);
+        btnExecutar.addActionListener((ActionEvent e) -> {
+            btnExecutar();
+        });
+        gbc.gridx = 2;
+        panelBotoes.add(btnExecutar, gbc);
+        
+        btnResetar = new JButton("reset");
+        btnResetar.setEnabled(false);
+        btnResetar.addActionListener((ActionEvent e) -> {
+            btnResetar();
+        });
+        gbc.gridx = 3;
+        panelBotoes.add(btnResetar, gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 2;
+        container.add(panelBotoes, gbc);
+    }
+    
+    private void btnCarregarInstr() {
+        int[] memoria = sistema.carregar_instrucoes();  
+        int DS = sistema.getDSMemoria();
+        
+        String codigo[][] = new String[DS][2];
+        int i;
+        for (i = 0; i < DS; ++i) {
+            codigo[i] = new String[] {"["+i+"]", ""+memoria[i]};
+        }
+        
+        criarTabelaCodigo(codigo);
+        atualizarMemoriaDados(memoria);
+        atualizarMemoriaPilha(memoria);
+        atualizarRegistradores(sistema.getRegistrador());
+        
+        btnCarregarInstr.setEnabled(false);
+        btnPasso.setEnabled(true);
+        btnExecutar.setEnabled(true);
+        
+        this.setVisible(true);
+    }
+    public void criarTabelaCodigo(String[][] data) {
         JPanel panelTabela = criarTabela(data, " CODE  AREA  MEMORY ");
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -282,14 +428,20 @@ public class JanelaZ808 extends JFrame{
         container.add( panelTabela, gbc);
     }
     
-    public void criarTabelaDados(Object[][] data, int tamCod) {        
-        Object[][] aux;
-        if (Array.getLength(data) > TAM_MAX_TABELAS) 
-            aux = Arrays.copyOfRange(data, tamCod, 1000+tamCod);
-        else
-            aux = data;
-        
-        JPanel panelTabela = criarTabela(aux, " DATA  AREA  MEMORY ");
+    public void atualizarMemoriaDados(int[] memoria) {
+        int DS = sistema.getDSMemoria();
+        //int tamMaxMemoria = Memoria.TAM_MAXIMO;
+        String dados[][] = new String[TAM_MAX_TABELAS][2];
+        int i = DS;
+        for(; i < TAM_MAX_TABELAS; ++i) {
+            if (memoria[i] != -1)
+                dados[i-DS] = new String[] {"["+i+"]", ""+memoria[i]};
+            else 
+                if(i-DS < TAM_MAX_TABELAS)
+                    dados[i-DS] = new String[] {"["+i+"]", "null"};
+        }
+        //criarTabelaDados(dados);
+        JPanel panelTabela = criarTabela(dados, " DATA  AREA  MEMORY ");
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
@@ -298,35 +450,34 @@ public class JanelaZ808 extends JFrame{
         container.add( panelTabela, gbc);
     }
     
-    public void criarTabelaPilha(Object[][] data) {
-        Object[][] aux;
-        if (Array.getLength(data) > TAM_MAX_TABELAS) {
-            aux = Arrays.copyOfRange(data, Memoria.TAM_MAXIMO - TAM_MAX_TABELAS, Memoria.TAM_MAXIMO);
-            aux = reverterVetor(aux);
-        }
-        else {
-            aux = reverterVetor(data);
-        }
+    public void atualizarMemoriaPilha(int[] memoria) {
+        int DS = sistema.getDSMemoria();
+        int tamMaxMemoria = Memoria.TAM_MAXIMO;
+        int i = tamMaxMemoria;
+        String pilha[][] = new String[TAM_MAX_TABELAS][2];
+        try {
+            for(i = tamMaxMemoria; i > DS; --i) {
+                if (memoria[i-1] != -1)
+                    pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", ""+memoria[i-1]};
+                else
+                    if (tamMaxMemoria-i < TAM_MAX_TABELAS)
+                        pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", "null"};     
+            }            
         
-        // MUDAR PARA CRIARTABELA(DATA) CASO QUEIRA TODAS AS LINHAS
-        JPanel panelTabela = criarTabela(aux, " STACK  MEMORY ");
+        
+        
+         //criarTabelaPilha(pilha);
+        JPanel panelTabela = criarTabela(pilha, " STACK  MEMORY ");
         gbc.gridx = 3;
         gbc.gridy = 1;
-        //gbc.fill = GridBagConstraints.BOTH;
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelTabela, gbc);
-    }
-    
-    private Object[][] reverterVetor(Object[][] data) {
-        Object aux[];
-        int tamanho = Array.getLength(data) - 1;
-        for (int i = 0; i < Math.floor(tamanho/2); i++) {
-            aux = data[i];
-            data[i] = data[tamanho - i];
-            data[tamanho - i] = aux;
         }
-        return data;
+        catch (Exception e) {
+            System.out.println("pilha: "+ tamMaxMemoria + " " + i + " " + (tamMaxMemoria-i) + " " + (pilha[tamMaxMemoria-i][0]) + " " + pilha[tamMaxMemoria-i][1]);
+            System.out.println(e.getMessage());
+        }
     }
     
     private JPanel criarTabela(Object[][] data, String nomeTabela) {
@@ -360,103 +511,32 @@ public class JanelaZ808 extends JFrame{
         return panelTabela;
     }
     
-    // a intenção era atualizar a memória conforme as instruções rodam
-    // mas acho que tem uma função que tu seta de X a Y
-    // e ele remove esses itens
-    // mas pensando agora, a memória pode atualizar em qualquer lugar
-    // então talvez seja necessário
-    //public void atualizarMemCodigo(Object[][] data) {
-        //tableMemCod.repaint();  
-    //}
-    
-    // TALVEZ CRIAR UMA FUNÇÃO DE UPDATE!!!
-    // VERIFICA O QUE FOI MUDADO
-    // E ATUALIZA APENAS O QUE FOI MUDADO
-    
-    private void criarPanelInstrucoes() {
-        JPanel panelInstr = new JPanel();
-        panelInstr.setLayout(new GridBagLayout());
-        //panelInstr.setSize(new Dimension)
+    private void btnPasso() {
+        System.out.print("PASSO -- ");
+        String[] retorno = sistema.executar_passo();
+        atualizarInstr(retorno[0]);
+        atualizarSaida(retorno[1]);
+        if (retorno[2].equals("1")) {
+            System.out.print("--atualizando tabelas");
+            dadosMemoria = sistema.getDadosMemoria();
+            atualizarMemoriaDados(dadosMemoria);
+            //atualizarMemoriaPilha(dadosMemoria);
+            // TO COM ERRO AQUI
+            // FAVOR NÃO DESCOMENTAR
+        }
+        this.setVisible(true);
     }
     
-    private void criarPanelSaida() {
-        JPanel panelSaida = new JPanel();
-        panelSaida.setLayout(new GridBagLayout());
-        //panelSaida.setSize(new Dimension(200, 400));
-        
-        JLabel labelSaidaTitulo = new JLabel("OUTPUT:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 4;
-        
-        panelSaida.add(labelSaidaTitulo, gbc);
-        panelSaida.setPreferredSize(new Dimension(500, 200));
-        
-        areaSaida = new JTextArea();
-        areaSaida.setLineWrap(true);
-        areaSaida.setWrapStyleWord(true);
-        areaSaida.setFont(new Font("Monospaced", 0, 10));
-        areaSaida.setEditable(false);
-        areaSaida.setSize(new Dimension(800, 50));        
-       
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 4;
-        panelSaida.add(areaSaida, gbc);        
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 4;
-        gbc.insets = new Insets(15, 5, 5, 5);
-        container.add( panelSaida, gbc);
-    }
-    
-    public void resetarSaida() {
-        areaSaida.setText("");
-    }
-    
-    public void atualizarSaida(String novoTexto) {
-        //labelSaida.setText(labelSaida.getText() + "; " + novoTexto);
-        areaSaida.append(novoTexto + '\n');
-    }
-    
-    private void criarBotoes() {
-        JPanel panelBotoes = new JPanel(new GridBagLayout());
-        
-        JButton btnIniciar = new JButton("start");
-        btnIniciar.addActionListener((ActionEvent e) -> {
-            btnIniciar();
-        });
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        panelBotoes.add(btnIniciar, gbc);
-        
-        JButton btnResetar = new JButton("reset");
-        btnResetar.addActionListener((ActionEvent e) -> {
-            btnResetar();
-        });
-        gbc.gridx = 3;
-        panelBotoes.add(btnResetar, gbc);
-        
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 2;
-        container.add(panelBotoes, gbc);
-    }
-    
-    private void btnIniciar() {
-        System.out.println("INICIAR -- Programa sera executado.");
+    private void btnExecutar() {
+        System.out.println("EXECUTAR");
+        String[] retorno = sistema.executar_codigo();
+        atualizarInstr(retorno[0]);
+        atualizarSaida(retorno[1]);
+        this.setVisible(true);
     }
     
      private void btnResetar() {
         System.out.println("RESETAR -- Programa sera resetado para seu estado inicial.");
+        this.setVisible(true);
     } 
 }
