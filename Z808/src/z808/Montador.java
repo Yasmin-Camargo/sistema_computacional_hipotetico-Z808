@@ -7,6 +7,9 @@
 // 2) para indicar que é o modo de endereçamento direto (passar um endereço) usar "[]"
 //      ex.: add AX, [20]
 
+// 3) para fazer um comentário usar ";"
+//      ex.: add AX, [20]
+
 
 package z808;
 
@@ -24,9 +27,9 @@ public class Montador {
     private int PC; // contador de endereços
     
     public Montador(String caminho_arquivo) throws IOException{
-        tabelaSimbolos = new HashMap<>(); 
-        int LC = 0; 
-        int PC = 0; 
+        this.tabelaSimbolos = new HashMap<>(); 
+        this.LC = 0; 
+        this.PC = 0; 
         
         segundoPasso(primeiroPasso(caminho_arquivo));
     }
@@ -48,6 +51,7 @@ public class Montador {
         String linha = null;
         // Faz leitura do arquivo por linha
         while ((linha = arquivo.readLine()) != null){ 
+            linha = linha.split(";")[0];
             String[] linhaSeparada = linha.split("\\p{Zs}+"); // Separa o conteúdo da linha (indepedente do tamanho do espaço)
             textScanned[LC][1] = String.valueOf(PC);             // coloca na matriz do código em qual enedereço esta
             
@@ -124,7 +128,11 @@ public class Montador {
                 default:    // Caso 2: tem uma label antes da instrução
                     textScanned[LC][2] = linhaSeparada[0];                         // coloca na matriz o código a label identificada
                     textScanned[LC][3] = linhaSeparada[1];                         // coloca na matriz o código a operação
-                   
+                    
+                    if (!tabelaSimbolos.containsKey(linhaSeparada[0])){   // verifica se rotulo já esta na tabela de simbolos
+                        tabelaSimbolos.put(linhaSeparada[0], PC);
+                    }
+                    
                     if (linhaSeparada.length == 2){ // instrução não tem nenhum operando
                         textScanned[LC][4] = "";  
                         textScanned[LC][5] = "";
@@ -154,10 +162,7 @@ public class Montador {
                             PC += 2;
                         }
                     }
-                    
-                    if (!tabelaSimbolos.containsKey(linhaSeparada[0])){   // verifica se rotulo já esta na tabela de simbolos
-                        tabelaSimbolos.put(linhaSeparada[0], LC);
-                    }
+                   
                 break;
             }
             textScanned[LC][0]  = String.valueOf(LC);   // coloca num linhas
