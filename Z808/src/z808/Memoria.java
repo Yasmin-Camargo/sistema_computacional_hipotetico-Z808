@@ -238,5 +238,36 @@ public class Memoria {
         return codigo_dados_pilha;
     }
     
+    
+    
+    // TESTES: DEPOIS RETIRAR
+    //Função para ver funcionamento
+    public void print(){
+        System.out.println("\nMEMORIA AREA DE CODIGO: ");
+        int i;
+        for (i = 0; i < DS; i++) {
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+        }  
+        
+        System.out.println("\n\nMEMORIA AREA DE DADOS: ");
+        Object[][] data = new Object[TAM_MAXIMO][2];
+        
+        for(i = DS; i < TAM_MAXIMO; i++){
+            if (codigo_dados_pilha[i] == -1){
+                break;
+            }
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+        }
+      
+        System.out.println("\n\nMEMORIA PILHA:");
+        for(i = TAM_MAXIMO - 1; i > DS; i--){
+            if (codigo_dados_pilha[i] == -1){
+                //System.out.println("break");
+                break;
+            }
+            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
+        }
+        
+        System.out.println("");
+    } 
 }
-

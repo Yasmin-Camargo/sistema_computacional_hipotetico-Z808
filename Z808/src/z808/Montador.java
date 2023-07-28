@@ -78,7 +78,7 @@ public class Montador {
                 case "store":
                 case "read":
                 case "write":
-                case "mov":
+                case "move":
 
                 // Diretivas
                 case "END":
@@ -186,7 +186,7 @@ public class Montador {
         
         // Print da tabela de símbolos
         for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + ":  " + tabelaSimbolos.get(chave));
+            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
         }
         
         return textScanned;
@@ -208,9 +208,11 @@ public class Montador {
                         if (flag_terminouInstrucoes == 0){
                             flag_terminouInstrucoes = 1;
                             bufferedWriter.write("EE");
-                            bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][2])));
+                        } else{
+                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][2])));
                         }
-                        bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
+                        
                     break;
                     case "add":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -436,7 +438,7 @@ public class Montador {
                             bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                         }
                     break;
-                    case "mov":                                   
+                    case "move":                                   
                         if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
                             bufferedWriter.write("16C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label

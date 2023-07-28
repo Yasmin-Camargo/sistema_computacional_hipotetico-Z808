@@ -7,7 +7,6 @@ package z808;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import javax.swing.JOptionPane;
 
 /*
@@ -39,7 +38,7 @@ public class Z808 {
         // TESTE MONTADOR
         System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
         Montador novoMontador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
-        //this.caminho_arquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
+        this.caminho_arquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
         //----------------------------
         
         System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
@@ -68,7 +67,7 @@ public class Z808 {
         return memoria.getDadosMemoria();
     }
     
-    public String[] executar_passo() {       
+    public String[] executar_passo() {
         flag_att_tabelas = 0;
         String instrucao = "", saida = "";
         flag_jump = 0;
@@ -93,7 +92,7 @@ public class Z808 {
             case 5: // add AX, opd  (direto)
                 instrucao = "add AX,opd (direto)";  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRBM(), registrador));
                 break;
@@ -118,7 +117,7 @@ public class Z808 {
             case 45: // sub AX,opd  (direto)
                 instrucao = "sub AX,opd (direto)";  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRBM(), registrador));  
                 break;
@@ -148,8 +147,7 @@ public class Z808 {
             case 61: // cmp AX,opd (direto)
                 instrucao = "cmp AX,opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 Instrucoes.cmp(registrador.getRBM(), registrador);
                 break;
@@ -183,7 +181,7 @@ public class Z808 {
             case 37: // and AX,opd (direto)
                 instrucao = "and AX,opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.and(registrador.getAX(), registrador.getRBM(), registrador));  
                 break;               
@@ -208,7 +206,7 @@ public class Z808 {
             case 13: // or AX,opd (direto)
                 instrucao = "or AX,opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.or(registrador.getAX(), registrador.getRBM(), registrador));  
                 break;
@@ -243,7 +241,7 @@ public class Z808 {
             case 53: // xor AX,opd (direto)
                 instrucao = "xor AX,opd (direto)";
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.xor(registrador.getAX(), registrador.getRBM(), registrador)); 
                 break;
@@ -252,32 +250,32 @@ public class Z808 {
             case 235: // jmp opd (direto)       
                 instrucao = "jmp opd (direto)";
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
-                registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jmp(registrador.getRBM(), registrador, memoria);
                 break;
 
             case 116: // jz opd (direto)
                 instrucao = "jz opd (direto)";    
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
-                registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jz(registrador.getRBM(), registrador, memoria);
                 break;
 
             case 117: // jnz opd (direto)
                 instrucao = "jnz opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
-                registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jnz(registrador.getRBM(), registrador, memoria);
                 break;
 
             case 122: // jp opd (direto)
                 instrucao = "jp opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
-                registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jp(registrador.getRBM(), registrador, memoria);
                 break;
 
@@ -293,7 +291,7 @@ public class Z808 {
             case 231: // call opd (direto)
                 instrucao = "jp opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereço (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 memoria.push_pilha(registrador.getIP());
                 registrador.setIP(registrador.getRBM());
@@ -368,54 +366,21 @@ public class Z808 {
             case 18: // read opd (imediato)
                 instrucao = "read opd (imediato)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                String aux1 = "";
-                    while (aux1.equals("")) {
-                        aux1 = JOptionPane.showInputDialog(
-                            "Em qual endereço você deseja armazenar o valor "
-                            + registrador.getRI()+"? "
-                        );
-                    }
-                    int endereco;
-                    try {
-                        endereco = Integer.parseInt(aux1);
-                    }
-                    catch (NumberFormatException e){
-                        endereco = memoria.getInicioSegmentoDados();
-                        JOptionPane.showMessageDialog(
-                            null, 
-                            "O valor inserido não é um número. Valor " + endereco + " foi atribuido.", 
-                            "ERRO!",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-                memoria.escreverDados(registrador.getRI(), endereco);
+                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
+
+                //int endereco_armazenado = Null;
+                //instrucao = endereco_armazenado);
+                int endereco_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Em qual endereço de memória você \ndeseja armazenar o valor "+registrador.getRI()+"? \n"));
+                memoria.escreverDados(registrador.getRI(), endereco_armazenado);
                 flag_att_tabelas = 1;
                 break;
 
             case 19: // read opd (direto)
                 instrucao = "read opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                String aux2 = "";
-                    while (aux2.equals("")) {
-                        aux2 = JOptionPane.showInputDialog(
-                            "Qual valor você deseja armazenar no endereço de memória "
-                            + registrador.getRI()+"? "
-                        );
-                    }
-                    int valor;
-                    try {
-                        valor = Integer.parseInt(aux2);
-                    }
-                    catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(
-                            null, 
-                            "O valor inserido não é um número. Valor 1 foi atribuido.", 
-                            "ERRO!",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                        valor = 1;
-                    }       
-                memoria.escreverDados(valor, registrador.getRI());
+                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
+                int valor_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Qual valor você deseja armazenar \n no endereço de memória "+registrador.getRI()+"? \n"));
+                memoria.escreverDados(valor_armazenado, registrador.getRI());
                 flag_att_tabelas = 1;
                 break;
 
@@ -437,17 +402,17 @@ public class Z808 {
                 //gui.atualizarSaida("dataAreaMemory[" + (memoria.getDS() + registrador.getREM()) + "] = " + registrador.getRBM());
                 break;
 
-            case 21:    // move AX,opd (direto)
-                instrucao = "move AX,opd (direto)";  
+            case 20:    // move AX,opd (imediato)
+                instrucao = "move AX,opd (imediato)";  
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(registrador.getRI());
                 break;   
 
-            case 20:    // move AX,opd (imediato)
+            case 21:    // move AX,opd (direto)
                 instrucao = "move AX,opd (direto)";  
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do operando (16 bits)
-                registrador.setREM(registrador.getCL()); // Coloca endereço no registrador de endereço de memória
-                registrador.setRBM(memoria.lerCodigo(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
+                registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
+                registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(registrador.getRBM());
                 break;
 
