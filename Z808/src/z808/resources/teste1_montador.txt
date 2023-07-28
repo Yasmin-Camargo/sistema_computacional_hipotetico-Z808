@@ -1,9 +1,19 @@
-add AX,8;       armazena na memoria endereco para onde quer pular
-store AX    
-read [1];       pede um valor para o usuário
-move AX,[1];    coloca no registrador AX
-sub AX,1;       decrementa 
-store AX;       armazena na proxima posição de memória da area de dados
-jp [0];         pula de volta para o sub enquanto AX não for 0
-push AX;        coloca na pilha resultado de AX
-write 1;        mostra valor que o usuario tinha digitado
+add AX,DX
+add AX,AX
+add AX,10
+add AX,[4]
+add AX,label
+sub AX,DX
+sub AX,AX
+sub AX,10
+sub AX,[4]
+sub AX,label2
+mul AX,SI
+not AX
+push AX
+store AX
+store DX
+read [2]
+write 2
+label equ 5
+label2 equ 99

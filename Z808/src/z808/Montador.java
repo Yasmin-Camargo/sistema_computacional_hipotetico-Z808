@@ -78,7 +78,7 @@ public class Montador {
                 case "store":
                 case "read":
                 case "write":
-                case "move":
+                case "mov":
 
                 // Diretivas
                 case "END":
@@ -186,7 +186,7 @@ public class Montador {
         
         // Print da tabela de símbolos
         for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
+            System.out.println(chave + ":  " + tabelaSimbolos.get(chave));
         }
         
         return textScanned;
@@ -436,7 +436,7 @@ public class Montador {
                             bufferedWriter.write(formataPara16Bits(textScanned[i][4]));
                         }
                     break;
-                    case "move":                                   
+                    case "mov":                                   
                         if (textScanned[i][5].equals("DX")){ // endereçamento via registrador DX
                             bufferedWriter.write("16C2");
                         } else if (tabelaSimbolos.containsKey(textScanned[i][5])){  // é uma label
