@@ -106,8 +106,8 @@ public class Instrucoes {
     // --> Instruções de desvio
     public static int jmp(int endereco, Registradores registrador, Memoria memoria){
         if (endereco >= memoria.getCS() && endereco <= memoria.getDS()) {
-            registrador.setCL(endereco);                    // atualiza indice da memória para a informada no devio
-            registrador.setRI(memoria.lerDados(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
+            registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
             registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima           
             return 1;
         } else {
@@ -118,41 +118,38 @@ public class Instrucoes {
     
     public static int jz(int endereco, Registradores registrador, Memoria memoria){
         if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("zf") == 1) {
-            registrador.setCL(endereco);                    // atualiza indice da memória para a informada no devio
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
             registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
             registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima                 
             return 1;
-        } else if (!(endereco >= memoria.getCS() && endereco <= memoria.getDS())){
+        } else {
             System.err.println("Endereco de destino invalido.");
             return 0;
         }
-        return 1;
     }
      
     public static int jnz(int endereco, Registradores registrador, Memoria memoria){
        if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("zf") != 1) {
-            registrador.setCL(endereco);                    // atualiza indice da memória para a informada no devio
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
             registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
             registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima         
             return 1;
-        } else if (!(endereco >= memoria.getCS() && endereco <= memoria.getDS())){
+        } else {
             System.err.println("Endereco de destino invalido.");
             return 0;
         }
-       return 1;
     }
     
     public static int jp(int endereco, Registradores registrador, Memoria memoria){
         if (endereco >= memoria.getCS() && endereco <= memoria.getDS() && registrador.getSR("sf") == 0) {
-            registrador.setCL(endereco);                    // atualiza indice da memória para a informada no devio
+            registrador.setCL(memoria.lerDados(endereco));                    // atualiza indice da memória para a informada no devio
             registrador.setRI(memoria.lerCodigo(registrador.getCL())); // coloca o conteudo dessa posição (código da instrução) no registrador
             registrador.setIP(registrador.getCL() + 1);                         // atualiza apontador da próxima        
             return 1;
-        } else if (!(endereco >= memoria.getCS() && endereco <= memoria.getDS())){
+        } else {
             System.err.println("Endereco de destino invalido.");
             return 0;
         }
-        return 0;
     }
     
     // --> Instruções de acesso a memória
