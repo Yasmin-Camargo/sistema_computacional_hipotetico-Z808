@@ -7,3 +7,4 @@ jp while;       pula de volta para o sub enquanto AX não for 0
 move AX,cinco   coloca o valor 5 em AX (usando constante)
 push AX;        coloca na pilha resultado de AX 
 cinco equ 5;    define a constante
+end

@@ -10,7 +10,8 @@
 // 3) para fazer um comentário usar ";"
 //      ex.: add AX, [20]
 
-// 4) EQU é constante então não vai para memória, já as labels que aparecem antes da instrução vão para memória
+// 4) diretiva EQU é constante então não vai para memória, já as labels que aparecem antes da instrução vão para memória
+// 5) colocar diretiva END no final do programa para indicar fim de execução
 
 package z808;
 
@@ -83,17 +84,8 @@ public class Montador {
                 case "move":
 
                 // Diretivas
-                case "END":
-                case "SEGMENT":
-                case "ENDS":
-                case "DW":
-                case "DUP":
-                case "EQU":
-                case "ORG":
-                case "OFFSET":
-                case "ASSUME":
-                case "PROC":
-                case "ENDP":
+                case "end":
+                case "equ":
 
                 //outros
                 case "Dados":
@@ -392,7 +384,8 @@ public class Montador {
                         bufferedWriter.write("EF");
                         contadorInstrucao += 1;
                     break;
-                    case "hlt":                                   
+                    case "end": 
+                    case "hlt": 
                         bufferedWriter.write("EE");
                         contadorInstrucao += 1;
                     break;
