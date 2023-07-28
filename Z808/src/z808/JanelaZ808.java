@@ -351,7 +351,8 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void atualizarSaida(String novoTexto) {
-        areaSaida.append(novoTexto);
+        if (!novoTexto.equals(""))
+            areaSaida.append(novoTexto+"\n");
     }
     
     private void criarBotoes() {
@@ -454,16 +455,29 @@ public class JanelaZ808 extends JFrame{
     public void atualizarMemoriaPilha(int[] memoria) {
         int DS = sistema.getDSMemoria();
         int tamMaxMemoria = Memoria.TAM_MAXIMO;
+        int aux[] = new int[TAM_MAX_TABELAS];
+        aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
+        
+        
         int i = tamMaxMemoria;
         String pilha[][] = new String[TAM_MAX_TABELAS][2];
-        try {
+        //try {
+            for (i = 0; i < TAM_MAX_TABELAS; ++i) {
+                if (aux[TAM_MAX_TABELAS-1] != -1)
+                    pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", ""+aux[TAM_MAX_TABELAS-1-i]};
+                else
+                    pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", "null"};
+            }
+            
+            /*
             for(i = tamMaxMemoria; i > DS; --i) {
                 if (memoria[i-1] != -1)
                     pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", ""+memoria[i-1]};
                 else
                     if (tamMaxMemoria-i < TAM_MAX_TABELAS)
                         pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", "null"};     
-            }            
+            }  
+        */
         
         JPanel panelTabela = criarTabela(pilha, " STACK  MEMORY ");
         gbc.gridx = 3;
@@ -471,11 +485,11 @@ public class JanelaZ808 extends JFrame{
         gbc.gridheight = 3;
         gbc.gridwidth = 1;
         container.add( panelTabela, gbc);
-        }
+        /*}
         catch (Exception e) {
             System.out.println("pilha: "+ tamMaxMemoria + " " + i + " " + (tamMaxMemoria-i) + " " + (pilha[tamMaxMemoria-i][0]) + " " + pilha[tamMaxMemoria-i][1]);
             System.out.println(e.getMessage());
-        }
+        }*/
     }
     
     private JPanel criarTabela(Object[][] data, String nomeTabela) {
@@ -520,7 +534,7 @@ public class JanelaZ808 extends JFrame{
                 System.out.println("\t--atualizando tabelas");
                 dadosMemoria = sistema.getDadosMemoria();
                 atualizarMemoriaDados(dadosMemoria);
-                //atualizarMemoriaPilha(dadosMemoria);
+                atualizarMemoriaPilha(dadosMemoria);
                 // TO COM ERRO AQUI
                 // FAVOR NÃO DESCOMENTAR
             }
@@ -544,7 +558,7 @@ public class JanelaZ808 extends JFrame{
             chegouAoFim = 1;
             dadosMemoria = sistema.getDadosMemoria();
             atualizarMemoriaDados(dadosMemoria);
-            //atualizarMemoriaPilha(dadosMemoria);
+            atualizarMemoriaPilha(dadosMemoria);
             btnPasso.setEnabled(false);
             btnExecutar.setEnabled(false);
             this.setVisible(true);
