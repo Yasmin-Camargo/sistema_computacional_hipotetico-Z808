@@ -25,6 +25,7 @@ public class Z808 {
     String caminho_arquivo;
     Registradores registrador;
     Memoria memoria;
+    Montador novoMontador;
     int tam_area_instrucoes, flag_jump, flag_att_tabelas;
     
     public Z808(String caminho_arquivo) throws IOException {
@@ -37,7 +38,7 @@ public class Z808 {
     public void iniciarZ808() throws IOException {
         // TESTE MONTADOR
         System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
-        Montador novoMontador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
+        novoMontador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
         this.caminho_arquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
         //----------------------------
         
@@ -50,7 +51,7 @@ public class Z808 {
         tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
         flag_jump = 0;
         
-        memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
+        memoria = new Memoria(tam_area_instrucoes,novoMontador.getDadosParaArmazenar()); // cria memória com o espaco para as instruções já definido
         armazena_instrucoes(caminho_arquivo, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
@@ -499,6 +500,8 @@ public class Z808 {
                     retorno[1] += (aux[1] + "\n");
             }
         }
+        
+        memoria.print();
         return retorno;
     }
     

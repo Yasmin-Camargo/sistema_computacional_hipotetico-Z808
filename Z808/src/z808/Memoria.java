@@ -5,6 +5,7 @@
 package z808;
 
 import static java.lang.System.exit;
+import java.util.Map;
 import javax.swing.JOptionPane;
 
 public class Memoria {
@@ -19,7 +20,7 @@ public class Memoria {
     private int SP; // Registrador SP -> armazena o endereço atual da pilha
     private int SS; // Registrador SS -> aponta para o início do segmento de pilha na memória
 
-    public Memoria (int tamanhoCodigo) {
+    public Memoria (int tamanhoCodigo, Map<Integer, Integer>  dados) {
         tamanhoCodigo -= 1;
         codigo_dados_pilha = new int[TAM_MAXIMO];
         
@@ -42,6 +43,7 @@ public class Memoria {
         for (int i = DS; i <= SP; i++){    
             codigo_dados_pilha[i] = -1;
         }
+        armazenaDadosMontador(dados);
     }
     
     // Métodos para obter o tamanho dos segmentos de memória
@@ -179,6 +181,12 @@ public class Memoria {
             valor = codigo_dados_pilha[SP];
             codigo_dados_pilha[SP] = -1;
             return valor;
+        }
+    }
+    
+    private void armazenaDadosMontador(Map<Integer, Integer> dados){
+        for (Integer chave : dados.keySet()) {
+            codigo_dados_pilha[chave] = dados.get(chave);
         }
     }
     

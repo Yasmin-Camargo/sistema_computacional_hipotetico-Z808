@@ -25,6 +25,7 @@ public class Montador {
     private Map<String, Integer> tabelaSimbolos;    // tabela de simbolos
     private int LC; // contador de linha
     private int PC; // contador de endereços
+    private Map<Integer, Integer> dadoParaArmazenar;    // local para aramzenar dados que irão para memória de dados
     
     public Montador(String caminho_arquivo) throws IOException{
         this.tabelaSimbolos = new HashMap<>(); 
@@ -195,7 +196,7 @@ public class Montador {
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
         String nomeArquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
-        Map<Integer, Integer> dadoParaArmazenar = new HashMap<>() ; 
+        dadoParaArmazenar = new HashMap<>() ; 
         
         int flag_terminouInstrucoes = 0;
 
@@ -501,5 +502,9 @@ public class Montador {
             novo_operando = "0000";
         }
         return novo_operando;
+    }
+    
+    public Map<Integer, Integer> getDadosParaArmazenar(){
+        return dadoParaArmazenar;
     }
 }

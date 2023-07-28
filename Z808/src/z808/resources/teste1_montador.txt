@@ -7,3 +7,5 @@ store AX;       armazena na proxima posição de memória da area de dados
 jp [0];         pula de volta para o sub enquanto AX não for 0
 push AX;        coloca na pilha resultado de AX (espera-se ter 0)
 write 1;        mostra valor que o usuario tinha digitado
+labelA equ 88
+labelB equ 99
