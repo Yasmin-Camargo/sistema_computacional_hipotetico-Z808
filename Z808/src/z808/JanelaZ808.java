@@ -37,6 +37,7 @@ public class JanelaZ808 extends JFrame{
     private JTextArea areaInstr, areaSaida;
     private JButton btnCarregarInstr, btnExecutar, btnResetar, btnPasso;
     int[] dadosMemoria;
+    int chegouAoFim = 0;
     
     Container container;
     private GridBagConstraints gbc;
@@ -464,9 +465,6 @@ public class JanelaZ808 extends JFrame{
                         pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", "null"};     
             }            
         
-        
-        
-         //criarTabelaPilha(pilha);
         JPanel panelTabela = criarTabela(pilha, " STACK  MEMORY ");
         gbc.gridx = 3;
         gbc.gridy = 1;
@@ -512,31 +510,49 @@ public class JanelaZ808 extends JFrame{
     }
     
     private void btnPasso() {
-        System.out.print("PASSO -- ");
-        String[] retorno = sistema.executar_passo();
-        atualizarInstr(retorno[0]);
-        atualizarSaida(retorno[1]);
-        if (retorno[2].equals("1")) {
-            System.out.print("--atualizando tabelas");
-            dadosMemoria = sistema.getDadosMemoria();
-            atualizarMemoriaDados(dadosMemoria);
-            //atualizarMemoriaPilha(dadosMemoria);
-            // TO COM ERRO AQUI
-            // FAVOR NÃO DESCOMENTAR
+        btnResetar.setEnabled(true);
+        System.out.print("PASSO -- ");       
+        if (sistema.getRegistrador().getIP() != sistema.getQuantInstr()) {
+            String[] retorno = sistema.executar_passo();
+            atualizarInstr(retorno[0]);
+            atualizarSaida(retorno[1]);
+            if (retorno[2].equals("1")) {
+                System.out.println("\t--atualizando tabelas");
+                dadosMemoria = sistema.getDadosMemoria();
+                atualizarMemoriaDados(dadosMemoria);
+                //atualizarMemoriaPilha(dadosMemoria);
+                // TO COM ERRO AQUI
+                // FAVOR NÃO DESCOMENTAR
+            }
+            this.setVisible(true);
+        } else {
+            if (chegouAoFim == 0) {
+                chegouAoFim = 1;
+                atualizarInstr("-- FIM DAS INSTRUÇÕES --");
+                btnPasso.setEnabled(false);
+                btnExecutar.setEnabled(false);
+            }
         }
-        this.setVisible(true);
     }
     
     private void btnExecutar() {
-        System.out.println("EXECUTAR");
-        String[] retorno = sistema.executar_codigo();
-        atualizarInstr(retorno[0]);
-        atualizarSaida(retorno[1]);
-        this.setVisible(true);
+        if (chegouAoFim == 0) {
+            System.out.println("EXECUTAR");
+            String[] retorno = sistema.executar_codigo();
+            atualizarInstr(retorno[0] + "-- FIM DAS INSTRUÇÕES --");
+            atualizarSaida(retorno[1]);
+            chegouAoFim = 1;
+            dadosMemoria = sistema.getDadosMemoria();
+            atualizarMemoriaDados(dadosMemoria);
+            //atualizarMemoriaPilha(dadosMemoria);
+            btnPasso.setEnabled(false);
+            btnExecutar.setEnabled(false);
+            this.setVisible(true);
+        }   
     }
     
      private void btnResetar() {
-        System.out.println("RESETAR -- Programa sera resetado para seu estado inicial.");
+        System.out.print("\nRESETAR -- Programa sera resetado para seu estado inicial.");
         this.setVisible(true);
     } 
 }

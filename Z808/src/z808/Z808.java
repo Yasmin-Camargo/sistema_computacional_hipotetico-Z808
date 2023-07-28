@@ -44,13 +44,11 @@ public class Z808 {
         System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
       
         registrador = new Registradores();
-        
-        
     }
     
     public int[] carregar_instrucoes() {
-        int tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
-        int flag_jump = 0;
+        tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
+        flag_jump = 0;
         
         memoria = new Memoria(tam_area_instrucoes); // cria memória com o espaco para as instruções já definido
         armazena_instrucoes(caminho_arquivo, memoria);  // coloca dados do arquivo na memória
@@ -59,9 +57,6 @@ public class Z808 {
         registrador.setCL(memoria.getInicioSegmentoInstrucoes());  // pega endereço (indice) da primeira instrução na memória
         registrador.setRI(memoria.lerCodigo(registrador.getCL())); // pega o código da instrução
         registrador.setIP(registrador.getCL() + 1); // atualiza o apontador de instrução para o endereço da próxima instrução
-        //gui.atualizarRegistradores(registrador);
-
-        
         
         // Prints
         System.out.println("\n-------------------\n");
@@ -72,7 +67,7 @@ public class Z808 {
         return memoria.getDadosMemoria();
     }
     
-    public String[] executar_passo() {
+    public String[] executar_passo() {       
         flag_att_tabelas = 0;
         String instrucao = "", saida = "";
         flag_jump = 0;
@@ -372,21 +367,54 @@ public class Z808 {
             case 18: // read opd (imediato)
                 instrucao = "read opd (imediato)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
-
-                //int endereco_armazenado = Null;
-                //instrucao = endereco_armazenado);
-                int endereco_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Em qual endereço de memória você \ndeseja armazenar o valor "+registrador.getRI()+"? \n"));
-                memoria.escreverDados(registrador.getRI(), endereco_armazenado);
+                String aux1 = "";
+                    while (aux1.equals("")) {
+                        aux1 = JOptionPane.showInputDialog(
+                            "Em qual endereço você deseja armazenar o valor "
+                            + registrador.getRI()+"? "
+                        );
+                    }
+                    int endereco;
+                    try {
+                        endereco = Integer.parseInt(aux1);
+                    }
+                    catch (NumberFormatException e){
+                        endereco = memoria.getInicioSegmentoDados();
+                        JOptionPane.showMessageDialog(
+                            null, 
+                            "O valor inserido não é um número. Valor " + endereco + " foi atribuido.", 
+                            "ERRO!",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                memoria.escreverDados(registrador.getRI(), endereco);
                 flag_att_tabelas = 1;
                 break;
 
             case 19: // read opd (direto)
                 instrucao = "read opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
-                int valor_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Qual valor você deseja armazenar \n no endereço de memória "+registrador.getRI()+"? \n"));
-                memoria.escreverDados(valor_armazenado, registrador.getRI());
+                String aux2 = "";
+                    while (aux2.equals("")) {
+                        aux2 = JOptionPane.showInputDialog(
+                            "Qual valor você deseja armazenar no endereço de memória "
+                            + registrador.getRI()+"? "
+                        );
+                    }
+                    int valor;
+                    try {
+                        valor = Integer.parseInt(aux2);
+                    }
+                    catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(
+                            null, 
+                            "O valor inserido não é um número. Valor 1 foi atribuido.", 
+                            "ERRO!",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                        valor = 1;
+                    }       
+                memoria.escreverDados(valor, registrador.getRI());
                 flag_att_tabelas = 1;
                 break;
 
@@ -442,7 +470,6 @@ public class Z808 {
                     null, "Instrução ["+registrador.getRI()+"] não é aceita.", "ERRO", JOptionPane.ERROR_MESSAGE
                 );
                 return new String[] {instrucao, saida, "0"};
-                
         }
 
         // se o jump foi acionado não atualiza apontadores de instrução
@@ -639,5 +666,9 @@ public class Z808 {
     
     public Registradores getRegistrador() {
         return registrador;
+    }
+    
+    public int getQuantInstr() {
+        return tam_area_instrucoes;
     }
 }
