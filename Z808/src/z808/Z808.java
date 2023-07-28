@@ -71,6 +71,7 @@ public class Z808 {
         flag_att_tabelas = 0;
         String instrucao = "", saida = "";
         flag_jump = 0;
+        
         switch (registrador.getRI()){
             case 3: // add AX,AX  e add AX,DX
                 atualiza_CL_RI_IP(registrador, memoria); // lê próximo código da memória
@@ -301,6 +302,7 @@ public class Z808 {
             case 239: // ret
                 instrucao = "ret";   
                 registrador.setSP(memoria.pop_pilha());
+                flag_att_tabelas = 1;
                 break;
 
             case 87: // pop DX e pop AX
@@ -312,6 +314,7 @@ public class Z808 {
                     instrucao = "pop DX";  
                     registrador.setDX(memoria.pop_pilha());
                 }
+                flag_att_tabelas = 1;
                 break;
 
             case 88: // pop opd (imediato)
@@ -331,6 +334,7 @@ public class Z808 {
             case 157: // popf 
                 instrucao = "popf";
                 registrador.desconcatena_SR(memoria.pop_pilha());
+                flag_att_tabelas = 1;
                 break;
 
             case 80: // push DX e push AX
@@ -361,26 +365,60 @@ public class Z808 {
                     instrucao = "store DX";  
                     Instrucoes.store(registrador.getDX(), memoria);
                 }
+                flag_att_tabelas = 1;
                 break; 
 
             case 18: // read opd (imediato)
                 instrucao = "read opd (imediato)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
-
-                //int endereco_armazenado = Null;
-                //instrucao = endereco_armazenado);
-                int endereco_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Em qual endereço de memória você \ndeseja armazenar o valor "+registrador.getRI()+"? \n"));
-                memoria.escreverDados(registrador.getRI(), endereco_armazenado);
+                String aux1 = "";
+                    while (aux1.equals("")) {
+                        aux1 = JOptionPane.showInputDialog(
+                            "Em qual endereço você deseja armazenar o valor "
+                            + registrador.getRI()+"? "
+                        );
+                    }
+                    int endereco;
+                    try {
+                        endereco = Integer.parseInt(aux1);
+                    }
+                    catch (NumberFormatException e){
+                        endereco = memoria.getInicioSegmentoDados();
+                        JOptionPane.showMessageDialog(
+                            null, 
+                            "O valor inserido não é um número. Valor " + endereco + " foi atribuido.", 
+                            "ERRO!",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                memoria.escreverDados(registrador.getRI(), endereco);
                 flag_att_tabelas = 1;
                 break;
 
             case 19: // read opd (direto)
                 instrucao = "read opd (direto)";        
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
-                // VERIFICAR: Quando uso o JOptionPane não aparece o resto da interface gráfica ??
-                int valor_armazenado = Integer.parseInt(JOptionPane.showInputDialog("Qual valor você deseja armazenar \n no endereço de memória "+registrador.getRI()+"? \n"));
-                memoria.escreverDados(valor_armazenado, registrador.getRI());
+               String aux2 = "";
+                    while (aux2.equals("")) {
+                        aux2 = JOptionPane.showInputDialog(
+                            "Qual valor você deseja armazenar no endereço de memória "
+                            + registrador.getRI()+"? "
+                        );
+                    }
+                    int valor;
+                    try {
+                        valor = Integer.parseInt(aux2);
+                    }
+                    catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(
+                            null, 
+                            "O valor inserido não é um número. Valor 1 foi atribuido.", 
+                            "ERRO!",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                        valor = 1;
+                    }       
+                memoria.escreverDados(valor, registrador.getRI());
                 flag_att_tabelas = 1;
                 break;
 
@@ -389,7 +427,6 @@ public class Z808 {
                 atualiza_CL_RI_IP(registrador, memoria); //leitura do endereco (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
-                //gui.atualizarSaida("dataAreaMemory[" + (registrador.getRBM() + memoria.getDS())+ "] = " + memoria.lerDados(registrador.getRBM()));
                 saida = "dataAreaMemory[" + (registrador.getRBM() + memoria.getInicioSegmentoDados())+ "] = " + memoria.lerDados(registrador.getRBM());
                 break;
 
@@ -399,7 +436,6 @@ public class Z808 {
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 saida = "dataAreaMemory[" + (memoria.getInicioSegmentoDados() + registrador.getREM()) + "] = " + registrador.getRBM();
-                //gui.atualizarSaida("dataAreaMemory[" + (memoria.getDS() + registrador.getREM()) + "] = " + registrador.getRBM());
                 break;
 
             case 20:    // move AX,opd (imediato)
@@ -635,5 +671,9 @@ public class Z808 {
     
     public int getQuantInstr() {
         return tam_area_instrucoes;
+    }
+    
+    public String getCaminhoArq() {
+        return caminho_arquivo;
     }
 }

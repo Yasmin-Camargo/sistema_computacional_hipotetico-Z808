@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -417,114 +418,13 @@ public class JanelaZ808 extends JFrame{
         btnCarregarInstr.setEnabled(false);
         btnPasso.setEnabled(true);
         btnExecutar.setEnabled(true);
+        btnResetar.setEnabled(true);
         
         this.setVisible(true);
     }
-    public void criarTabelaCodigo(String[][] data) {
-        JPanel panelTabela = criarTabela(data, " CODE  AREA  MEMORY ");
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = 3;
-        gbc.gridwidth = 1;
-        container.add( panelTabela, gbc);
-    }
-    
-    public void atualizarMemoriaDados(int[] memoria) {
-        int DS = sistema.getDSMemoria();
-        //int tamMaxMemoria = Memoria.TAM_MAXIMO;
-        String dados[][] = new String[TAM_MAX_TABELAS][2];
-        int i = DS;
-        for(; i < TAM_MAX_TABELAS; ++i) {
-            if (memoria[i] != -1)
-                dados[i-DS] = new String[] {"["+i+"]", ""+memoria[i]};
-            else 
-                if(i-DS < TAM_MAX_TABELAS)
-                    dados[i-DS] = new String[] {"["+i+"]", "null"};
-        }
-        //criarTabelaDados(dados);
-        JPanel panelTabela = criarTabela(dados, " DATA  AREA  MEMORY ");
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridheight = 3;
-        gbc.gridwidth = 1;
-        container.add( panelTabela, gbc);
-    }
-    
-    public void atualizarMemoriaPilha(int[] memoria) {
-        int DS = sistema.getDSMemoria();
-        int tamMaxMemoria = Memoria.TAM_MAXIMO;
-        int aux[] = new int[TAM_MAX_TABELAS];
-        aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
-        
-        
-        int i = tamMaxMemoria;
-        String pilha[][] = new String[TAM_MAX_TABELAS][2];
-        //try {
-            for (i = 0; i < TAM_MAX_TABELAS; ++i) {
-                if (aux[TAM_MAX_TABELAS-1] != -1)
-                    pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", ""+aux[TAM_MAX_TABELAS-1-i]};
-                else
-                    pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", "null"};
-            }
-            
-            /*
-            for(i = tamMaxMemoria; i > DS; --i) {
-                if (memoria[i-1] != -1)
-                    pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", ""+memoria[i-1]};
-                else
-                    if (tamMaxMemoria-i < TAM_MAX_TABELAS)
-                        pilha[tamMaxMemoria-i] = new String[] {"["+i+"]", "null"};     
-            }  
-        */
-        
-        JPanel panelTabela = criarTabela(pilha, " STACK  MEMORY ");
-        gbc.gridx = 3;
-        gbc.gridy = 1;
-        gbc.gridheight = 3;
-        gbc.gridwidth = 1;
-        container.add( panelTabela, gbc);
-        /*}
-        catch (Exception e) {
-            System.out.println("pilha: "+ tamMaxMemoria + " " + i + " " + (tamMaxMemoria-i) + " " + (pilha[tamMaxMemoria-i][0]) + " " + pilha[tamMaxMemoria-i][1]);
-            System.out.println(e.getMessage());
-        }*/
-    }
-    
-    private JPanel criarTabela(Object[][] data, String nomeTabela) {
-        JPanel panelTabela = new JPanel();
-        panelTabela.setName(nomeTabela);
-        
-        JLabel labelTabela = new JLabel(nomeTabela);
-        labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridwidth = 1;  
-        gbc.gridheight = 1;
-        panelTabela.add(labelTabela, gbc);
-        
-        String[] colunas = {"Address", "Value"};
-        
-        JTable tableMemoria = new JTable(data, colunas);
-        tableMemoria.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
-        
-        JScrollPane barraRolagem = new JScrollPane(tableMemoria); 
-        barraRolagem.setPreferredSize(new Dimension(170, 260));
-        
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridwidth = 1;  
-        gbc.gridheight = 3;
-        panelTabela.add(barraRolagem, gbc);
-
-        return panelTabela;
-    }
     
     private void btnPasso() {
-        btnResetar.setEnabled(true);
+        
         System.out.print("PASSO -- ");       
         if (sistema.getRegistrador().getIP() != sistema.getQuantInstr()) {
             String[] retorno = sistema.executar_passo();
@@ -567,6 +467,107 @@ public class JanelaZ808 extends JFrame{
     
      private void btnResetar() {
         System.out.print("\nRESETAR -- Programa sera resetado para seu estado inicial.");
-        this.setVisible(true);
-    } 
+        String caminho = sistema.getCaminhoArq();
+        try {
+            JanelaZ808 novo = new JanelaZ808(caminho);
+            novo.setVisible(true);
+            this.dispose();
+        }
+        catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Exceção: " + e,
+                "ERRO!",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+     
+     public void criarTabelaCodigo(String[][] data) {
+        JPanel panelTabela = criarTabela(data, " CODE  AREA  MEMORY ");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    public void atualizarMemoriaDados(int[] memoria) {
+        int DS = sistema.getDSMemoria();
+        //int tamMaxMemoria = Memoria.TAM_MAXIMO;
+        String dados[][] = new String[TAM_MAX_TABELAS][2];
+        int i = DS;
+        for(; i < TAM_MAX_TABELAS; ++i) {
+            if (memoria[i] != -1)
+                dados[i-DS] = new String[] {"["+i+"]", ""+memoria[i]};
+            else 
+                if(i-DS < TAM_MAX_TABELAS)
+                    dados[i-DS] = new String[] {"["+i+"]", "null"};
+        }
+        //criarTabelaDados(dados);
+        JPanel panelTabela = criarTabela(dados, " DATA  AREA  MEMORY ");
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    public void atualizarMemoriaPilha(int[] memoria) {
+        int DS = sistema.getDSMemoria();
+        int tamMaxMemoria = Memoria.TAM_MAXIMO;
+        int aux[] = new int[TAM_MAX_TABELAS];
+        aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
+        
+        int i = tamMaxMemoria;
+        String pilha[][] = new String[TAM_MAX_TABELAS][2];
+
+        for (i = 0; i < TAM_MAX_TABELAS; ++i) {
+            if (aux[i] != -1)
+                pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", ""+aux[TAM_MAX_TABELAS-1-i]};
+            else
+                pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", "null"};
+        }
+        
+        JPanel panelTabela = criarTabela(pilha, " STACK  MEMORY ");
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 1;
+        container.add( panelTabela, gbc);
+    }
+    
+    private JPanel criarTabela(Object[][] data, String nomeTabela) {
+        JPanel panelTabela = new JPanel();
+        panelTabela.setName(nomeTabela);
+        
+        JLabel labelTabela = new JLabel(nomeTabela);
+        labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 1;  
+        gbc.gridheight = 1;
+        panelTabela.add(labelTabela, gbc);
+        
+        String[] colunas = {"Address", "Value"};
+        
+        JTable tableMemoria = new JTable(data, colunas);
+        tableMemoria.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
+        
+        JScrollPane barraRolagem = new JScrollPane(tableMemoria); 
+        barraRolagem.setPreferredSize(new Dimension(170, 260));
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridwidth = 1;  
+        gbc.gridheight = 3;
+        panelTabela.add(barraRolagem, gbc);
+
+        return panelTabela;
+    }
+ 
 }
