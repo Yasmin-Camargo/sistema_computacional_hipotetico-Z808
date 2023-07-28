@@ -43,7 +43,7 @@ public class Memoria {
         for (int i = DS; i <= SP; i++){    
             codigo_dados_pilha[i] = -1;
         }
-        armazenaDadosMontador(dados);
+        armazenaDadosMontador(dados, tamanhoCodigo);
     }
     
     // Métodos para obter o tamanho dos segmentos de memória
@@ -184,9 +184,9 @@ public class Memoria {
         }
     }
     
-    private void armazenaDadosMontador(Map<Integer, Integer> dados){
+    private void armazenaDadosMontador(Map<Integer, Integer> dados, int tam){
         for (Integer chave : dados.keySet()) {
-            codigo_dados_pilha[chave] = dados.get(chave);
+            codigo_dados_pilha[chave + tam] = dados.get(chave);
         }
     }
     
@@ -246,7 +246,6 @@ public class Memoria {
     public int[] getDadosMemoria() {
         return codigo_dados_pilha;
     }
-    
     
     
     // TESTES: DEPOIS RETIRAR

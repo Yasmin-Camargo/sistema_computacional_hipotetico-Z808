@@ -179,5 +179,16 @@ public class Registradores {
         return ("CF:"+ SR[0] + " PF:" + SR[6] +  " IF:" + SR[7] + " ZF:" + SR[8] + " SF:" + SR[9] + " OF:" + SR[12]);
     }
     
-    
+    public void reinicializaRegistradores(){
+        this.AX = 0;
+        this.DX = 0;
+        this.SI = 0;
+        this.IP = 0;
+        this.REM = 0;
+        this.RBM = 0;
+        this.SP = 0;
+        for (int i = 0; i < SR.length; i++) {
+            SR[i] = 0;
+        }
+    }    
 }

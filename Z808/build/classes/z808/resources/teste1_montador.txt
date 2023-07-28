@@ -1,11 +1,9 @@
-add AX,8;       armazena na memoria endereco para onde quer pular (vai ir para instrução sub quando usar jump)
-store AX    
 read [1];       pede um valor para o usuário
-move AX,[1];    coloca no registrador AX
-sub AX,1;       decrementa 
+write 1;        mostra valor que o usuario digitou
+move AX,[1];    coloca no registrador AX o valor digitado pelo usuario
+while sub AX,1; decrementa 
 store AX;       armazena na proxima posição de memória da area de dados
-jp [0];         pula de volta para o sub enquanto AX não for 0
-push AX;        coloca na pilha resultado de AX (espera-se ter 0)
-write 1;        mostra valor que o usuario tinha digitado
-labelA equ 88
-labelB equ 99
+jp while;       pula de volta para o sub enquanto AX não for 0
+move AX,cinco   coloca o valor 5 em AX (usando constante)
+push AX;        coloca na pilha resultado de AX 
+cinco equ 5;    define a constante
