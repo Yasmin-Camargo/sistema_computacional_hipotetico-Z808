@@ -12,6 +12,7 @@
 
 // 4) diretiva EQU é constante então não vai para memória, já as labels que aparecem antes da instrução vão para memória
 // 5) colocar diretiva END no final do programa para indicar fim de execução
+// 6) usar diretiva ORG para alterar o endereço inicial onde o código deve ser carregado na memória durante a execução do programa
 
 package z808;
 
@@ -28,11 +29,13 @@ public class Montador {
     private int LC; // contador de linha
     private int PC; // contador de endereços
     private Map<Integer, Integer> dadoParaArmazenar;    // local para aramzenar dados que irão para memória de dados
+    private int valorDiretivaORG;   // local para armazenar novo valor do PC caso seja utilizado a diretiva
     
     public Montador(String caminho_arquivo) throws IOException{
         this.tabelaSimbolos = new HashMap<>(); 
         this.LC = 0; 
         this.PC = 0; 
+        this.valorDiretivaORG = 0;
         
         segundoPasso(primeiroPasso(caminho_arquivo));
     }
@@ -86,6 +89,7 @@ public class Montador {
                 // Diretivas
                 case "end":
                 case "equ":
+                case "org":
 
                 //outros
                 case "Dados":
@@ -199,7 +203,6 @@ public class Montador {
             // Percorrendo tabela do codigo
             for (int i = 0; i < textScanned.length; i++) {
                 if (!textScanned[i][2].equals("") && !textScanned[i][3].equals("equ")){     // coloca o endereco correto para a nossa area de dados
-                    System.err.println("ENTROU: "+textScanned[i][2]);
                     tabelaSimbolos.replace(textScanned[i][2], quantidadeDadosMemoriaParaArmazenar);
                     dadoParaArmazenar.put(quantidadeDadosMemoriaParaArmazenar, contadorInstrucao);
                 } 
@@ -471,6 +474,9 @@ public class Montador {
                         }
                         contadorInstrucao += 2;
                     break;
+                    case "org": //  diretiva para indicar o endereço inicial onde o código deve ser carregado na memória durante a execução do programa
+                        valorDiretivaORG = Integer.valueOf(formataPara16Bits(textScanned[i][4]));
+                    break;
                 }
             }
             
@@ -534,5 +540,9 @@ public class Montador {
     
     public Map<Integer, Integer> getDadosParaArmazenar(){
         return dadoParaArmazenar;
+    }
+    
+    public int gerValorDiretivaORG(){
+        return valorDiretivaORG;
     }
 }
