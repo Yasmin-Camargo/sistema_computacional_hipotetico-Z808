@@ -20,6 +20,7 @@ public class Memoria {
     private int SS; // Registrador SS -> aponta para o início do segmento de pilha na memória
 
     public Memoria (int tamanhoCodigo) {
+        tamanhoCodigo -= 1;
         codigo_dados_pilha = new int[TAM_MAXIMO];
         
         if (tamanhoCodigo > TAM_MAXIMO){
