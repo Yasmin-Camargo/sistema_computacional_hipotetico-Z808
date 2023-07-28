@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Montador {
-    private  Map<String, Integer> tabelaSimbolos;    // tabela de simbolos
+    private Map<String, Integer> tabelaSimbolos;    // tabela de simbolos
     private int LC; // contador de linha
     private int PC; // contador de endereços
     
@@ -195,6 +195,8 @@ public class Montador {
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
         String nomeArquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
+        Map<Integer, Integer> dadoParaArmazenar = new HashMap<>() ; 
+        
         int flag_terminouInstrucoes = 0;
 
         try {
@@ -204,15 +206,9 @@ public class Montador {
             // Percorrendo tabela do codigo
             for (int i = 0; i < textScanned.length; i++) {
                 switch (textScanned[i][3]) {
-                    case "equ": 
-                        if (flag_terminouInstrucoes == 0){
-                            flag_terminouInstrucoes = 1;
-                            bufferedWriter.write("EE");
-                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][2])));
-                        } else{
-                            bufferedWriter.write(formataPara16Bits(""+tabelaSimbolos.get(textScanned[i][2])));
-                        }
-                        
+                    case "equ":
+                        // armazena dados que vão ter que ser colocados na memória na área de dados
+                        dadoParaArmazenar.put(tabelaSimbolos.get(textScanned[i][2]), Integer.valueOf(textScanned[i][4]));
                     break;
                     case "add":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -452,7 +448,6 @@ public class Montador {
                             bufferedWriter.write(formataPara16Bits(textScanned[i][5]));
                         }
                     break;
-                    
                 }
             }
             
@@ -463,30 +458,21 @@ public class Montador {
             System.out.println("Ocorreu um erro ao criar o arquivo: " + e.getMessage());
         }
         
-        // LER ARQUIVO
+        // PRINT PARA VER O QUE TÁ ACONTECENDO NO SEGUNDO PASSO
+        // mostra o que foi armazenado no arquivo codigo objeto
         System.out.println("\nARQUIVO CODIGO OBJETO: ");
         try {
-            // Cria um objeto FileReader para ler o arquivo
-            FileReader fileReader = new FileReader(nomeArquivo);
-
-            // Cria um objeto BufferedReader para ler o arquivo de forma mais eficiente
+            FileReader fileReader = new FileReader(nomeArquivo);         // Cria um objeto para ler o arquivo
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            // Variável para armazenar cada linha lida do arquivo
             String linha;
-
-            // Loop para ler cada linha do arquivo até encontrar o final (null)
+           
             while ((linha = bufferedReader.readLine()) != null) {
-                System.out.println(linha); // Exibe a linha no console
+                System.out.println(linha); 
             }
-
-            // Fecha o BufferedReader
             bufferedReader.close();
-
         } catch (IOException e) {
             System.out.println("Ocorreu um erro ao ler o arquivo: " + e.getMessage());
         }
-      
     }
     
     // Conta  o número de linhas do arquivo
