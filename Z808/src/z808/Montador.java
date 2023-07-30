@@ -91,10 +91,7 @@ public class Montador {
                 case "equ":
                 case "org":
 
-                //outros
-                case "Dados":
-                case "Codigo":
-                case "Pilha":   // Caso 1: não tem label antes da instrução
+                    // Caso 1: não tem label antes da instrução
                     textScanned[LC][2] = "";                                       
                     textScanned[LC][3] = linhaSeparada[0];                         // coloca na matriz o código a operação
                     if (linhaSeparada.length == 1){ // instrução não tem nenhum operando
@@ -208,8 +205,6 @@ public class Montador {
                 } 
                 switch (textScanned[i][3]) {
                     case "equ":
-                        // armazena dados que vão ter que ser colocados na memória na área de dados
-                        //dadoParaArmazenar.put(tabelaSimbolos.get(textScanned[i][2]), Integer.valueOf(textScanned[i][4]));
                     break;
                     case "add":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -501,12 +496,6 @@ public class Montador {
             bufferedReader.close();
         } catch (IOException e) {
             System.out.println("Ocorreu um erro ao ler o arquivo: " + e.getMessage());
-        }
-        System.out.println("\nTabela de Simbolos ");
-        
-        // Print da tabela de símbolos
-        for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
         }
     }
     
