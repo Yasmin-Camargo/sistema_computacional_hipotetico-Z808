@@ -38,7 +38,7 @@ public class JanelaZ808 extends JFrame{
     private JTextArea areaInstr, areaSaida;
     private JButton btnCarregarInstr, btnExecutar, btnResetar, btnPasso;
     int[] dadosMemoria;
-    int chegouAoFim = 0;
+    int chegouAoFim = 0, contInstr = 0;
     
     Container container;
     private GridBagConstraints gbc;
@@ -116,9 +116,7 @@ public class JanelaZ808 extends JFrame{
     }
     
     private void btnVoltar() {
-        System.out.println("VOLTAR   -- Janela Inicial sera reaberta.");
-        System.out.println("\t -- Janela do Emulador sera fechada.");
-        System.out.println("\t -- Usuario podera escolher novo arquivo para ser aberto.");
+        sistema.matarJanelaMontador();
         JanelaInicial janelaInicial = new JanelaInicial();
         janelaInicial.setVisible(true);
         this.dispose();
@@ -190,7 +188,6 @@ public class JanelaZ808 extends JFrame{
         gbc.gridx = 1;
         panelRegistr.add(fieldRegIP, gbc);
         
-        
         JLabel labelRegSP = new JLabel("SP");
         gbc.gridx = 0;
         gbc.gridy = 9;
@@ -198,7 +195,6 @@ public class JanelaZ808 extends JFrame{
         fieldRegSP = new JTextField(5);
         gbc.gridx = 1;
         panelRegistr.add(fieldRegSP, gbc);
-        
         
         // registradores SR
         // FLAGS
@@ -423,20 +419,17 @@ public class JanelaZ808 extends JFrame{
         this.setVisible(true);
     }
     
-    private void btnPasso() {
-        
-        System.out.print("PASSO -- ");       
+    private void btnPasso() {           
         if (sistema.getRegistrador().getIP() != sistema.getQuantInstr()) {
             String[] retorno = sistema.executar_passo();
+            atualizarRegistradores(sistema.getRegistrador());
             atualizarInstr(retorno[0]);
             atualizarSaida(retorno[1]);
             if (retorno[2].equals("1")) {
-                System.out.println("\t--atualizando tabelas");
-                dadosMemoria = sistema.getDadosMemoria();
+                dadosMemoria = sistema.getDadosMemoria();                
                 atualizarMemoriaDados(dadosMemoria);
                 atualizarMemoriaPilha(dadosMemoria);
-                // TO COM ERRO AQUI
-                // FAVOR NÃO DESCOMENTAR
+                // TO COM ERRO AQUI?
             }
             this.setVisible(true);
         } else {
@@ -451,7 +444,6 @@ public class JanelaZ808 extends JFrame{
     
     private void btnExecutar() {
         if (chegouAoFim == 0) {
-            System.out.println("EXECUTAR");
             String[] retorno = sistema.executar_codigo();
             atualizarInstr(retorno[0] + "-- FIM DAS INSTRUÇÕES --");
             atualizarSaida(retorno[1]);
@@ -459,6 +451,7 @@ public class JanelaZ808 extends JFrame{
             dadosMemoria = sistema.getDadosMemoria();
             atualizarMemoriaDados(dadosMemoria);
             atualizarMemoriaPilha(dadosMemoria);
+            atualizarRegistradores(sistema.getRegistrador());
             btnPasso.setEnabled(false);
             btnExecutar.setEnabled(false);
             this.setVisible(true);
@@ -466,9 +459,9 @@ public class JanelaZ808 extends JFrame{
     }
     
      private void btnResetar() {
-        System.out.print("\nRESETAR -- Programa sera resetado para seu estado inicial.");
         String caminho = sistema.getCaminhoArq();
         try {
+            sistema.matarJanelaMontador();
             JanelaZ808 novo = new JanelaZ808(caminho);
             novo.setVisible(true);
             this.dispose();
@@ -516,12 +509,10 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void atualizarMemoriaPilha(int[] memoria) {
-        int DS = sistema.getDSMemoria();
-        int tamMaxMemoria = Memoria.TAM_MAXIMO;
-        int aux[] = new int[TAM_MAX_TABELAS];
-        aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
+        int i, tamMaxMemoria = Memoria.TAM_MAXIMO;
+        int[] aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
         
-        int i = tamMaxMemoria;
+        //int i = tamMaxMemoria;
         String pilha[][] = new String[TAM_MAX_TABELAS][2];
 
         for (i = 0; i < TAM_MAX_TABELAS; ++i) {

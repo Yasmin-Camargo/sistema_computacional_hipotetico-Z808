@@ -30,6 +30,7 @@ public class Montador {
     private int PC; // contador de endereços
     private Map<Integer, Integer> dadoParaArmazenar;    // local para aramzenar dados que irão para memória de dados
     private int valorDiretivaORG;   // local para armazenar novo valor do PC caso seja utilizado a diretiva
+    private JanelaMontador janelaMontador;
     
     public Montador(String caminho_arquivo) throws IOException{
         this.tabelaSimbolos = new HashMap<>(); 
@@ -91,7 +92,10 @@ public class Montador {
                 case "equ":
                 case "org":
 
-                    // Caso 1: não tem label antes da instrução
+                //outros
+                case "Dados":
+                case "Codigo":
+                case "Pilha":   // Caso 1: não tem label antes da instrução
                     textScanned[LC][2] = "";                                       
                     textScanned[LC][3] = linhaSeparada[0];                         // coloca na matriz o código a operação
                     if (linhaSeparada.length == 1){ // instrução não tem nenhum operando
@@ -184,6 +188,8 @@ public class Montador {
             System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
         }
         
+        janelaMontador = new JanelaMontador(textScanned, LC, PC, tabelaSimbolos);
+        
         return textScanned;
     }
     
@@ -205,6 +211,8 @@ public class Montador {
                 } 
                 switch (textScanned[i][3]) {
                     case "equ":
+                        // armazena dados que vão ter que ser colocados na memória na área de dados
+                        //dadoParaArmazenar.put(tabelaSimbolos.get(textScanned[i][2]), Integer.valueOf(textScanned[i][4]));
                     break;
                     case "add":                                   
                         if (textScanned[i][5].equals("AX")){  // endereçamento via registrador AX
@@ -492,10 +500,17 @@ public class Montador {
            
             while ((linha = bufferedReader.readLine()) != null) {
                 System.out.println(linha); 
+                janelaMontador.addTexto("Arquivo código objeto:\n" + linha);
             }
             bufferedReader.close();
         } catch (IOException e) {
             System.out.println("Ocorreu um erro ao ler o arquivo: " + e.getMessage());
+        }
+        System.out.println("\nTabela de Simbolos ");
+        
+        // Print da tabela de símbolos
+        for (String chave : tabelaSimbolos.keySet()) {
+            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
         }
     }
     
@@ -531,7 +546,11 @@ public class Montador {
         return dadoParaArmazenar;
     }
     
-    public int gerValorDiretivaORG(){
+    public int getValorDiretivaORG(){
         return valorDiretivaORG;
+    }
+    
+    public void matarJanela() {
+        janelaMontador.dispose();
     }
 }
