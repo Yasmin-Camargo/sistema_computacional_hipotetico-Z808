@@ -1,9 +1,8 @@
 /*
-Chamar macros
-Definir macros -> CLASSA MACROS
-Pilha -> NESTA CLASSE
-Processador de Macros -> NESTA CLASSE
-*/
+Chamar macros -> ok
+Definir macros -> ok
+Pilha -> a fazer
+Processador de Macros -> a fazer */
 
 package z808;
 import static java.lang.System.exit;
