@@ -22,8 +22,21 @@ public class ProcessadorMacros {
       this.definicaoMacros = new Hashtable<String,Macro>();
       macroAtual = null;
     }
- 
-   
+
+    /*Inicio da leitura e processamento de arquivo */
+    /* Ainda precisa de ajustes */ 
+     public void process(String filename) throws IOException, Exception {
+        String conteudoDoArquivo = lerArquivo(filename);
+        // Criar um Scanner para ler linha por linha e processar os macros.
+    }
+
+    // Método para ler um arquivo e retornar o conteúdo como uma String
+    private static String lerArquivo(String caminhoArquivo) throws IOException {
+        // Implementação do método lerArquivo
+    }
+
+  
+}
 
 
 }
