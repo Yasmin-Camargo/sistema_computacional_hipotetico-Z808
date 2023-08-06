@@ -12,7 +12,7 @@ public class Macro {
 public Macro (String nomeMacro, ArrayList<Parametro> parametros_formais){
     this.nomeMacro = nomeMacro;
     this.esqueletoMacro = "";
-    this.parametros_formais = analiseParametros (parametros_formais);
+    this.parametros_formais = parametros_formais;
     this.parametros_reais = new  Stack <Parametro>();
 }
 /* Expande a definição de macro, substituindo os parâmetros formais pelos valores reais */ 
