@@ -36,6 +36,16 @@ public class Z808 {
     }
     
     public void iniciarZ808() throws IOException {
+        //TESTE MACRO
+        ProcessadorMacros macro_processor = new ProcessadorMacros();
+        try {
+        macro_processor.processar("src\\z808\\resources\\teste_macro.txt");
+        }
+        catch (Exception e ){
+        e.printStackTrace();
+        System.exit(-1);
+        }
+        
         // TESTE MONTADOR
         System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
         montador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");

@@ -1,0 +1,4 @@
+    MACRO
+    SOMA A, BAR, RESULT
+    LOAD    A
+    MACRO
