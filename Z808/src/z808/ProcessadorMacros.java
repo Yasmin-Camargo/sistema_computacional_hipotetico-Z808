@@ -22,11 +22,6 @@ public class ProcessadorMacros {
 	private int nivelContador;  // contador
 	private Hashtable<String, Macro> definicaoMacros;  // guarda as definições das macros
 	private Macro macroAtual;
-	
-	private boolean comentario; //Checa pra ver se a linha é um comentário
-	private String rotulo; //Armazena o rotulo da linha
-	private String instrucao; //Armazena a instrução da linha
-	ArrayList<String> operandos = new ArrayList<>(); // Armazena os operandos da linha
 
 	//Inicializa o processador
 	public ProcessadorMacros(){
@@ -84,15 +79,15 @@ public class ProcessadorMacros {
 			if(estadoAtual == EstadoMacros.COPIA){							// Se o estado atual for igual a uma cópia dos estados de macro atual
 				estadoAtual = EstadoMacros.DEFINICAO;						// Estado atual vira a definição
 				
-				if(definicaoMacros.containsKey(rotulo)){						// Se existe o rótulo atual em definicaoMacros
-					definicaoMacros.remove(rotulo);						// Remove o rótulo
+				if(definicaoMacros.containsKey(instrucao)){						// Se existe o rótulo atual em definicaoMacros
+					definicaoMacros.remove(instrucao);						// Remove o rótulo
 				}
 				
 				macroAtual = null;										// Macro atual vira nula
 				return saida;
 			}
 			
-		} else if (instrucao.equals("MEND")){								// Se não, se for "MEND"
+		} else if (rotulo.equals("MEND")){								// Se não, se for "MEND"
 			nivelContador--;												// Decrementa o contador
 			
 			if (nivelContador == 0){										// Se o contador apontar para 0
@@ -100,17 +95,17 @@ public class ProcessadorMacros {
 				macroAtual = null;										// Macro atual vira nula
 				return saida;
 			}
-		} else if (definicaoMacros.containsKey(instrucao)){						// Se não, se constar a instrução nas definições
-			estadoAtual = EstadoMacros.COPIA;								// Estado atual recebe a cópia atual do estado de macros
-			return expandirMacro(instrucao, tokens);				// Retorna a expansão da macro atual a partir das instruções e operandos
+		} else if (definicaoMacros.containsKey(rotulo)){						// Se não, se constar a instrução nas definições
+			this.estadoAtual = EstadoMacros.COPIA;								// Estado atual recebe a cópia atual do estado de macros
+			return expandirMacro(rotulo, tokens);				// Retorna a expansão da macro atual a partir das instruções e operandos
 		}
 			
-		if(estadoAtual == EstadoMacros.DEFINICAO){							// Se o estado atual for igual a definição no estado de macros
+		if(this.estadoAtual == EstadoMacros.DEFINICAO){							// Se o estado atual for igual a definição no estado de macros
 			if(macroAtual == null){											// E se a macro atual for nula
 				String nomeMacro = leitorMacro.getRotulo();
 				tokens = leitorMacro.getOperandos();
 				Macro macro = new Macro(nomeMacro, tokens);		
-				macroAtual = macro;
+				this.macroAtual = macro;
 				definicaoMacros.put(nomeMacro, macro);				// Coloca uma nova macro e coloca dentro de definicaoMacros
 			} else {
 				macroAtual.adicionarNoEsqueleto(leitorMacro.toString() + "\n", nivelContador); // Se existir uma macro atual, concatenar a sua info ao esqueleto da macro
