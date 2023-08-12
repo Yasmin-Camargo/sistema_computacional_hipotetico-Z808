@@ -142,8 +142,8 @@ public class Montador {
                         textScanned[LC][5] = linhaSeparada[2].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linhaSeparada[2].split(",")[1].equals("AX") && !linhaSeparada[2].split(",")[1].equals("DX") && !linhaSeparada[2].split(",")[1].equals("SI")  && ( // se o operando 2 não é um registrador e o
-                            !(Character.isDigit( linhaSeparada[2].split(",")[1].charAt(0))) )){                 // primeiro caracter não é um número, então é um label
+                        if (!linhaSeparada[2].split(",")[1].equals("AX") && !linhaSeparada[2].split(",")[1].equals("DX") && !linhaSeparada[2].split(",")[1].equals("SI")  && !linhaSeparada[2].split(",")[1].contains("[") &&( // se o operando 2 não é um registrador e o
+                            !(Character.isDigit( linhaSeparada[2].split(",")[1].charAt(0))) ) ){                 // primeiro caracter não é um número, então é um label
                               
                             if (!tabelaSimbolos.containsKey(linhaSeparada[2].split(",")[1])){   // verifica se rotulo já esta na tabela de simbolos
                                 tabelaSimbolos.put(linhaSeparada[2].split(",")[1], -1);
@@ -208,6 +208,7 @@ public class Montador {
                 if (!textScanned[i][2].equals("") && !textScanned[i][3].equals("equ")){     // coloca o endereco correto para a nossa area de dados
                     tabelaSimbolos.replace(textScanned[i][2], quantidadeDadosMemoriaParaArmazenar);
                     dadoParaArmazenar.put(quantidadeDadosMemoriaParaArmazenar, contadorInstrucao);
+                    quantidadeDadosMemoriaParaArmazenar += 1;
                 } 
                 switch (textScanned[i][3]) {
                     case "equ":

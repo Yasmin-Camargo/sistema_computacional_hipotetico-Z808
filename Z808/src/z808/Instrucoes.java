@@ -210,4 +210,11 @@ public class Instrucoes {
             registrador.setSR("zf", 1);
         }
     }
+    
+    public static void verificacoes_AX(int num, Registradores registrador){
+        verificacao_OF(num, registrador);  // verificação das flags afetadas
+        verificacao_PF(num, registrador);
+        verificacao_ZF(num, registrador);
+        verificacao_SF(num, registrador);
+    }
 }

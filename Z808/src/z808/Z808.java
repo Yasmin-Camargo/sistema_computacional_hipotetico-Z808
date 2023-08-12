@@ -522,6 +522,7 @@ public class Z808 {
         registrador.setCL(registrador.getIP());
         registrador.setRI(memoria.lerCodigo(registrador.getCL()));
         registrador.setIP(registrador.getIP() + 1);
+        Instrucoes.verificacoes_AX(registrador.getAX(), registrador);
         //gui.atualizarRegistradores(registrador);
     }
     
