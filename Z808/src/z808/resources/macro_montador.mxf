@@ -1,15 +1,15 @@
-Decrementa	MACRO	var1	
-read	[2];	pede	um	valor	para	o	usuário	
-write	1;	mostra	valor	que	o	usuario	digitou	
-move	AX,[2];	coloca	no	registrador	AX	o	valor	digitado	pelo	usuario	
-store	AX	
-while	sub	AX,var1;	decrementa	de	acordo	com	que	foi	mandado	para	a	macro	
-store	AX;	armazena	na	proxima	posição	de	memória	da	area	de	dados	
-jp	while;	pula	de	volta	para	o	sub	enquanto	AX	não	for	0	
-move	AX,cinco	coloca	o	valor	5	em	AX	(usando	constante)	
-push	AX;	coloca	na	pilha	resultado	de	AX	
-MEND	AX;	
-Decrementa	1;	decrementa	de	1	em	1	
-Decrementa	2;	decrementa	de	2	em	2	
-cinco	equ	5;	define	a	constante	
-END	equ	
+Decrementa MACRO var1 
+read [2]; 
+write 1; 
+move AX,[2]; 
+store AX; 
+while sub AX,var1; 
+store AX; 
+jp while; 
+move AX,cinco; 
+push AX; 
+MEND  
+Decrementa 1; 
+Decrementa 2; 
+cinco equ 5; 
+END  
