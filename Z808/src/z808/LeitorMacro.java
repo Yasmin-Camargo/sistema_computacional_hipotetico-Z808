@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class LeitorMacro {
     public static final int TAM_MAX = 100;
-    private String instrucao = "";
-    private String rotulo = "";
+    private String instrucao;
+    private String rotulo;
     ArrayList<String> operandos = new ArrayList<String>();
     private boolean comentario;
 
@@ -49,6 +49,7 @@ public class LeitorMacro {
     this.instrucao = "";
     this.rotulo = "";
     operandos.clear();
+    //operandos.add("");
   }
 
   public int getNumeroDeOperandosLer() {

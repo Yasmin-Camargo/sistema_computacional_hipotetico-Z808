@@ -1,13 +1,13 @@
-Decrementa MACRO var1 
-read [2]; 
-write 1; 
-move AX,[2]; 
-store AX; 
-while sub AX,var1; 
-store AX; 
-jp while; 
-move AX,cinco; 
-push AX; 
+
+
+
+
+
+
+
+
+
+
 MEND  
 Decrementa 1; 
 Decrementa 2; 
