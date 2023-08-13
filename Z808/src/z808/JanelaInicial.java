@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
-    private String pathArquivo = "src\\z808\\resources\\teste1_montador.txt";
+    private String pathArquivo = "src\\z808\\resources\\macro.txt";
     private JTextField fieldArquivo = new JTextField(45);
     private JLabel labAux;
     
@@ -87,7 +87,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         // botão de procurar arquivo no pc
         JButton btnProcurar = new JButton("Search");
         btnProcurar.addActionListener((ActionEvent e) -> {
-            JFileChooser arquivo = new JFileChooser(".\\src\\z808");
+            JFileChooser arquivo = new JFileChooser(".\\src\\z808\\resources");
             int escolha = arquivo.showOpenDialog(this);
             if (escolha == JFileChooser.APPROVE_OPTION){
                 File arquivo_selecionado = arquivo.getSelectedFile();

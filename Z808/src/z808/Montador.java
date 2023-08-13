@@ -126,6 +126,9 @@ public class Montador {
 
                 default:    // Caso 2: tem uma label antes da instrução
                     textScanned[LC][2] = linhaSeparada[0];                         // coloca na matriz o código a label identificada
+                    System.out.println("LC:" + LC);
+                    System.out.println("linha separada 0:" + linhaSeparada[0]);
+                    System.out.println("linha separada 1:" + linhaSeparada[1]);
                     textScanned[LC][3] = linhaSeparada[1];                         // coloca na matriz o código a operação
                     
                     if (!tabelaSimbolos.containsKey(linhaSeparada[0])){   // verifica se rotulo já esta na tabela de simbolos
@@ -195,7 +198,7 @@ public class Montador {
     
     // Segundo passo do montador de dois passos: gerar código de máquina
     private void segundoPasso(String [][] textScanned) throws IOException{
-        String nomeArquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
+        String nomeArquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
         dadoParaArmazenar = new HashMap<>() ;                               // dados definidos pelas label que devem ir para a memória
         int contadorInstrucao = 0, quantidadeDadosMemoriaParaArmazenar = 0;  
 

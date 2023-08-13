@@ -57,11 +57,11 @@ public class LeitorMacro {
 
     if(line.length() > TAM_MAX){
 	System.out.println("Linha é maior que o tamanho máximo!");
-      }
+    }
     String tokens[] = line.split("\\s+");
     if(tokens.length == 0) {
         return;
-      }
+    }
     if (tokens.length > 0) {
       if (tokens[0].equals("*")){
           this.comentario = true;

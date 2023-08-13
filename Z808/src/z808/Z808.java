@@ -36,24 +36,23 @@ public class Z808 {
     }
     
     public void iniciarZ808() throws IOException {
-        //TESTE MACRO
+        // MACRO
         ProcessadorMacros macro_processor = new ProcessadorMacros();
         try {
-        macro_processor.processar("src\\z808\\resources\\teste_macro.txt");
+            String caminho_montador = macro_processor.processar(caminho_arquivo);
+            // MONTADOR
+            System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
+            montador = new Montador(caminho_montador);
+            this.caminho_arquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
+
+            System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
+
+            registrador = new Registradores();
         }
         catch (Exception e ){
-        e.printStackTrace();
-        System.exit(-1);
-        }
-        
-        // TESTE MONTADOR
-        System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
-        montador = new Montador(".\\src\\z808\\resources\\teste1_montador.txt");
-        this.caminho_arquivo = ".\\src\\z808\\resources\\codigoObjeto.txt";
-        
-        System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
-      
-        registrador = new Registradores();
+            e.printStackTrace();
+            System.exit(-1);
+        } 
     }
     
     public int[] carregar_instrucoes() {
