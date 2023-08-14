@@ -57,7 +57,6 @@ public class JanelaMontador extends JFrame {
             for (j = 0; j < montador[i].length; j++) {
                 area.append(montador[i][j] + "\t\t");
             }
-    
         }
         
         // Print dos contadores

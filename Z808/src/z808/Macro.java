@@ -13,7 +13,7 @@ public class Macro {
         this.nomeMacro = nomeMacro;
         this.esqueletoMacro = "";
         this.parametros_formais = analiseParametros(parametros_formais);
-        this.parametros_reais = new  Stack <Parametro>();
+        this.parametros_reais = new Stack<>();
     }
     /* Expande a definição de macro, substituindo os parâmetros formais pelos valores reais */ 
     public String expandir(){
@@ -37,8 +37,10 @@ public class Macro {
             throw new NumeroErradoOperadores("ERRO ao configurar os parâmetros, espera-se: " 
             + parametros_formais.size() + ", foi obtido" + parametros.size()); 
         }
-        ArrayList<Parametro> analiseParametros = analiseParametros(parametros);
-        for (int i = 0; i < analiseParametros.size(); i++) {
+        //ArrayList<Parametro> analiseParametros = analiseParametros(parametros);
+        for (int i = 0; i < parametros.size(); i++) {
+            String novo_nome = parametros.get(i).replace(";", "");
+            parametros_formais.get(i).setNome(novo_nome);
             parametros_reais.push(parametros_formais.get(i));
         }
     }
@@ -57,16 +59,18 @@ public class Macro {
         this.esqueletoMacro += string;
     }
 
-     private ArrayList<Parametro> analiseParametros (ArrayList<String> entrada) {
-            ArrayList<Parametro> result = new ArrayList<>();
-            int contadorNivel = 1;
-            int indexParametro = 1;
-            for (String string : entrada) {
-                String formatada = string.replaceAll(",", "");
-                Parametro aux = new Parametro(formatada, contadorNivel, indexParametro++);
+     private ArrayList<Parametro> analiseParametros (ArrayList<String> parametros) {
+        ArrayList<Parametro> result = new ArrayList<>();
+        int contadorNivel = 1;
+        int indexParametro = 1;
+        for (String par : parametros) {
+            String partes[] = par.split(","); // tenho que verificar se nao veio um parametro grudado em outro: var1,var2 por exemplo
+            for (String parte : partes) {
+                Parametro aux = new Parametro(parte, contadorNivel, indexParametro++);
                 result.add(aux);
-            }
-            return result;
+            }   
+        }
+        return result;
      }
 
 

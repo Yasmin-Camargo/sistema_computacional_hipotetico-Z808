@@ -28,19 +28,33 @@ public class LeitorMacro {
             System.out.println("Linha é maior que o tamanho máximo!");
             return;
         }
-
+        
+        // remove espaços e tabs da frente das instruções
+        int cont = 0;
+        for (char c : line.toCharArray()) {
+            if (c == '\s' || c == '\t') cont++;
+            else break;
+        }
+        line = line.substring(cont);
+        
         String tokens[] = line.split("\\s+");
         for (int i = 0; i < tokens.length; ++i) {
-            if (tokens[i].contains("#")) {
-                this.comentario = true;
+            if (tokens[i].contains("#")) 
                 break;
-            }
             else if (i == 0)
                 this.instrucao = tokens[i];
             else if (i == 1)
                 this.rotulo = tokens[i];
-            else
+            else 
                 this.operandos.add(tokens[i]);
+            // colocar um tratamento
+            // caso tenha texto entre virgula
+            // podem ser coisas diferentes 
+            // como dois parametros
+            //      isso é feito em
+            //      macro.java atualmente
+            //      em analiseParametro
+            // o que fazer com a virgula, tho?
         }
     }
 

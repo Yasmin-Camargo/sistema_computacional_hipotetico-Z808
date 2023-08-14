@@ -127,8 +127,8 @@ public class Montador {
                 default:    // Caso 2: tem uma label antes da instrução
                     textScanned[LC][2] = linhaSeparada[0];                         // coloca na matriz o código a label identificada
                     System.out.println("LC:" + LC);
-                    System.out.println("linha separada 0:" + linhaSeparada[0]);
-                    System.out.println("linha separada 1:" + linhaSeparada[1]);
+                    //System.out.println("linha separada 0:" + linhaSeparada[0]);
+                    //System.out.println("linha separada 1:" + linhaSeparada[1]);
                     textScanned[LC][3] = linhaSeparada[1];                         // coloca na matriz o código a operação
                     
                     if (!tabelaSimbolos.containsKey(linhaSeparada[0])){   // verifica se rotulo já esta na tabela de simbolos
@@ -188,7 +188,7 @@ public class Montador {
         
         // Print da tabela de símbolos
         for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
+            System.out.println(chave + ": " + tabelaSimbolos.get(chave));
         }
         
         janelaMontador = new JanelaMontador(textScanned, LC, PC, tabelaSimbolos);
@@ -514,7 +514,7 @@ public class Montador {
         
         // Print da tabela de símbolos
         for (String chave : tabelaSimbolos.keySet()) {
-            System.out.println(chave + "\t\t- " + tabelaSimbolos.get(chave));
+            System.out.println(chave + ": " + tabelaSimbolos.get(chave));
         }
     }
     

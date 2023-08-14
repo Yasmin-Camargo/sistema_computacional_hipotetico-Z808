@@ -1,0 +1,19 @@
+read [2]; 
+write 1; 
+move AX,[2]; 
+store AX; 
+while sub AX,1; 
+store AX; 
+jp while; 
+move AX,cinco; 
+push AX; 
+read [2]; 
+write 1; 
+move AX,[2]; 
+store AX; 
+while sub AX,2; 
+store AX; 
+jp while; 
+move AX,cinco; 
+push AX; 
+cinco equ 5; END  

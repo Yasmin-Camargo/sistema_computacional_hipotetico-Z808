@@ -22,6 +22,7 @@ public class ProcessadorMacros {
     private int nivelContador;  // contador
     private Map<String, Macro> definicaoMacros;  // guarda as definições das macros
     private Macro macroAtual;
+    private boolean isCode = false, isEnd = false;
 
     //Inicializa o processador
     public ProcessadorMacros(){
@@ -43,81 +44,75 @@ public class ProcessadorMacros {
             leitorMacro.lerLinhaScanner(scanner);                               // Processa cada linha do arquivo
             //String linha = leitorMacro.toString();
             String linha = processarLinha(leitorMacro);
-            System.out.println("LINHA -- " + linha);
-            output_file.write(linha+"\n");  
+            output_file.write(linha);  
         }
         output_file.close();
         return saida.toString();
     }
 
     // Expande a Macro a partir do nome fornecido
-    public String expandirMacro(String nomeMacro, ArrayList<String> parametros) throws NumeroErradoOperadores{
-        LeitorMacro leitorMacro = new LeitorMacro();
-        //String saida = "";					// Inicializa onde vai ser a saída do resultado expandido
-        Macro macro = definicaoMacros.get(nomeMacro);	// Recebe a definição da macro correspondente em definicaoMacros
-        macro.setParametrosReais(parametros);			// Define os parametros reais com os valores dentro de "parametros"
-
-        String expansao = macro.expandir();			// Retorna uma string com a macro expandida a partir dos parametros fornecidos
-        return expansao;
-        /*
-        String linhas[] = expansao.split("\\n");		// Divide a string e armazena cada linha num array
-
-        for(String linha : linhas){				// Para cada linha
-            leitorMacro.lerLinhaString(linha);		// Chama o método de leitura de linha
-            saida += processarLinha(leitorMacro);		// Concatena o processo da linha atual na saida
-        }
-        System.out.println("SAIDA -- \n" + saida);
-        return saida;	*/					// Retorna a saida
+    public String expandirMacro(LeitorMacro leitor) throws NumeroErradoOperadores{
+        ArrayList<String> parametros = new ArrayList<String>();
+        parametros.add(leitor.getRotulo());
+        for (String operando : leitor.getOperandos())
+            parametros.add(operando);
+        Macro macro = definicaoMacros.get(leitor.getInstrucao());
+        macro.setParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
+        return macro.expandir();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;
     }
 	
     // Processa individualmente uma linha da fonte
-    public String processarLinha(LeitorMacro leitorMacro) throws NumeroErradoOperadores{
-        String saida = "";								// Armazena o resultado do processamento no final								
-        String rotulo = leitorMacro.getRotulo();
+    public String processarLinha(LeitorMacro leitorMacro) throws NumeroErradoOperadores {
+        String saida = "";								// Armazena o resultado do processamento no final								        
         String instrucao = leitorMacro.getInstrucao();
-        ArrayList<String> tokens = new ArrayList<String>();
-            tokens.add(instrucao);
-            for (String operando : leitorMacro.getOperandos())
-                tokens.add(operando);
-            
-        //System.out.println("rotulo: " + rotulo+ "-- instrucao: " + instrucao);
+        String rotulo = leitorMacro.getRotulo();
         
-        if (rotulo.equals("MACRO")){						// Se for "MACRO"
-            nivelContador++;								// Incrementa o contador de nivel
-            if(estadoAtual == EstadoMacros.COPIA){					// Se o estado atual for igual a uma cópia dos estados de macro atual
-                estadoAtual = EstadoMacros.DEFINICAO;					// Estado atual vira a definição
-                if (definicaoMacros.containsKey(instrucao)){				// Se existe o rótulo atual em definicaoMacros
-                    definicaoMacros.remove(instrucao);				// Remove o rótulo
-                }  
-                macroAtual = null;							// Macro atual vira nula
-            }
-            // não quero "NomeMacro MACRO parametro" no montador
-            // saida = leitorMacro.toString() + "\n";
-        } else if (instrucao.equals("MEND")){					// Se não, se for "MEND"
-            nivelContador--;								// Decrementa o contador
-            if (nivelContador == 0){							// Se o contador apontar para 0
-                estadoAtual = EstadoMacros.COPIA;					// Estado atual se forna uma cópia do estado de macro atual
-                macroAtual = null;							// Macro atual vira nula
-            }
-        } else if (definicaoMacros.containsKey(instrucao)){				// Se não, se constar a instrução nas definições
-            this.estadoAtual = EstadoMacros.COPIA;					// Estado atual recebe a cópia atual do estado de macros
-            saida = expandirMacro(instrucao, tokens);			// Retorna a expansão da macro atual a partir das instruções e operandos
+        System.out.println("rotulo:"+rotulo+" instrucao:"+instrucao);
+        
+        if (instrucao.toLowerCase().equals("start")) 
+            isCode = true;
+        else if (isCode) {
+            if (definicaoMacros.containsKey(instrucao)){             // Se constar a instrução nas definições
+                this.estadoAtual = EstadoMacros.COPIA;			// Estado atual recebe a cópia atual do estado de macros
+                saida = expandirMacro(leitorMacro);                     // Retorna a expansão da macro atual a partir das instruções e operandos
+            } else
+                saida = leitorMacro.toString();
         }
+        else {
+            if (rotulo.toLowerCase().equals("macro")) {			// Se for "MACRO"/"Macro"/"macro"/...
+                nivelContador++;						// Incrementa o contador de nivel
+                if (estadoAtual == EstadoMacros.COPIA) {			// Se o estado atual for igual a uma cópia dos estados de macro atual
+                    estadoAtual = EstadoMacros.DEFINICAO;			// Estado atual vira a definição
+                    if (definicaoMacros.containsKey(instrucao)) {		// Se existe o rótulo atual em definicaoMacros
+                        definicaoMacros.remove(instrucao);			// Remove o rótulo
+                    }  
+                    macroAtual = null;						// Macro atual vira nula
+                }
+            } else if (instrucao.toLowerCase().equals("endm")) {		// Se não, se for "ENDM"/"EndM"/"endm"/"Endm"/...
+                nivelContador--;						// Decrementa o contador
+                if (nivelContador == 0) {					// Se o contador apontar para 0
+                    estadoAtual = EstadoMacros.COPIA;				// Estado atual se forna uma cópia do estado de macro atual
+                    macroAtual = null;						// Macro atual vira nula
+                }
+            } /*else if (definicaoMacros.containsKey(instrucao)){		// Se não, se constar a instrução nas definições
+                this.estadoAtual = EstadoMacros.COPIA;				// Estado atual recebe a cópia atual do estado de macros
+                saida = expandirMacro(instrucao, tokens);	// Retorna a expansão da macro atual a partir das instruções e operandos
+            }*/
 
-        if (this.estadoAtual == EstadoMacros.DEFINICAO){				// Se o estado atual for igual a definição no estado de macros
-            if (macroAtual == null){							// E se a macro atual for nula
-                String nomeMacro = leitorMacro.getInstrucao();
-                tokens = leitorMacro.getOperandos(); // operando do macro
-                Macro macro = new Macro(nomeMacro, tokens);		
-                this.macroAtual = macro;
-                definicaoMacros.put(nomeMacro, macro);				// Coloca uma nova macro e coloca dentro de definicaoMacros
-            } else 
-                macroAtual.adicionarNoEsqueleto(
-                    leitorMacro.toString() + "\n", nivelContador
-                ); // Se existir uma macro atual, concatenar a sua info ao esqueleto da macro
-        } else 
-            saida = leitorMacro.toString();
-
+            if (this.estadoAtual == EstadoMacros.DEFINICAO) {			// Se o estado atual for igual a definição no estado de macros
+                if (macroAtual == null) {					// E se a macro atual for nula
+                    String nomeMacro = leitorMacro.getInstrucao();
+                    ArrayList<String> tokens = leitorMacro.getOperandos();      // operando do macro
+                    Macro macro = new Macro(nomeMacro, tokens);		
+                    this.macroAtual = macro;
+                    definicaoMacros.put(nomeMacro, macro);		// Coloca uma nova macro e coloca dentro de definicaoMacros
+                } else 
+                    macroAtual.adicionarNoEsqueleto(
+                        leitorMacro.toString() + "\n", nivelContador
+                    ); // Se existir uma macro atual, concatenar a sua info ao esqueleto da macro
+            } 
+        }
+        
         return saida;
     }
 }
