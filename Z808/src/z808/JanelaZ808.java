@@ -13,9 +13,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -261,7 +259,6 @@ public class JanelaZ808 extends JFrame{
         fieldRegSI.setText(""+reg.getSI());
         fieldRegAX.setText(""+reg.getAX());
         fieldRegDX.setText(""+reg.getDX());
-        //fieldRegSR.setText(""+reg.getSR());
         fieldRegSP.setText(""+reg.getSP());
         int[] regSR = reg.getSR();
         fieldRegFlagCF.setText(""+regSR[0]);
@@ -271,7 +268,6 @@ public class JanelaZ808 extends JFrame{
         fieldRegFlagSF.setText(""+regSR[9]);
         fieldRegFlagOF.setText(""+regSR[12]);
     }
-    
     
     private void criarTextAreas() {
         JPanel panelInstr = criarTextArea(areaInstr, "INSTRUCTIONS");
