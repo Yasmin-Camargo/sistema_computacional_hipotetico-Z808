@@ -41,8 +41,8 @@ public class Macro {
         for (int i = 0; i < parametros.size(); i++) {
             // the following approach works
             // but we're not able to use Macro inside Macro
-            //String novo_nome = parametros.get(i).replace(";", "");;
-            //parametros_formais.get(i).setNome(novo_nome);
+            String novo_nome = parametros.get(i).replace(";", "");;
+            parametros_formais.get(i).setNome(novo_nome);
             parametros_reais.push(parametros_formais.get(i));
         }
     }
