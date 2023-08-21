@@ -10,12 +10,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class JanelaMontador extends JFrame {
@@ -23,11 +27,10 @@ public class JanelaMontador extends JFrame {
     Container container;
     JTextArea area; 
     
-    public JanelaMontador(String[][] montador, int LC, int PC, Map<String,Integer> tabela) {
+    public JanelaMontador(String[][] montador, int lc, int pc, Map<String,Integer> tabela) {
         // janela
         setTitle("Z808 Emulator: MONTADOR");
-        setSize(700, 300);
-        //setLocationRelativeTo(); 
+        setSize(700, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
         setMinimumSize(new Dimension(700, 400)); 
         setVisible(true);
@@ -37,45 +40,111 @@ public class JanelaMontador extends JFrame {
         container = getContentPane();
         gbc = new GridBagConstraints();
         
-        criarVisual(montador);
-        
-        // Print dos contadores
-        /*area.append("\n\nLC =  "+LC+"\nPC =  "+ PC);
-        area.append("\n\nTabela de Simbolos \n");
-        
-        // Print da tabela de símbolos
-        for (String chave : tabela.keySet()) {
-            area.append(chave + ": " + tabela.get(chave)+"\n");
-        }
-        
-        container.add(scroll);*/
+        criarVisual(montador, lc, pc, tabela);
     }
     
-    private void criarVisual(String[][] montador) {
-        JLabel label = new JLabel("Montador");
-        label.setFont(new Font("Arial", Font.BOLD, 16));
+    private void criarVisual(String[][] montador, int lc, int pc, Map<String,Integer> tabela) {
+        JPanel panelTopo = new JPanel();
+        panelTopo.setLayout(new GridBagLayout());
+        
+        JLabel labelMontador = new JLabel("Montador");
+        labelMontador.setFont(new Font("Arial", Font.BOLD, 16));
+        labelMontador.setHorizontalAlignment(SwingConstants.CENTER);
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        container.add(label, gbc);
+        gbc.insets = new Insets(0, 0, 5, 0);
+        panelTopo.add(labelMontador, gbc);
+
+        JLabel labelLC = new JLabel("LC: ");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(0, 0, 5, 5);
+        panelTopo.add(labelLC, gbc);
+        gbc.gridx = 1;
+        
+        JTextField fieldLC = new JTextField(10);
+        fieldLC.setText(Integer.toString(lc));
+        gbc.gridx = 1;
+        panelTopo.add(fieldLC, gbc);
+                
+        JLabel labelPC = new JLabel("PC: ");
+        gbc.gridx = 2;
+        panelTopo.add(labelPC, gbc);
+        
+        JTextField fieldPC = new JTextField(10);
+        fieldPC.setText(Integer.toString(pc));
+        gbc.gridx = 3;
+        panelTopo.add(fieldPC, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        container.add(panelTopo, gbc);
+        
+        JPanel panelTabela = new JPanel();
+        panelTabela.setLayout(new GridBagLayout());
         
         String[] colunas = {"Linha", " Endereço", "Label", "Operação", "Operando 1", "Operando 2"};
-        JTable tabela = new JTable(montador, colunas);
-        tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
+        JTable tabelaM = new JTable(montador, colunas);
+        tabelaM.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
         
-        JScrollPane scroll = new JScrollPane(tabela); 
+        JScrollPane scroll = new JScrollPane(tabelaM); 
         scroll.setPreferredSize(new Dimension(475, 330));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panelTabela.add(scroll, gbc);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 4;
         gbc.gridwidth = 4;
+        gbc.fill = GridBagConstraints.BOTH;
+        container.add(panelTabela, gbc);
+        
+        JPanel panelTSimbolos = new JPanel();
+        panelTSimbolos.setLayout(new GridBagLayout());   
+        
+        JLabel labelTSimbolos = new JLabel("Tabela de Símbolos ");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        container.add(scroll, gbc);
+        gbc.insets = new Insets(10, 0, 0, 0);
+        panelTSimbolos.add(labelTSimbolos, gbc);
         
+        int nivel = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        for (String chave : tabela.keySet()) {
+            JLabel label = new JLabel(chave);
+            gbc.gridx = 0;
+            gbc.gridy = nivel;
+            panelTSimbolos.add(label, gbc);
+
+            JTextField field = new JTextField(10);
+            field.setText(Integer.toString(tabela.get(chave)));
+            gbc.gridx = 1;
+            panelTSimbolos.add(field, gbc);
+            
+            nivel += 1;
+        }
         
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridheight = 1;
+        gbc.gridwidth = nivel;
+        container.add(panelTSimbolos, gbc);
         
     }
 

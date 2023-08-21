@@ -7,8 +7,6 @@ store AX;
 jp while; 
 move AX,cinco 
 push AX; 
-ENDM  
-  
 read [2]; 
 write 1; 
 move AX,[2]; 
@@ -18,6 +16,4 @@ store AX;
 jp while; 
 move AX,cinco 
 push AX; 
-ENDM  
-  
 cinco equ 5; end  

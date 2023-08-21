@@ -35,11 +35,18 @@ public class LeitorMacro {
             if (c == '\s' || c == '\t') cont++;
             else break;
         }
+        
         line = line.substring(cont);
         
         String tokens[] = line.split("\\s+");
+        boolean comentario = false;
         for (int i = 0; i < tokens.length; ++i) {
-            if (tokens[i].contains("#")) 
+            if (tokens[i].endsWith(";")) {
+                tokens[i] = tokens[i].substring(0, tokens[i].length()-1);
+                comentario = true;
+            }
+                
+            if (tokens[i].startsWith(";") || tokens[i].isEmpty())
                 break;
             else if (i == 0)
                 this.instrucao = tokens[i];
@@ -48,13 +55,15 @@ public class LeitorMacro {
             else 
                 this.operandos.add(tokens[i]);
             // colocar um tratamento
-            // caso tenha texto entre virgula
+            // caso tenha texto entre virgula: XXX,XXX
             // podem ser coisas diferentes 
             // como dois parametros
             //      isso é feito em
             //      macro.java atualmente
             //      em analiseParametro
             // o que fazer com a virgula, tho?
+            
+            if (comentario) break;
         }
     }
 
