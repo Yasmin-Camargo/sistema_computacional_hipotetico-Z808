@@ -13,7 +13,7 @@ public class ProcessadorMacros {
     private int nivelContador;  // contador
     private Map<String, Macro> definicaoMacros;  // guarda as definições das macros
     private Macro macroAtual;
-    private boolean isCode = false, isEnd = false;
+    private boolean isCode = false;
 
     //Inicializa o processador
     public ProcessadorMacros(){
@@ -25,7 +25,7 @@ public class ProcessadorMacros {
 
     // Processa o arquivo selecionado
     public String processar(String arquivo) throws IOException, NumeroErradoOperadores{
-        File saida = new File(arquivo.substring(0, arquivo.length() - 4) + "_montador.mxf");	// Cria um objeto e adiciona a extenção MXF
+        File saida = new File(arquivo.substring(0, arquivo.length() - 4) + "_montador.txt");	// Cria um objeto e adiciona a extenção MXF
         saida.createNewFile();										// Cria o arquivo de saida no sistema
         FileWriter output_file = new FileWriter(saida);
 
