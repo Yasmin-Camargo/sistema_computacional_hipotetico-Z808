@@ -67,7 +67,7 @@ public class ProcessadorMacros {
         String instrucao = leitorMacro.getInstrucao();
         String rotulo = leitorMacro.getRotulo();
         
-        System.out.println("rotulo:"+rotulo+" instrucao:"+instrucao);
+//        System.out.println("rotulo:"+rotulo+" instrucao:"+instrucao);
         
         if (instrucao.toLowerCase().equals("start")) 
             isCode = true;

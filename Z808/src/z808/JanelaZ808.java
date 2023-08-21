@@ -455,7 +455,7 @@ public class JanelaZ808 extends JFrame{
     }
     
      private void btnResetar() {
-        String caminho = sistema.getCaminhoArq();
+        String caminho = sistema.getCaminhoMacro();
         try {
             sistema.matarJanelaMontador();
             JanelaZ808 novo = new JanelaZ808(caminho);

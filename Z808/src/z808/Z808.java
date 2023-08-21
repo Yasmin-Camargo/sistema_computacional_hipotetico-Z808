@@ -22,30 +22,28 @@ import javax.swing.JOptionPane;
  *  Yasmin Souza Camargo
  */
 public class Z808 {
-    String caminho_arquivo;
+    String caminho_macro, caminho_instr;
     Registradores registrador;
     Memoria memoria;
     Montador montador;
     int tam_area_instrucoes, flag_jump, flag_att_tabelas, contInstr = 0;
     
-    public Z808(String caminho_arquivo) throws IOException {
-        this.caminho_arquivo = caminho_arquivo;
-        //gui = new JanelaZ808(caminho_arquivo);
+    public Z808(String caminho1) throws IOException {
+        caminho_macro = caminho1;
         iniciarZ808();
-        //gui.setVisible(true);
     }
     
     public void iniciarZ808() throws IOException {
         // MACRO
-        ProcessadorMacros macro_processor = new ProcessadorMacros();
+        ProcessadorMacros macro = new ProcessadorMacros();
         try {
-            String caminho_montador = macro_processor.processar(caminho_arquivo);
+            String caminho_montador = macro.processar(caminho_macro);
             // MONTADOR
-            System.out.println("-------------------- MONTADOR --------------------------------------------------------------------\n");
+            System.out.println("-------------------- MONTADOR --------------------\n");
             montador = new Montador(caminho_montador);
-            this.caminho_arquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
+            caminho_instr = ".\\src\\z808\\resources\\codigo_objeto.txt";
 
-            System.out.println("\n-------------------- EXECUTOR ---------------------------------------------------------------------\n");
+            System.out.println("\n-------------------- EXECUTOR --------------------\n");
 
             registrador = new Registradores();
         }
@@ -56,11 +54,11 @@ public class Z808 {
     }
     
     public int[] carregar_instrucoes() {
-        tam_area_instrucoes = conta_quantidade_instrucoes(caminho_arquivo); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
+        tam_area_instrucoes = conta_quantidade_instrucoes(caminho_instr); // Para criar uma memória deve-se saber primeiramente quanto de espaço ocupa as instruções
         flag_jump = 0;
         
         memoria = new Memoria(tam_area_instrucoes,montador.getDadosParaArmazenar()); // cria memória com o espaco para as instruções já definido
-        armazena_instrucoes(caminho_arquivo, memoria);  // coloca dados do arquivo na memória
+        armazena_instrucoes(caminho_instr, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
         registrador.setCL(montador.getValorDiretivaORG());  // pega endereço (indice) da primeira instrução na memória
@@ -687,8 +685,8 @@ public class Z808 {
         return tam_area_instrucoes;
     }
     
-    public String getCaminhoArq() {
-        return caminho_arquivo;
+    public String getCaminhoMacro() {
+        return caminho_macro;
     }
     
     public void matarJanelaMontador() {
