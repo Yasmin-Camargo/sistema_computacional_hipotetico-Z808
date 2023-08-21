@@ -7,21 +7,20 @@ public class LeitorMacro {
     public static final int TAM_MAX = 100;
     private String instrucao;
     private String rotulo;
-    ArrayList<String> operandos = new ArrayList<String>();
-    private boolean comentario;
+    ArrayList<String> operandos = new ArrayList<>();
 
     public void ResetarLinhas(){
         resetaValores();
     }
 
-    public void lerLinhaScanner(Scanner scanner) {
+    public void LerLinhaScanner(Scanner scanner) {
         if (scanner.hasNext()) {
             String line = scanner.nextLine();
-            lerLinhaString(line);
+            LerLinhaString(line);
         }
     }
 
-    public void lerLinhaString(String line) {
+    public void LerLinhaString(String line) {
         resetaValores();
         
         if (line.length() > TAM_MAX) {

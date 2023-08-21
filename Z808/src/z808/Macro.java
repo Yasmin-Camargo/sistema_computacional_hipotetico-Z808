@@ -1,4 +1,4 @@
-/*Implementação da lógica para criar e expandir macros*/
+/*Implementação da lógica para criar e ExpandirMacro macros*/
 package z808;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -12,18 +12,18 @@ public class Macro {
     public Macro (String nomeMacro, ArrayList<String> parametros_formais){
         this.nomeMacro = nomeMacro;
         this.esqueletoMacro = "";
-        this.parametros_formais = analiseParametros(parametros_formais);
+        this.parametros_formais = AnaliseParametros(parametros_formais);
         this.parametros_reais = new Stack<>();
     }
     /* Expande a definição de macro, substituindo os parâmetros formais pelos valores reais */ 
-    public String expandir(){
-        String expandirMacro = esqueletoMacro;
+    public String ExpandirMacro(){
+        String expansao = esqueletoMacro;
         for(int i = 0; i < parametros_formais.size(); i++){  // altera os valores neste loop
             Parametro parametro = parametros_formais.get(i);
             String nivel_par = "#("+parametro.getNivel()+","+parametro.getIndex()+")";  
-            expandirMacro = expandirMacro.replace(nivel_par, parametros_reais.get(i).getNome());
+            expansao = expansao.replace(nivel_par, parametros_reais.get(i).getNome());
         }
-        return expandirMacro;
+        return expansao;
     }
 
     /* Lança uma mensagem de erro quando ocorre um erro ao número incorreto de operandos*/
@@ -32,16 +32,15 @@ public class Macro {
     }
 
     /* Configura os parametros reais que serão usados na expansão */
-    public void setParametrosReais(ArrayList<String> parametros) throws NumeroErradoOperadores {
+    public void SetParametrosReais(ArrayList<String> parametros) throws NumeroErradoOperadores {
         if (parametros.size() != parametros_formais.size()) {
             throw new NumeroErradoOperadores("ERRO ao configurar os parâmetros, espera-se: " 
             + parametros_formais.size() + ", foi obtido" + parametros.size()); 
         }
-        //ArrayList<Parametro> analiseParametros = analiseParametros(parametros);
         for (int i = 0; i < parametros.size(); i++) {
             // the following approach works
             // but we're not able to use Macro inside Macro
-            String novo_nome = parametros.get(i).replace(";", "");;
+            String novo_nome = parametros.get(i).replace(";", "");
             parametros_formais.get(i).setNome(novo_nome);
             parametros_reais.push(parametros_formais.get(i));
         }
@@ -57,11 +56,10 @@ public class Macro {
                 );
             }
         }
-
         this.esqueletoMacro += string;
     }
 
-     private ArrayList<Parametro> analiseParametros (ArrayList<String> parametros) {
+     private ArrayList<Parametro> AnaliseParametros (ArrayList<String> parametros) {
         ArrayList<Parametro> result = new ArrayList<>();
         int contadorNivel = 1;
         int indexParametro = 1;
@@ -77,19 +75,19 @@ public class Macro {
 
 
     // getters and setters 
-    public String getNomeMacro() {
+    public String GetNomeMacro() {
             return nomeMacro;
         }
 
-    public void setNomeMacro(String nomeMacro){
+    public void SetNomeMacro(String nomeMacro){
     this.nomeMacro = nomeMacro;
     }
 
-    public String getEsqueletoMacro(){
+    public String GetEsqueletoMacro(){
         return esqueletoMacro;
     }
 
-    public void setEsqueletoMacro(String esqueletoMacro){
+    public void SetEsqueletoMacro(String esqueletoMacro){
         this.esqueletoMacro = esqueletoMacro;
     }
 

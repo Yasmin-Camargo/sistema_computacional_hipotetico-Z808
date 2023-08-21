@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package z808;
 
 public class Registradores {
@@ -69,26 +65,16 @@ public class Registradores {
     }
     
     public int getSR(String flag){
-        if (flag.equals("cf")){
-            return SR[0];
-        }
-        else if (flag.equals("pf")){
-            return SR[6];
-        }
-        else if (flag.equals("if")){
-            return SR[7];
-        }
-        else if (flag.equals("zf")){
-            return SR[8];
-        }
-        else if (flag.equals("sf")){
-            return SR[9];
-        }
-        else if (flag.equals("of")){
-            return SR[12];
-        } else{
-            System.out.println("Opção Inválida");
-            return -1;
+        switch (flag) {
+            case "cf": return SR[0];
+            case "pf": return SR[6];
+            case "if": return SR[7];
+            case "zf": return SR[8];
+            case "sf": return SR[9];
+            case "of": return SR[12];
+            default:
+                System.out.println("Opção Inválida");
+                return -1;
         }
     }
 
@@ -134,20 +120,28 @@ public class Registradores {
             System.out.println("ERRO: valor da flag "+ flag + " deve ser 0 ou 1");
         } 
         else {
-            if (flag.equals("cf")) {
-                SR[0] = valor;
-            } else if (flag.equals("pf")) {
-                SR[6] = valor;
-            } else if (flag.equals("if")) {
-                SR[7] = valor;
-            } else if (flag.equals("zf")) {
-                SR[8] = valor;
-            } else if (flag.equals("sf")) {
-                SR[9] = valor;
-            } else if (flag.equals("of")) {
-                SR[12] = valor;
-            } else {
-                System.out.println("Opção Inválida");
+            switch (flag) {
+                case "cf":
+                    SR[0] = valor;
+                    break;
+                case "pf":
+                    SR[6] = valor;
+                    break;
+                case "if":
+                    SR[7] = valor;
+                    break;
+                case "zf":
+                    SR[8] = valor;
+                    break;
+                case "sf":
+                    SR[9] = valor;
+                    break;
+                case "of":
+                    SR[12] = valor;
+                    break;
+                default:
+                    System.out.println("Opção Inválida");
+                    break;
             }
         }
     } 
@@ -156,17 +150,17 @@ public class Registradores {
         return SR;
     }
     
-    public int concatena_SR(){
-        StringBuilder string_concatenado = new StringBuilder();
+    public int JuntarSR(){
+        StringBuilder flags = new StringBuilder();
         System.out.println("FLAGS SR");
         for (int i = 0; i < SR.length; i++) {
-            string_concatenado.append(SR[i]);
+            flags.append(SR[i]);
             System.out.println(SR[i]);
         }
-        return (Integer.parseInt(string_concatenado.toString(),2));
+        return (Integer.parseInt(flags.toString(),2));
     }
     
-    public void desconcatena_SR(int valor){
+    public void SepararSR(int valor){
         String binario = Integer.toBinaryString(valor);
         String[] valor_separado = binario.split("");
         
@@ -187,8 +181,7 @@ public class Registradores {
         this.REM = 0;
         this.RBM = 0;
         this.SP = 0;
-        for (int i = 0; i < SR.length; i++) {
+        for (int i = 0; i < SR.length; i++) 
             SR[i] = 0;
-        }
     }    
 }

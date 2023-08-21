@@ -1,16 +1,7 @@
-/*
-Chamar macros -> ok
-Definir macros -> ok
-Pilha -> a fazer
-Processador de Macros -> ok
-Teste -> a fazer
-*/
-
 package z808;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -41,7 +32,7 @@ public class ProcessadorMacros {
         Scanner scanner = new Scanner(new File(arquivo));		// Cria um escritor para escrever no arquivo de saida
         LeitorMacro leitorMacro = new LeitorMacro();				// Cria um leitor para ler o conteudo do arquivo de entrada
         while (scanner.hasNextLine()) {                                         // Executa para cada linha existente no arquivo
-            leitorMacro.lerLinhaScanner(scanner);                               // Processa cada linha do arquivo
+            leitorMacro.LerLinhaScanner(scanner);                               // Processa cada linha do arquivo
             //String linha = leitorMacro.toString();
             String linha = processarLinha(leitorMacro);
             output_file.write(linha);  
@@ -57,8 +48,8 @@ public class ProcessadorMacros {
         for (String operando : leitor.getOperandos())
             parametros.add(operando);
         Macro macro = definicaoMacros.get(leitor.getInstrucao());
-        macro.setParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
-        return macro.expandir();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;
+        macro.SetParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
+        return macro.ExpandirMacro();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;
     }
 	
     // Processa individualmente uma linha da fonte

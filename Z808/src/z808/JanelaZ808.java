@@ -31,7 +31,7 @@ public class JanelaZ808 extends JFrame{
     private final int TAM_MAX_TABELAS = 1000;
     Z808 sistema;
     
-    private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSR, fieldRegSP;
+    private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
     private JTextArea areaInstr, areaSaida;
     private JButton btnCarregarInstr, btnExecutar, btnResetar, btnPasso;
@@ -39,7 +39,7 @@ public class JanelaZ808 extends JFrame{
     int chegouAoFim = 0, contInstr = 0;
     
     Container container;
-    private GridBagConstraints gbc;
+    private final GridBagConstraints gbc;
     
     @SuppressWarnings("empty-statement")
     public JanelaZ808(String pathArquivo) throws IOException { 
@@ -55,7 +55,6 @@ public class JanelaZ808 extends JFrame{
         setBackground(Color.GRAY);
         setLayout(new GridBagLayout());
         
-        // onde todos os itens são inseridos        
         gbc = new GridBagConstraints();
         container = getContentPane();
         
@@ -114,7 +113,7 @@ public class JanelaZ808 extends JFrame{
     }
     
     private void btnVoltar() {
-        sistema.matarJanelaMontador();
+        sistema.MatarJanelaMontador();
         JanelaInicial janelaInicial = new JanelaInicial();
         janelaInicial.setVisible(true);
         this.dispose();
@@ -394,7 +393,7 @@ public class JanelaZ808 extends JFrame{
     
     private void btnCarregarInstr() {
         int[] memoria = sistema.carregar_instrucoes();  
-        int DS = sistema.getDSMemoria();
+        int DS = sistema.GetDSMemoria();
         
         String codigo[][] = new String[DS][2];
         int i;
@@ -405,7 +404,7 @@ public class JanelaZ808 extends JFrame{
         criarTabelaCodigo(codigo);
         atualizarMemoriaDados(memoria);
         atualizarMemoriaPilha(memoria);
-        atualizarRegistradores(sistema.getRegistrador());
+        atualizarRegistradores(sistema.GetRegistrador());
         
         btnCarregarInstr.setEnabled(false);
         btnPasso.setEnabled(true);
@@ -416,13 +415,13 @@ public class JanelaZ808 extends JFrame{
     }
     
     private void btnPasso() {           
-        if (sistema.getRegistrador().getIP() != sistema.getQuantInstr()) {
-            String[] retorno = sistema.executar_passo();
-            atualizarRegistradores(sistema.getRegistrador());
+        if (sistema.GetRegistrador().getIP() != sistema.GetQuantInstr()) {
+            String[] retorno = sistema.ExecutarPasso();
+            atualizarRegistradores(sistema.GetRegistrador());
             atualizarInstr(retorno[0]);
             atualizarSaida(retorno[1]);
             if (retorno[2].equals("1")) {
-                dadosMemoria = sistema.getDadosMemoria();                
+                dadosMemoria = sistema.GetDadosMemoria();                
                 atualizarMemoriaDados(dadosMemoria);
                 atualizarMemoriaPilha(dadosMemoria);
                 // TO COM ERRO AQUI?
@@ -440,14 +439,14 @@ public class JanelaZ808 extends JFrame{
     
     private void btnExecutar() {
         if (chegouAoFim == 0) {
-            String[] retorno = sistema.executar_codigo();
+            String[] retorno = sistema.ExecutarCod();
             atualizarInstr(retorno[0] + "-- FIM DAS INSTRUÇÕES --");
             atualizarSaida(retorno[1]);
             chegouAoFim = 1;
-            dadosMemoria = sistema.getDadosMemoria();
+            dadosMemoria = sistema.GetDadosMemoria();
             atualizarMemoriaDados(dadosMemoria);
             atualizarMemoriaPilha(dadosMemoria);
-            atualizarRegistradores(sistema.getRegistrador());
+            atualizarRegistradores(sistema.GetRegistrador());
             btnPasso.setEnabled(false);
             btnExecutar.setEnabled(false);
             this.setVisible(true);
@@ -455,9 +454,9 @@ public class JanelaZ808 extends JFrame{
     }
     
      private void btnResetar() {
-        String caminho = sistema.getCaminhoMacro();
+        String caminho = sistema.GetCaminhoMacro();
         try {
-            sistema.matarJanelaMontador();
+            sistema.MatarJanelaMontador();
             JanelaZ808 novo = new JanelaZ808(caminho);
             novo.setVisible(true);
             this.dispose();
@@ -483,7 +482,7 @@ public class JanelaZ808 extends JFrame{
     }
     
     public void atualizarMemoriaDados(int[] memoria) {
-        int DS = sistema.getDSMemoria();
+        int DS = sistema.GetDSMemoria();
         //int tamMaxMemoria = Memoria.TAM_MAXIMO;
         String dados[][] = new String[TAM_MAX_TABELAS][2];
         int i = DS;
