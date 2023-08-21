@@ -9,35 +9,35 @@ public class LeitorMacro {
     private String rotulo;
     ArrayList<String> operandos = new ArrayList<>();
 
-    public void ResetarLinhas(){
+    public void resetarLinhas(){
         resetaValores();
     }
 
-    public void LerLinhaScanner(Scanner scanner) {
+    public void lerLinhaScanner(Scanner scanner) {
         if (scanner.hasNext()) {
             String line = scanner.nextLine();
-            LerLinhaString(line);
+            lerLinhaString(line);
         }
     }
 
-    public void LerLinhaString(String line) {
+    public void lerLinhaString(String linha) {
         resetaValores();
         
-        if (line.length() > TAM_MAX) {
+        if (linha.length() > TAM_MAX) {
             System.out.println("Linha é maior que o tamanho máximo!");
             return;
         }
         
         // remove espaços e tabs da frente das instruções
         int cont = 0;
-        for (char c : line.toCharArray()) {
+        for (char c : linha.toCharArray()) {
             if (c == '\s' || c == '\t') cont++;
             else break;
         }
         
-        line = line.substring(cont);
+        linha = linha.substring(cont);
         
-        String tokens[] = line.split("\\s+");
+        String tokens[] = linha.split("\\s+");
         boolean comentario = false;
         for (int i = 0; i < tokens.length; ++i) {
             if (tokens[i].endsWith(";")) {

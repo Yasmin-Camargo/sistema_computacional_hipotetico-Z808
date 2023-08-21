@@ -150,7 +150,7 @@ public class Registradores {
         return SR;
     }
     
-    public int JuntarSR(){
+    public int juntarSR(){
         StringBuilder flags = new StringBuilder();
         System.out.println("FLAGS SR");
         for (int i = 0; i < SR.length; i++) {
@@ -160,7 +160,7 @@ public class Registradores {
         return (Integer.parseInt(flags.toString(),2));
     }
     
-    public void SepararSR(int valor){
+    public void separarSR(int valor){
         String binario = Integer.toBinaryString(valor);
         String[] valor_separado = binario.split("");
         
@@ -173,7 +173,7 @@ public class Registradores {
         return ("CF:"+ SR[0] + " PF:" + SR[6] +  " IF:" + SR[7] + " ZF:" + SR[8] + " SF:" + SR[9] + " OF:" + SR[12]);
     }
     
-    public void reinicializaRegistradores(){
+    public void resetRegistr(){
         this.AX = 0;
         this.DX = 0;
         this.SI = 0;

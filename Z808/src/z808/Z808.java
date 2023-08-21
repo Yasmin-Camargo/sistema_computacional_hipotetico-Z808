@@ -30,10 +30,10 @@ public class Z808 {
     
     public Z808(String caminho1) throws IOException {
         caminho_macro = caminho1;
-        IniciarZ808();
+        iniciarZ808();
     }
     
-    private void IniciarZ808() throws IOException {
+    private void iniciarZ808() throws IOException {
         ProcessadorMacros macro = new ProcessadorMacros();
         try {
             String caminho_montador = macro.processar(caminho_macro);
@@ -49,12 +49,12 @@ public class Z808 {
         } 
     }
     
-    public int[] carregar_instrucoes() {
-        tam_area_instrucoes = ContarInstrucoes(caminho_instr); // calcula quanto de espaço as instruções ocupam
+    public int[] carregarInstr() {
+        tam_area_instrucoes = contarInstr(caminho_instr); // calcula quanto de espaço as instruções ocupam
         flag_jump = 0;
         
         memoria = new Memoria(tam_area_instrucoes,montador.getDadosParaArmazenar()); // cria memória 
-        armazena_instrucoes(caminho_instr, memoria);  // coloca dados do arquivo na memória
+        guardaInstr(caminho_instr, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
         registrador.setCL(montador.getValorDiretivaORG());  // pega endereço (indice) da primeira instrução na memória
@@ -70,7 +70,7 @@ public class Z808 {
         return memoria.getDadosMemoria();
     }
     
-    public String[] ExecutarPasso() {
+    public String[] executarPasso() {
         flag_att_tabelas = 0;
         cont_instr++;
         String instrucao = cont_instr + "\t", saida = "";
@@ -79,7 +79,7 @@ public class Z808 {
         switch (registrador.getRI()){
             case 3 -> {
                 int AX = registrador.getAX();
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {
                     instrucao += "add AX,AX";   
                     registrador.setAX(Instrucoes.add(AX, AX, registrador));
@@ -90,19 +90,19 @@ public class Z808 {
             }
             case 4 -> {
                 instrucao += "add AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRI(), registrador));
             }
             case 5 -> {
                 instrucao += "add AX,opd (direto)";  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.add(registrador.getAX(), registrador.getRBM(), registrador));
             }
             case 43 -> {
                 int AX = registrador.getAX();
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "sub AX,AX";
                     registrador.setAX(Instrucoes.sub(AX, AX, registrador));
@@ -113,19 +113,19 @@ public class Z808 {
             }
             case 44 -> {
                 instrucao += "sub AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRI(), registrador));
             }
             case 45 -> {
                 instrucao += "sub AX,opd (direto)";  //!!! Considerando que o endereço digitado pelo usuário é exatamente onde esta o dado
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.sub(registrador.getAX(), registrador.getRBM(), registrador));
             }
 
             case 247 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 int AX = registrador.getAX();
                 switch (registrador.getRI()) {  
                     case 246 -> {
@@ -148,18 +148,18 @@ public class Z808 {
             }
             case 60 -> {
                 instrucao += "cmp AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 Instrucoes.cmp(registrador.getRI(), registrador);
             }
             case 61 -> {
                 instrucao += "cmp AX,opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 Instrucoes.cmp(registrador.getRBM(), registrador);
             }
             case 59 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 194) {  
                     instrucao += "cmp AX,DX";
                     Instrucoes.cmp(registrador.getDX(), registrador);
@@ -167,7 +167,7 @@ public class Z808 {
             }
              case 35 -> {
                  int AX = registrador.getAX();
-                 Att3Registr(registrador, memoria); // lê próximo código da memória
+                 att3Registr(registrador, memoria); // lê próximo código da memória
                  if (registrador.getRI() == 192) {
                      instrucao += "and AX,AX";
                      registrador.setAX(Instrucoes.and(AX, AX, registrador));
@@ -178,19 +178,19 @@ public class Z808 {
             }
             case 36 -> {
                 instrucao += "and AX,opd (direto)";        
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.and(registrador.getAX(), registrador.getRI(), registrador));
             }
             case 37 -> {
                 instrucao += "and AX,opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.and(registrador.getAX(), registrador.getRBM(), registrador));
             }               
             case 11 -> {
                 int AX = registrador.getAX();
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "or AX,AX";
                     registrador.setAX(Instrucoes.or(AX, AX, registrador));
@@ -201,25 +201,25 @@ public class Z808 {
             }
             case 12 -> {
                 instrucao += "or AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.or(registrador.getAX(), registrador.getRI(), registrador));
             }
             case 13 -> {
                 instrucao += "or AX,opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.or(registrador.getAX(), registrador.getRBM(), registrador));
             }
             case 248 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "not AX";
                     registrador.setAX(Instrucoes.not(registrador.getAX(), registrador));
                 }
             }
             case 51 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "xor AX,AX";
                     registrador.setAX(Instrucoes.xor(registrador.getAX(), registrador.getAX(), registrador));
@@ -230,54 +230,54 @@ public class Z808 {
             }
             case 52 -> {
                 instrucao += "xor AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.xor(registrador.getAX(), registrador.getRI(), registrador));
             }
             case 53 -> {
                 instrucao += "xor AX,opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(Instrucoes.xor(registrador.getAX(), registrador.getRBM(), registrador));
             }
             case 235 -> {
                 instrucao += "jmp opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jmp(registrador.getRBM(), registrador, memoria);
             }
             case 116 -> {
                 instrucao += "jz opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jz(registrador.getRBM(), registrador, memoria);
             }
             case 117 -> {
                 instrucao += "jnz opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jnz(registrador.getRBM(), registrador, memoria);
             }
             case 122 -> {
                 instrucao += "jp opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 flag_jump = Instrucoes.jp(registrador.getRBM(), registrador, memoria);
             }
             case 232 -> {
                 instrucao += "call opd (imediato)";        
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 memoria.push_pilha(registrador.getIP());
                 registrador.setIP(registrador.getRI());
                 flag_att_tabelas = 1;
             }
             case 231 -> {
                 instrucao += "jp opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 memoria.push_pilha(registrador.getIP());
@@ -290,7 +290,7 @@ public class Z808 {
                 flag_att_tabelas = 1;
             }
             case 87 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "pop AX";
                     registrador.setAX(memoria.pop_pilha());
@@ -302,23 +302,23 @@ public class Z808 {
             }
             case 88 -> {
                 instrucao += "pop opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 memoria.escreverDados(memoria.pop_pilha(), registrador.getRI());
                 flag_att_tabelas = 1;
             }
             case 89 -> {
                 instrucao += "pop opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereço (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereço (16 bits)
                 memoria.escreverDados(memoria.pop_pilha(), registrador.getRI());
                 flag_att_tabelas = 1;
             }
             case 157 -> {
                 instrucao += "popf";
-                registrador.SepararSR(memoria.pop_pilha());
+                registrador.separarSR(memoria.pop_pilha());
                 flag_att_tabelas = 1;
             }
             case 80 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "push AX";
                     memoria.push_pilha(registrador.getAX());
@@ -330,11 +330,11 @@ public class Z808 {
             }
             case 156 -> {
                 instrucao += "pushf";
-                memoria.push_pilha(registrador.JuntarSR());
+                memoria.push_pilha(registrador.juntarSR());
                 flag_att_tabelas = 1;
             }
             case 7 -> {
-                Att3Registr(registrador, memoria); // lê próximo código da memória
+                att3Registr(registrador, memoria); // lê próximo código da memória
                 if (registrador.getRI() == 192) {  
                     instrucao += "store AX";
                     Instrucoes.store(registrador.getAX(), memoria);
@@ -346,7 +346,7 @@ public class Z808 {
             } 
             case 18 -> {
                 instrucao += "read opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do endereco (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereco (16 bits)
                 String aux1 = "";
                 while (aux1.equals("")) {
                     aux1 = JOptionPane.showInputDialog(
@@ -372,7 +372,7 @@ public class Z808 {
             }
             case 19 -> {
                 instrucao += "read opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do endereco (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereco (16 bits)
                 String aux2 = "";
                 while (aux2.equals("")) {
                     aux2 = JOptionPane.showInputDialog(
@@ -398,26 +398,26 @@ public class Z808 {
             }
             case 9 -> {
                 instrucao += "write opd (direto)"; // primeiro vai na memória no endereço indicado na instrução, lê o dado, neste dado esta o endereço que quer acessar
-                Att3Registr(registrador, memoria); //leitura do endereco (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereco (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 saida = "dataAreaMemory[" + (registrador.getRBM() + memoria.getInicioSegmentoDados())+ "] = " + memoria.lerDados(registrador.getRBM());
             }
             case 8 -> {
                 instrucao += "write opd (imediato)"; // mostra para o usuário valor armazenado no endereço de memória indicado na instrução
-                Att3Registr(registrador, memoria); //leitura do endereco (16 bits)
+                att3Registr(registrador, memoria); //leitura do endereco (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 saida = "dataAreaMemory[" + (memoria.getInicioSegmentoDados() + registrador.getREM()) + "] = " + registrador.getRBM();
             }
             case 20 -> {
                 instrucao += "move AX,opd (imediato)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(registrador.getRI());
             }   
             case 21 -> {
                 instrucao += "move AX,opd (direto)";
-                Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setREM(registrador.getRI()); // Coloca endereço no registrador de endereço de memória
                 registrador.setRBM(memoria.lerDados(registrador.getREM())); // coloca conteudo no registrador de Buffer da Memória
                 registrador.setAX(registrador.getRBM());
@@ -425,7 +425,7 @@ public class Z808 {
             case 22 -> {
                 if (registrador.getRI() == 194) {
                     instrucao += "move AX,DX";  
-                    Att3Registr(registrador, memoria); //leitura do operando (16 bits)
+                    att3Registr(registrador, memoria); //leitura do operando (16 bits)
                     registrador.setDX(registrador.getAX());
                 }
             }
@@ -458,12 +458,12 @@ public class Z808 {
         return new String[] {instrucao, saida, ""+flag_att_tabelas};
     }
     
-    public String[] ExecutarCod() {
+    public String[] executar() {
          String[] aux, retorno = {"", "", "1"};
         // while que percorre a area de codigo(instruções) da memória
         while (registrador.getIP() != tam_area_instrucoes){
             flag_jump = 0;
-            aux = ExecutarPasso();
+            aux = executarPasso();
             if(aux[0].contains("ERRO")) break;
             else {
                 retorno[0] += (aux[0] + "\n");
@@ -477,15 +477,16 @@ public class Z808 {
     }
     
     // Atualiza Contador de Localização, Registrador de Instruções e o Apontador de instrução
-    public void Att3Registr(Registradores registrador, Memoria memoria){
+    // Antigo Atualizar_CL_RI_IP()
+    public void att3Registr(Registradores registrador, Memoria memoria){
         registrador.setCL(registrador.getIP());
         registrador.setRI(memoria.lerCodigo(registrador.getCL()));
         registrador.setIP(registrador.getIP() + 1);
-        Instrucoes.verificacoes_AX(registrador.getAX(), registrador);
+        Instrucoes.verificaAX(registrador.getAX(), registrador);
     }
     
     // Conta quantos espaços de memória deverão ser reservados para área de instruções
-    public int ContarInstrucoes(String caminho_arquivo){
+    public int contarInstr(String caminho_arquivo){
         char[] opd = new char[4];   //16 bits
         char[] ch = new char[2];    //8 bits
         int flag_final_arquivo = 0, quantidade_memoria = 0;
@@ -501,11 +502,11 @@ public class Z808 {
             );
         } else {
             try {
-                FileInputStream arquivo_leitura = new FileInputStream(arquivo);
+                FileInputStream arq_leitura = new FileInputStream(arquivo);
                 while (flag_final_arquivo != 1) {
                     //lê primeiro byte (8 bits) da instrução
-                    ch[0] = (char) arquivo_leitura.read();
-                    ch[1] = (char) arquivo_leitura.read();
+                    ch[0] = (char) arq_leitura.read();
+                    ch[1] = (char) arq_leitura.read();
                     quantidade_memoria += 1;
                     if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') { // Verifica se chegou no Fim do arquivo
                         flag_final_arquivo = 1;
@@ -515,19 +516,19 @@ public class Z808 {
                         // Instruções que armazenam + 8 bits
                         switch (instrucao) {
                             case "03", "F7", "2B", "3B", "23", "F8", "0B", "33", "57", "50", "07", "16" -> {
-                                ch[0] = (char) arquivo_leitura.read();
-                                ch[1] = (char) arquivo_leitura.read();
+                                ch[0] = (char) arq_leitura.read();
+                                ch[1] = (char) arq_leitura.read();
                                 quantidade_memoria += 1;
                             }
                             case "05", "04", "2D", "2C", "3D", "3C", "25", "24", "0D", "0C", "35", "34", "EB", "74", "75", "7A", "E8", "E7", "59", "58", "12", "13", "08", "09", "14", "15" -> {
                                 //leitura do operando (16 bits)
-                                opd[0] = (char) arquivo_leitura.read();
+                                opd[0] = (char) arq_leitura.read();
                                 if (opd[0] == '-'){              //verifica se é um número negativo
-                                    opd[0] = (char) arquivo_leitura.read();
+                                    opd[0] = (char) arq_leitura.read();
                                 }
-                                opd[1] = (char) arquivo_leitura.read();
-                                opd[2] = (char) arquivo_leitura.read();
-                                opd[3] = (char) arquivo_leitura.read();
+                                opd[1] = (char) arq_leitura.read();
+                                opd[2] = (char) arq_leitura.read();
+                                opd[3] = (char) arq_leitura.read();
                                 quantidade_memoria += 1;
                             }
                             case "EF", "EE", "9D", "9C" -> {
@@ -537,7 +538,7 @@ public class Z808 {
                         }
                     }
                 }
-                arquivo_leitura.close();
+                arq_leitura.close();
             } catch (IOException e) {
                 System.out.println("Erro: ao manipular o arquivo");
             }
@@ -546,7 +547,7 @@ public class Z808 {
     }
     
     // Coloca cada uma das intruções na memória
-    public void armazena_instrucoes(String caminho_arquivo, Memoria memoria){
+    public void guardaInstr(String caminho_arquivo, Memoria memoria){
         char[] opd = new char[4];
         char[] ch = new char[2];
         int flag_final_arquivo = 0, quant_instrucoes = 0, numNegativo = 0;
@@ -557,11 +558,11 @@ public class Z808 {
             JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
         } else {
             try {
-                FileInputStream arquivo_leitura = new FileInputStream(arquivo);
+                FileInputStream arq_leitura = new FileInputStream(arquivo);
                 while (flag_final_arquivo != 1) {
                     //lê primeiro byte (8 bits) da instrução
-                    ch[0] = (char) arquivo_leitura.read();
-                    ch[1] = (char) arquivo_leitura.read();
+                    ch[0] = (char) arq_leitura.read();
+                    ch[1] = (char) arq_leitura.read();
                   
                     // Verifica se chegou no Fim do arquivo
                     if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
@@ -574,20 +575,20 @@ public class Z808 {
                         // Instruções que armazenam + 8 bits
                         switch (instrucao) {
                             case "03", "F7", "2B", "3B", "23", "F8", "0B", "33", "57", "50", "07", "16" -> {
-                                ch[0] = (char) arquivo_leitura.read();
-                                ch[1] = (char) arquivo_leitura.read();
+                                ch[0] = (char) arq_leitura.read();
+                                ch[1] = (char) arq_leitura.read();
                                 instrucao = new String(ch);
                                 memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
                                 quant_instrucoes += 1;
                             }
                             case "05", "04", "2D", "2C", "3D", "3C", "25", "24", "0D", "0C", "35", "34", "EB", "74", "75", "7A", "E8", "E7", "59", "58", "12", "13", "08", "09", "14", "15" -> {
-                                opd[0] = (char) arquivo_leitura.read();
+                                opd[0] = (char) arq_leitura.read();
                                 if (opd[0] == '-'){ //verifica se é um número negativo
-                                    opd[0] = (char) arquivo_leitura.read();
+                                    opd[0] = (char) arq_leitura.read();
                                     numNegativo = 1;
-                                }   opd[1] = (char) arquivo_leitura.read();
-                                opd[2] = (char) arquivo_leitura.read();
-                                opd[3] = (char) arquivo_leitura.read();
+                                }   opd[1] = (char) arq_leitura.read();
+                                opd[2] = (char) arq_leitura.read();
+                                opd[3] = (char) arq_leitura.read();
                                 instrucao = new String(opd);
                                 if (numNegativo == 1){
                                     numNegativo = 0;
@@ -603,42 +604,45 @@ public class Z808 {
                         }
                     }
                 }
-                arquivo_leitura.close();
+                arq_leitura.close();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "Erro ao manipular o arquivo.", "ERRO", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
     
-    public Memoria GetMemoria() {
+    public Memoria getMemoria() {
         return memoria;
     }
     
-    public int[] GetDadosMemoria() {
+    public int[] getDadosMemoria() {
         return memoria.getDadosMemoria();
     }
     
-    public int GetDSMemoria() {
+    public int getDSMemoria() {
         return memoria.getInicioSegmentoDados();
     }
 
-  public void AttMemoria(Memoria memoria) {
+  public void attMemoria(Memoria memoria) {
         this.memoria = memoria;
     }
     
-    public Registradores GetRegistrador() {
+    public Registradores getRegistr() {
         return registrador;
     }
     
-    public int GetQuantInstr() {
+    public int getQuantInstr() {
         return tam_area_instrucoes;
     }
     
-    public String GetCaminhoMacro() {
+    public String getCaminhoMacro() {
         return caminho_macro;
     }
     
-    public void MatarJanelaMontador() {
+    public void matarJanelaMontador() {
         montador.matarJanela();
+        
+        // @ JULIA COLOCA UMA ASCII DE FAQUINHA AQUI
+        
     }
 }

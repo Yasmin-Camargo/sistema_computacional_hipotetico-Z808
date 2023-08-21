@@ -20,11 +20,11 @@ public class Memoria {
     private int SP; // Registrador SP -> armazena o endereço atual da pilha
     private int SS; // Registrador SS -> aponta para o início do segmento de pilha na memória
 
-    public Memoria (int tamanhoCodigo, Map<Integer, Integer>  dados) {
-        tamanhoCodigo -= 1;
+    public Memoria (int tam_codigo, Map<Integer, Integer>  dados) {
+        tam_codigo -= 1;
         codigo_dados_pilha = new int[TAM_MAXIMO];
         
-        if (tamanhoCodigo > TAM_MAXIMO){
+        if (tam_codigo > TAM_MAXIMO){
             JOptionPane.showMessageDialog(
                 null, 
                 "O programa excedeu a capacidade de armazenamento.", 
@@ -34,7 +34,7 @@ public class Memoria {
             exit(0);
         } else {
             CS = 0;                     // Inicio 
-            DS = tamanhoCodigo;         // Aponta o início segmento de dados após o segmento de código
+            DS = tam_codigo;         // Aponta o início segmento de dados após o segmento de código
             SP = TAM_MAXIMO - 1;    // Aponta o início da pilha no fim da memória
             SS = TAM_MAXIMO - 1;    // Aponta o início do segmento de pilha (pilha vazia SS = SP)
         }
@@ -43,7 +43,7 @@ public class Memoria {
         for (int i = DS; i <= SP; i++){    
             codigo_dados_pilha[i] = -1;
         }
-        armazenaDadosMontador(dados, tamanhoCodigo);
+        armazenaDadosMontador(dados, tam_codigo);
     }
     
     // Métodos para obter o tamanho dos segmentos de memória

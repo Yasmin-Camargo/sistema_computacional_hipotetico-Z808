@@ -6,19 +6,19 @@ public class Instrucoes {
     // --> Instruções aritméticas
     public static int add(int num1, int num2, Registradores registrador){
         int soma = num1 + num2;
-        verificacao_OF(soma, registrador);  // verificação das flags afetadas
-        verificacao_PF(soma, registrador);
-        verificacao_ZF(soma, registrador);
-        verificacao_SF(soma, registrador);
+        verificaOF(soma, registrador);  // verificação das flags afetadas
+        verificaPF(soma, registrador);
+        verificaZF(soma, registrador);
+        verificaSF(soma, registrador);
         return (soma);
     }
     
     public static int sub(int num1, int num2, Registradores registrador){
         int subtracao = num1 - num2;
-        verificacao_OF(subtracao, registrador);  // verificação das flags afetadas
-        verificacao_PF(subtracao, registrador);
-        verificacao_ZF(subtracao, registrador);
-        verificacao_SF(subtracao, registrador);
+        verificaOF(subtracao, registrador);  // verificação das flags afetadas
+        verificaPF(subtracao, registrador);
+        verificaZF(subtracao, registrador);
+        verificaSF(subtracao, registrador);
         return (subtracao);
     }
     
@@ -28,19 +28,19 @@ public class Instrucoes {
             divisao = num1 / num2;
             registrador.setAX(num1 % num2);       // resto da divisão é colocado em AX
         } 
-        verificacao_OF(divisao, registrador);  // verificação das flags afetadas
-        verificacao_PF(divisao, registrador);
-        verificacao_ZF(divisao, registrador);
-        verificacao_SF(divisao, registrador);
+        verificaOF(divisao, registrador);  // verificação das flags afetadas
+        verificaPF(divisao, registrador);
+        verificaZF(divisao, registrador);
+        verificaSF(divisao, registrador);
         return divisao;
     }
     
     public static int mult(int num1, int num2, Registradores registrador){
         int multiplicacao = num1 * num2;
-        verificacao_OF(multiplicacao, registrador);  // verificação das flags afetadas
-        verificacao_PF(multiplicacao, registrador);
-        verificacao_ZF(multiplicacao, registrador);
-        verificacao_SF(multiplicacao, registrador);
+        verificaOF(multiplicacao, registrador);  // verificação das flags afetadas
+        verificaPF(multiplicacao, registrador);
+        verificaZF(multiplicacao, registrador);
+        verificaSF(multiplicacao, registrador);
         if (registrador.getSR("of") == 1){          // Se deu overflow uma parte do número vai para o registrador AX e a outra para DX
             int parteAlta = multiplicacao >> 16;        // Desloca 16 bits para direita
             int parteBaixa = multiplicacao & 0xFFFF;    // Máscara de 16 bits
@@ -63,10 +63,10 @@ public class Instrucoes {
     // --> Instruções lógicas
     public static int and(int num1, int num2, Registradores registrador){
         int operacaoAND = num1 & num2;
-        verificacao_OF(operacaoAND, registrador);  // verificação das flags afetadas
-        verificacao_PF(operacaoAND, registrador);
-        verificacao_ZF(operacaoAND, registrador);
-        verificacao_SF(operacaoAND, registrador);
+        verificaOF(operacaoAND, registrador);  // verificação das flags afetadas
+        verificaPF(operacaoAND, registrador);
+        verificaZF(operacaoAND, registrador);
+        verificaSF(operacaoAND, registrador);
         return (operacaoAND);
     }
     
@@ -74,28 +74,28 @@ public class Instrucoes {
         int numeroBits = Integer.toBinaryString(num1).length(); // Número de bits do valor decimal
         int maxValor = (1 << numeroBits) - 1; // Valor máximo representável com o mesmo número de bits
         int operacaoNOT = maxValor - num1; // Operação NOT sem alterar o sinal
-        verificacao_OF(operacaoNOT, registrador);  // verificação das flags afetadas
-        verificacao_PF(operacaoNOT, registrador);
-        verificacao_ZF(operacaoNOT, registrador);
-        verificacao_SF(operacaoNOT, registrador);
+        verificaOF(operacaoNOT, registrador);  // verificação das flags afetadas
+        verificaPF(operacaoNOT, registrador);
+        verificaZF(operacaoNOT, registrador);
+        verificaSF(operacaoNOT, registrador);
         return (operacaoNOT);
     }
     
     public static int or(int num1, int num2, Registradores registrador){
         int operacaoOR = num1 | num2;
-        verificacao_OF(operacaoOR, registrador);  // verificação das flags afetadas
-        verificacao_PF(operacaoOR, registrador);
-        verificacao_ZF(operacaoOR, registrador);
-        verificacao_SF(operacaoOR, registrador);
+        verificaOF(operacaoOR, registrador);  // verificação das flags afetadas
+        verificaPF(operacaoOR, registrador);
+        verificaZF(operacaoOR, registrador);
+        verificaSF(operacaoOR, registrador);
         return (operacaoOR);
     }
     
     public static int xor(int num1, int num2, Registradores registrador){
         int operacaoXOR = num1 ^ num2;
-        verificacao_OF(operacaoXOR, registrador);  // verificação das flags afetadas
-        verificacao_PF(operacaoXOR, registrador);
-        verificacao_ZF(operacaoXOR, registrador);
-        verificacao_SF(operacaoXOR, registrador);
+        verificaOF(operacaoXOR, registrador);  // verificação das flags afetadas
+        verificaPF(operacaoXOR, registrador);
+        verificaZF(operacaoXOR, registrador);
+        verificaSF(operacaoXOR, registrador);
         return (operacaoXOR);
     }
     
@@ -163,9 +163,9 @@ public class Instrucoes {
     
     // ----------------- VERIFICAÇÕES REGISTRADOR DE FLAG -----------------------
     //Verificação de Overflow (registrador OF)
-    private static  void verificacao_OF(int num, Registradores registrador){
-        int numeroCom15Bits = num & 0x7FFF;     // Deixa só os 15 bits (ultimo bit reservado para sinal)
-        if (numeroCom15Bits > 32768){           // Se um bit é reservado para sinal, a capacidade de representação não pode passar de 2^15
+    private static  void verificaOF(int num, Registradores registrador){
+        int num_15bits = num & 0x7FFF;     // Deixa só os 15 bits (ultimo bit reservado para sinal)
+        if (num_15bits > 32768){           // Se um bit é reservado para sinal, a capacidade de representação não pode passar de 2^15
             registrador.setSR("of", 1);
             JOptionPane.showMessageDialog(null, "Overflow !!!");
         } else {
@@ -174,15 +174,15 @@ public class Instrucoes {
     }
     
     //Verificação paridade de uns (registrador PF)
-    private static void verificacao_PF(int num, Registradores registrador){
-        String binarioString = Integer.toBinaryString(num);    // Percorre binário para testar se a quantidade de uns é par
-        int quantidade_uns = 0;
-        for (int i = 0; i < binarioString.length(); i++) {  
-            if (binarioString.charAt(i) == '1') {
-                quantidade_uns++;
+    private static void verificaPF(int num, Registradores registrador){
+        String binario = Integer.toBinaryString(num);    // Percorre binário para testar se a quantidade de uns é par
+        int quant_uns = 0;
+        for (int i = 0; i < binario.length(); i++) {  
+            if (binario.charAt(i) == '1') {
+                quant_uns++;
             }
         }
-        if (quantidade_uns % 2 == 0){  
+        if (quant_uns % 2 == 0){  
             registrador.setSR("pf", 1);
         } else {
             registrador.setSR("pf", 0);
@@ -190,7 +190,7 @@ public class Instrucoes {
     }
     
     //Verificação positivo ou negativo (Registrador SF)
-    private static void verificacao_SF(int num, Registradores registrador){
+    private static void verificaSF(int num, Registradores registrador){
         if (num > 0){                
             registrador.setSR("sf", 0);
         } else{
@@ -199,7 +199,7 @@ public class Instrucoes {
     }
     
     //Verificação se o resultado é zero (Registrador ZF)
-    private static void verificacao_ZF(int num, Registradores registrador){     
+    private static void verificaZF(int num, Registradores registrador){     
         if (num != 0){                             
             registrador.setSR("zf", 0);
         } else{
@@ -207,10 +207,10 @@ public class Instrucoes {
         }
     }
     
-    public static void verificacoes_AX(int num, Registradores registrador){
-        verificacao_OF(num, registrador);  // verificação das flags afetadas
-        verificacao_PF(num, registrador);
-        verificacao_ZF(num, registrador);
-        verificacao_SF(num, registrador);
+    public static void verificaAX(int num, Registradores registrador){
+        verificaOF(num, registrador);  // verificação das flags afetadas
+        verificaPF(num, registrador);
+        verificaZF(num, registrador);
+        verificaSF(num, registrador);
     }
 }
