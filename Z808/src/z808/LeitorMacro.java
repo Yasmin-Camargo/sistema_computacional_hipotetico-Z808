@@ -34,7 +34,6 @@ public class LeitorMacro {
             if (c == '\s' || c == '\t') cont++;
             else break;
         }
-        
         linha = linha.substring(cont);
         
         String tokens[] = linha.split("\\s+");

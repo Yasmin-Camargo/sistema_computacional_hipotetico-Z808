@@ -5,6 +5,7 @@
 package z808;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -313,6 +314,7 @@ public class JanelaZ808 extends JFrame{
         area.setWrapStyleWord(true);
         area.setFont(new Font("Monospaced", 0, 10));
         area.setEditable(false);
+        area.setCaretColor(Color.WHITE);
         area.setMinimumSize(new Dimension(250, 100));
         area.setSize(250, 100);
        // area.setPreferredSize(new Dimension(250, 1000));
@@ -526,8 +528,30 @@ public class JanelaZ808 extends JFrame{
     }
     
     private JPanel criarTabela(Object[][] data, String nomeTabela) {
-        JPanel panelTabela = new JPanel();
-        panelTabela.setName(nomeTabela);
+        JPanel panelTabela = null;
+//        for (Component comp : container.getComponents()) {
+//            System.out.println(comp.toString());
+//             if (comp instanceof JPanel jPanel) {
+//                 if (jPanel.getName() != null)
+//                     if (jPanel.getName().equals(nomeTabela)) {
+//                     panelTabela = jPanel;
+//                 }
+//            }
+//        }
+        
+        
+        
+        // CRIAR UM MÉTODO
+        // QUE APENAS ATUALIZE AS TABELAS
+        // COLOCAR O CÓD ACIMA JUNTO !!!
+        
+        
+        
+        if (panelTabela == null) {
+            panelTabela = new JPanel();
+            panelTabela.setName(nomeTabela);
+        }
+//        ;
         
         JLabel labelTabela = new JLabel(nomeTabela);
         labelTabela.setFont(new Font("Arial", Font.BOLD, 16));
@@ -541,6 +565,7 @@ public class JanelaZ808 extends JFrame{
         String[] colunas = {"Address", "Value"};
         
         JTable tableMemoria = new JTable(data, colunas);
+        tableMemoria.setEnabled(false);
         tableMemoria.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  
         
         JScrollPane barraRolagem = new JScrollPane(tableMemoria); 

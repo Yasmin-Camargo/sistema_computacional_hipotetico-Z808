@@ -69,6 +69,9 @@ public class JanelaMontador extends JFrame {
         
         JTextField fieldLC = new JTextField(10);
         fieldLC.setText(Integer.toString(lc));
+        fieldLC.setEditable(false); // read only
+        fieldLC.setCaretColor(Color.WHITE);
+        fieldLC.setBackground(Color.WHITE);
         gbc.gridx = 1;
         panelTopo.add(fieldLC, gbc);
                 
@@ -78,6 +81,9 @@ public class JanelaMontador extends JFrame {
         
         JTextField fieldPC = new JTextField(10);
         fieldPC.setText(Integer.toString(pc));
+        fieldPC.setEditable(false); // read only
+        fieldPC.setCaretColor(Color.WHITE);
+        fieldPC.setBackground(Color.WHITE);
         gbc.gridx = 3;
         panelTopo.add(fieldPC, gbc);
 
@@ -125,7 +131,7 @@ public class JanelaMontador extends JFrame {
         panelTSimbolos.add(labelTSimbolos, gbc);
         
         int nivel = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         for (String chave : tabela.keySet()) {
             JLabel label = new JLabel(chave);
             gbc.gridx = 0;
@@ -134,6 +140,9 @@ public class JanelaMontador extends JFrame {
 
             JTextField field = new JTextField(10);
             field.setText(Integer.toString(tabela.get(chave)));
+            field.setEditable(false); // read only
+            field.setCaretColor(Color.WHITE);
+            field.setBackground(Color.WHITE);
             gbc.gridx = 1;
             panelTSimbolos.add(field, gbc);
             
