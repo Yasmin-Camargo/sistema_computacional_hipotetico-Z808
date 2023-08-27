@@ -25,10 +25,12 @@ O processo de desenvolvimento do simulador Z808 consistiu em quatro fases distin
 
 ### :one: Executor
 Focado na execução das instruções própriamente ditas e em uma interface visual.
+
 ![image](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/72163134-3db4-4a9d-a112-e5d3b17dd872)
 
 ### :two: Montador
 Foi implementado o montador de dois passos, sendo responsável pela tradução do código-fonte em código de máquina.
+
 ![image](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/9fd93679-4437-4df6-a7a3-29a30dce575c)
 
 ### :three: Processador de Macros
