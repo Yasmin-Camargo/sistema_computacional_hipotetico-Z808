@@ -18,6 +18,26 @@ Para executar o programa, clone o repositório: <br>  `git@github.com:Yasmin-Cam
 
 :pushpin: Caso encontre dificuldades para executar, experimente baixar por este [link](https://www.oracle.com/java/technologies/downloads/) 
 
+## :clipboard: Etapas de desenvolvimento
+O processo de desenvolvimento do simulador Z808 consistiu em quatro fases distintas: Executor, Montador, Processador de Macros, Carregador e Ligador
+
+![image](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/458d5e42-cd38-4ff1-a8ee-f1d936ef1878)
+
+### :one: Executor
+Focado na execução das instruções própriamente ditas e em uma interface visual.
+![image](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/72163134-3db4-4a9d-a112-e5d3b17dd872)
+
+### :two: Montador
+Foi implementado o montador de dois passos, sendo responsável pela tradução do código-fonte em código de máquina.
+![image](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/9fd93679-4437-4df6-a7a3-29a30dce575c)
+
+### :three: Processador de Macros
+Etapa dedicada a expansão de macros, foi desenvolvido em uma só passagem permitindo macros aninhadas e chamadas aninhadas.
+
+### :four: Carregador e Ligador
+Nesta fase é realizado o carregamento e a vinculação de módulos para formar um programa funcional, sendo feito em duas passagens.
+
+
 ## :mag_right: Códigos das Instruções
 
 | Operação  |  Código de Máquina| Modo de endereçamento |
@@ -75,11 +95,3 @@ write opd   | 09                | Direto
 mov AX, opd | 14                | Imediato
 mov AX, opd | 15                | Direto
 mov AX, DX  | 16 C2             | Registrador
-
-
-
-
-
-
-
-
