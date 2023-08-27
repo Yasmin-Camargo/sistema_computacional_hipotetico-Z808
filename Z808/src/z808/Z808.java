@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package z808;
 
 import java.io.File;
@@ -10,7 +6,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /*
- * @authors         Grupo Adas & CG
+ * @authors  GRUPO: Adas & CG
  *  Bianca Beppler Dullius
  *  Caroline Souza Camargo
  *  Cláudio Luis da Silva Machado Junior

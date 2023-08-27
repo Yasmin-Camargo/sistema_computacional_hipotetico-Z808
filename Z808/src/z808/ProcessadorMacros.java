@@ -8,9 +8,9 @@ import java.util.Scanner;
 
 public class ProcessadorMacros {
     public static final int TAM_MAX = 100;
-    private static final int DEFINICAO = 0;
-    private static final int COPIA = 1;
-    private static final int EXPANSAO = 2;
+    private final int DEFINICAO = 0;
+    private final int COPIA = 1;
+    private final int EXPANSAO = 2;
 
 //    private EstadoMacros estado_atual;  // se está em definição ou processamento
     private int estado;
