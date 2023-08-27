@@ -190,89 +190,30 @@ public class Memoria {
         }
     }
     
-    /*
-    //Função para ver funcionamento
-    public Object[][] printAreaCodigo(){
-        System.out.println("\nMEMORIA AREA DE CODIGO: ");
-        Object[][] data = new Object[DS][2];
-        int i;
-        for (i = 0; i < DS; i++) {
-            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
-            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
-        }
-        return data;
-        
-    }
-    
-    public Object[][] printAreaDados(){
-        System.out.println("\n\nMEMORIA AREA DE DADOS: ");
-        Object[][] data = new Object[TAM_MAXIMO][2];
-        int i;
-        for(i = DS; i < TAM_MAXIMO; i++){
-            if (codigo_dados_pilha[i] == -1){
-                break;
-            }
-            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
-            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
-        }
-        for (; i < TAM_MAXIMO; i++) {
-            data[i] = new Object[] {"["+i+"]", "null"};
-        }
-        return data;
-    }
-    
-    public Object[][] printPilha(){
-        System.out.println("\n\nMEMORIA PILHA:");
-        Object[][] data = new Object[TAM_MAXIMO][2];
-        int i;
-        for(i = TAM_MAXIMO - 1; i > DS; i--){
-            if (codigo_dados_pilha[i] == -1){
-                //System.out.println("break");
-                break;
-            }
-            System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
-            data[i] = new Object[] {"["+i+"]", codigo_dados_pilha[i]};
-        }
-        
-        for (; i > DS; i--) {
-            //System.out.print(" | ["+i+"]: "+ "null");
-            data[i] = new Object[] {"["+i+"]", "null"};
-        }
-        System.out.println("");
-        return data;
-    }
-    */
-    
     public int[] getDadosMemoria() {
         return codigo_dados_pilha;
     }
-    
     
     // TESTES: DEPOIS RETIRAR
     //Função para ver funcionamento
     public void print(){
         System.out.println("\nMEMORIA AREA DE CODIGO: ");
         int i;
-        for (i = 0; i < DS; i++) {
+        for (i = 0; i < DS; i++) 
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
-        }  
         
         System.out.println("\n\nMEMORIA AREA DE DADOS: ");
-        Object[][] data = new Object[TAM_MAXIMO][2];
         
         for(i = DS; i < TAM_MAXIMO; i++){
-            if (codigo_dados_pilha[i] == -1){
+            if (codigo_dados_pilha[i] == -1)
                 break;
-            }
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
         }
       
         System.out.println("\n\nMEMORIA PILHA:");
         for(i = TAM_MAXIMO - 1; i > DS; i--){
-            if (codigo_dados_pilha[i] == -1){
-                //System.out.println("break");
+            if (codigo_dados_pilha[i] == -1)
                 break;
-            }
             System.out.print(" | ["+i+"]: "+ codigo_dados_pilha[i]);
         }
         

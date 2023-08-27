@@ -477,14 +477,15 @@ public class JanelaZ808 extends JFrame {
     }
     
     public String[][] criarMemoriaPilha(int[] memoria) {
-        int i, tamMaxMemoria = Memoria.TAM_MAXIMO;
+        int i, tamMaxMemoria = Memoria.TAM_MAXIMO; //65535
         int[] aux = Arrays.copyOfRange(memoria, tamMaxMemoria - TAM_MAX_TABELAS, tamMaxMemoria);
+        
         String pilha[][] = new String[TAM_MAX_TABELAS][2];
         for (i = 0; i < TAM_MAX_TABELAS; ++i) {
-            if (aux[i] != -1)
-                pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", ""+aux[TAM_MAX_TABELAS-1-i]};
-            else
-                pilha[i] = new String[] {"["+(tamMaxMemoria-i-1)+"]", "null"};
+            if (aux[i] != -1) 
+                pilha[TAM_MAX_TABELAS-i-1] = new String[] {"["+(tamMaxMemoria-TAM_MAX_TABELAS+i)+"]", ""+(aux[i])};
+            else 
+                pilha[TAM_MAX_TABELAS-i-1] = new String[] {"["+(tamMaxMemoria-TAM_MAX_TABELAS+i)+"]", "null"};
         }
         return pilha;
     }

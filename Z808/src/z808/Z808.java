@@ -318,11 +318,13 @@ public class Z808 {
                 if (registrador.getRI() == 192) {  
                     instrucao += "push AX";
                     memoria.push_pilha(registrador.getAX());
+                    flag_att_tabelas = 1;
                 } else if (registrador.getRI() == 194) {
                     instrucao += "push DX";  
                     memoria.push_pilha(registrador.getDX());
+                    flag_att_tabelas = 1;
                 }
-                flag_att_tabelas = 1;
+                
             }
             case 156 -> {
                 instrucao += "pushf";
