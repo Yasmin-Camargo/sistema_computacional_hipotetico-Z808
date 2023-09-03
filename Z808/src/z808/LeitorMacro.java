@@ -15,8 +15,8 @@ public class LeitorMacro {
 
     public void lerLinhaScanner(Scanner scanner) {
         if (scanner.hasNext()) {
-            String line = scanner.nextLine();
-            lerLinhaString(line);
+            String linha = scanner.nextLine();
+            lerLinhaString(linha);
         }
     }
 

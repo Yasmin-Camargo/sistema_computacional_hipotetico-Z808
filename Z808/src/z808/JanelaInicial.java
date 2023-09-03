@@ -18,6 +18,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+/*
+ * @authors  GRUPO: Adas & CG
+ *  Bianca Beppler Dullius
+ *  Caroline Souza Camargo
+ *  Cláudio Luis da Silva Machado Junior
+ *  Eduarda Abreu Carvalho
+ *  Guilherme Braatz Stein
+ *  Júlia da Rocha Junqueira
+ *  Júlia Veiga da Silva
+ *  Maria Julia Duarte Lorenzoni
+ *  Yasmin Souza Camargo
+ */
+
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
     private String pathArquivo = "src\\z808\\resources\\macro1.txt";
     private JTextField fieldArquivo = new JTextField(45);

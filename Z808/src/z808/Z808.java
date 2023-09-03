@@ -5,18 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-/*
- * @authors  GRUPO: Adas & CG
- *  Bianca Beppler Dullius
- *  Caroline Souza Camargo
- *  Cláudio Luis da Silva Machado Junior
- *  Eduarda Abreu Carvalho
- *  Guilherme Braatz Stein
- *  Júlia da Rocha Junqueira
- *  Júlia Veiga da Silva
- *  Maria Julia Duarte Lorenzoni
- *  Yasmin Souza Camargo
- */
+
 public class Z808 {
     String caminho_macro, caminho_instr;
     Registradores registrador;
@@ -318,13 +307,11 @@ public class Z808 {
                 if (registrador.getRI() == 192) {  
                     instrucao += "push AX";
                     memoria.push_pilha(registrador.getAX());
-                    flag_att_tabelas = 1;
                 } else if (registrador.getRI() == 194) {
                     instrucao += "push DX";  
                     memoria.push_pilha(registrador.getDX());
-                    flag_att_tabelas = 1;
                 }
-                
+                flag_att_tabelas = 1;
             }
             case 156 -> {
                 instrucao += "pushf";

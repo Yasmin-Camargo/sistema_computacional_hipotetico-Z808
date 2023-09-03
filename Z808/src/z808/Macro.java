@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Macro {
-    private ArrayList<Parametro> parametros_formais;
     private String nome_macro; 
     private String esqueleto_macro;
-    private Stack <Parametro> parametros_reais;
+    private ArrayList<Parametro> parametros_formais; // argumentos esperados pela definição da Macro
+    private Stack <Parametro> parametros_reais; // argumentos passados na chamada da Macro
  
     public Macro(String nome, ArrayList<String> parametros_formais){
         this.nome_macro = nome;
