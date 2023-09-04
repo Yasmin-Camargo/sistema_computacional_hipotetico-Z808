@@ -28,7 +28,7 @@ public class Z808 {
             System.out.println("\n--- EXECUTOR ---\n");
             registrador = new Registradores();
         }
-        catch (IOException | NumeroErradoOperadores e ){
+        catch (Exception e ){
             System.out.print(e);
             System.exit(-1);
         } 

@@ -3,6 +3,8 @@ package z808;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 public class Macro {
     private String nome_macro; 
     private String esqueleto_macro;
@@ -26,23 +28,25 @@ public class Macro {
         return expansao;
     }
 
-    /* Lança uma mensagem de erro quando ocorre um erro ao número incorreto de operandos*/
-    public void numErradoOperadores(String reason) throws NumeroErradoOperadores {
-        throw new NumeroErradoOperadores(reason);
-    }
-
     /* Configura os parametros reais que serão usados na expansão */
-    public void setParametrosReais(ArrayList<String> parametros) throws NumeroErradoOperadores {
+    public void setParametrosReais(ArrayList<String> parametros) {
         if (parametros.size() != parametros_formais.size()) {
-            throw new NumeroErradoOperadores("ERRO ao configurar os parâmetros, espera-se: " 
-            + parametros_formais.size() + ", foi obtido" + parametros.size()); 
+            JOptionPane.showMessageDialog(
+                null, 
+                "ERRO!", 
+                "Esperava-se " + parametros_formais.size() + " parâmetros, foi obtido " + parametros.size(), 
+                JOptionPane.ERROR_MESSAGE);
         }
+
+        ArrayList<Parametro> params = analiseParametros(parametros);
         for (int i = 0; i < parametros.size(); i++) {
             // the following approach works
             // but we're not able to use Macro inside Macro
-            String novo_nome = parametros.get(i).replace(";", "");
-            parametros_formais.get(i).setNome(novo_nome);
-            parametros_reais.push(parametros_formais.get(i));
+            // String novo_nome = parametros.get(i).replace(";", "");
+            // parametros_formais.get(i).setNome(novo_nome);
+            // parametros_reais.push(parametros_formais.get(i));
+
+            parametros_reais.push(params.get(i));
         }
     }
 
