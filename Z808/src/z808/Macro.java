@@ -39,6 +39,7 @@ public class Macro {
         }
 
         ArrayList<Parametro> params = analiseParametros(parametros);
+        parametros_reais.clear();
         for (int i = 0; i < parametros.size(); i++) {
             // the following approach works
             // but we're not able to use Macro inside Macro
@@ -48,6 +49,7 @@ public class Macro {
 
             parametros_reais.push(params.get(i));
         }
+        System.out.println(parametros_reais.toString());
     }
 
     /* Analisa se tem alguma parametro formal, se tiver, substitui pelo valor correpondente #(d,i) */

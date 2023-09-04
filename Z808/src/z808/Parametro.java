@@ -42,4 +42,9 @@ public class Parametro {
     public int getIndex(){
         return this.index;
     }
+
+    @Override
+    public String toString() {
+        return "Parametro [" + this.nome + "]: #(" + this.nivel + ',' + this.index + ")";
+    }
 }
