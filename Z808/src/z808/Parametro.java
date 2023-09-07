@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package z808;
 
-/**
- *
- * @author claud
- */
 public class Parametro {
     private String nome;
     private int nivel;
@@ -45,6 +37,6 @@ public class Parametro {
 
     @Override
     public String toString() {
-        return "Parametro [" + this.nome + "]: #(" + this.nivel + ',' + this.index + ")";
+        return "Parametro --- valor: " + this.nome + "; pilha: #(" + this.nivel + ',' + this.index + ")";
     }
 }

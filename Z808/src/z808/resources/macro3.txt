@@ -1,0 +1,27 @@
+Soma MACRO var1, var3, var2 ; essa definição vai ser ignorada pois é redefinida logo abaixo
+  and AX,var3 ; se var3 = 0 então ax = 0
+  add AX,var1 ; 0 + var1
+  add AX,var2 ; var1 + var2
+  push AX
+ENDM
+
+Soma MACRO v1, v2 ; redefinição de macros - uma macro pode ser definida + de 1x
+  and AX,0
+  add AX,v1
+  add AX,v2
+  push AX
+ENDM
+
+PushPilha MACRO var1, var2, var3
+  move AX,var1
+  push AX
+  move AX,var2
+  push AX
+  Soma var1, var2
+ENDM
+
+start
+  PushPilha 5, 2, 0
+  PushPilha 3, 4, 0
+  cinco equ 5;    	define a constante
+end

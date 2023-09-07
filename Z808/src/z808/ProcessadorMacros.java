@@ -17,6 +17,7 @@ public class ProcessadorMacros {
     private int estado;
     private int nivel;  // contador
     private Map<String, Macro> macros;  // guarda as definições das macros
+    // private Stack <Macro> def_macros;
     private Macro macro_atual;
     private boolean eh_codigo = false;
 
@@ -57,27 +58,12 @@ public class ProcessadorMacros {
         return saida.toString();
     }
 
-    // Expande a Macro a partir do nome fornecido
-    public String expandirMacro(LeitorMacro leitor) {
-        ArrayList<String> parametros = new ArrayList<>();
-        parametros.add(leitor.getRotulo());
-        for (String operando : leitor.getOperandos())
-            parametros.add(operando);
-        
-        Macro macro = macros.get(leitor.getInstrucao());
-        System.out.println(macro.getNomeMacro() + ":\n" + macro.getEsqueletoMacro());
-
-        macro.setParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
-        return macro.expandirMacro();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;
-    }
-	
-    // Processa individualmente uma linha da fonte
     public String processarLinha(LeitorMacro leitor_macro) {
-        String saida = "";								// Armazena o resultado do processamento no final								        
+        String saida = "";								
         String instrucao = leitor_macro.getInstrucao();
         String rotulo = leitor_macro.getRotulo();
         
-        //System.out.println("rotulo:"+rotulo+" instrucao:"+instrucao);
+        // System.out.println("rotulo:"+rotulo+" instrucao:"+instrucao);
 
         //pra trabalhar com macros aninhadas, o programa precisa entrar
         //em definição e expansão ao mesmo tempo; da maneira atual, isso não acontece
@@ -97,7 +83,7 @@ public class ProcessadorMacros {
                 nivel++;						                    // Incrementa o contador de nivel
                 if (estado == COPIA) {
                     estado = DEFINICAO;
-                    if (macros.containsKey(instrucao)) {    // Se existe o rótulo atual em definicaoMacros
+                    if (macros.containsKey(instrucao)) {    // Se existe o rótulo atual em macros
                         macros.remove(instrucao);			// Remove o rótulo
                     }  
                     macro_atual = null;						// Macro atual vira nula
@@ -108,11 +94,7 @@ public class ProcessadorMacros {
                     estado = COPIA;
                     macro_atual = null;			// Macro atual vira nula
                 }
-            } /*else if (definicaoMacros.containsKey(instrucao)){		// Se não, se constar a instrução nas definições
-                this.estadoAtual = EstadoMacros.COPIA;				// Estado atual recebe a cópia atual do estado de macros
-                saida = expandirMacro(instrucao, tokens);	// Retorna a expansão da macro atual a partir das instruções e operandos
-            }*/
-
+            } 
             if (estado == DEFINICAO) {
                 if (macro_atual == null) {					// E se a macro atual for nula
                     String nome_macro = leitor_macro.getInstrucao();
@@ -120,11 +102,30 @@ public class ProcessadorMacros {
                     Macro macro = new Macro(nome_macro, tokens);		
                     this.macro_atual = macro;
                     macros.put(nome_macro, macro);		// Coloca uma nova macro e coloca dentro de definicaoMacros
-                } else 
-                    macro_atual.adicionarNoEsqueleto(leitor_macro.toString() + "\n", nivel); // Se existir uma macro atual, concatenar a sua info ao esqueleto da macro
+                } else {
+                    if (macros.containsKey(instrucao)) {
+                        macro_atual.adicionarNoEsqueleto(expandirMacro(leitor_macro), nivel+1);
+                    } else
+                        macro_atual.adicionarNoEsqueleto(leitor_macro.toString() + "\n", nivel); // Se existir uma macro atual, concatenar a sua info ao esqueleto da macro
+                }
             } 
         }
         
         return saida;
     }
+
+    // Expande a Macro a partir do nome fornecido
+    public String expandirMacro(LeitorMacro leitor) {
+        ArrayList<String> parametros = new ArrayList<>();
+        parametros.add(leitor.getRotulo());
+        for (String operando : leitor.getOperandos())
+            parametros.add(operando);
+        
+        Macro macro = macros.get(leitor.getInstrucao());
+        System.out.println("EXPANDIR MACRO -- " + macro.getNomeMacro() + ":\n" + macro.getEsqueletoMacro());
+
+        macro.setParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
+        return macro.expandirMacro();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;
+    }
+
 }

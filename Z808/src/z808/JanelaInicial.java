@@ -32,7 +32,7 @@ import javax.swing.*;
  */
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
-    private String pathArquivo = "src\\z808\\resources\\macro2.txt";
+    private String pathArquivo = "src\\z808\\resources\\macro3.txt";
     private JTextField fieldArquivo = new JTextField(45);
     private JLabel labAux;
     
