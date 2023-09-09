@@ -16,7 +16,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class JanelaMontador extends JFrame {
     GridBagConstraints gbc;
@@ -150,7 +149,6 @@ public class JanelaMontador extends JFrame {
         gbc.gridheight = 1;
         gbc.gridwidth = nivel;
         container.add(panelTSimbolos, gbc);
-        
     }
 
     public void addTexto(String novoTexto) {

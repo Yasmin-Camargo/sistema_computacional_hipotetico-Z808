@@ -1,0 +1,13 @@
+move AX,5 
+push AX 
+move AX,2 
+push AX 
+ENDM  
+  
+move AX,3 
+push AX 
+move AX,4 
+push AX 
+ENDM  
+  
+cinco equ 5 end  

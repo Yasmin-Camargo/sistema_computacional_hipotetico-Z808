@@ -11,13 +11,11 @@ public class ProcessadorMacros {
     public static final int TAM_MAX = 100;
     private final int DEFINICAO = 0;
     private final int COPIA = 1;
-    private final int EXPANSAO = 2;
+    // private final int EXPANSAO = 2;
 
-//    private EstadoMacros estado_atual;  // se está em definição ou processamento
     private int estado;
     private int nivel;  // contador
     private Map<String, Macro> macros;  // guarda as definições das macros
-    // private Stack <Macro> def_macros;
     private Macro macro_atual;
     private boolean eh_codigo = false;
 
