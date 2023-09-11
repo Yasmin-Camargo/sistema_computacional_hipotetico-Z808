@@ -28,14 +28,13 @@ public class ProcessadorMacros {
     }
 
     // Processa o arquivo selecionado
-    public String processar(String arquivo) throws Exception {
-        File saida = new File(arquivo.substring(0, arquivo.length() - 4) + "_montador.txt");	// Cria um objeto e adiciona a extenção MXF
+    public void processar(String diretorio, String arquivo, String simplificado) throws Exception {
+        System.out.println(arquivo);
+        File saida = new File(diretorio + "/" + simplificado + "-montador.txt");	// Cria um objeto e adiciona a extenção TXT
         saida.createNewFile();	
         FileWriter arq_saida;
         try {
-          
             arq_saida = new FileWriter(saida); // Cria o arquivo de saida no sistema
-
             Scanner scanner = new Scanner(new File(arquivo));		// Cria um escritor para escrever no arquivo de saida
             LeitorMacro leitor_macro = new LeitorMacro();			// Cria um leitor para ler o conteudo do arquivo de entrada
             while (scanner.hasNextLine()) {                         // Executa para cada linha existente no arquivo
@@ -53,7 +52,8 @@ public class ProcessadorMacros {
                 JOptionPane.ERROR_MESSAGE
             );
         }
-        return saida.toString();
+        // return saida.toString();
+        // return diretorio.toString();
     }
 
     public String processarLinha(LeitorMacro leitor_macro) {

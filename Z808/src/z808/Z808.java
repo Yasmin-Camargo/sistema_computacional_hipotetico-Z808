@@ -7,39 +7,72 @@ import javax.swing.JOptionPane;
 
 
 public class Z808 {
-    String caminho_macro, caminho_instr;
+    String caminho_macro, arq_final;
+    String diretorio, arquivos[], arqs_simplif[];
     Registradores registrador;
     Memoria memoria;
     Montador montador;
     int tam_area_instrucoes, flag_jump, flag_att_tabelas, cont_instr = 0;
     
-    public Z808(String caminho1) throws IOException {
-        caminho_macro = caminho1;
+    public Z808(String diretorio, String[] arquivos, String[] arqs_simplif) throws IOException {
+        this.diretorio = diretorio;
+        this.arquivos = arquivos;
+        this.arqs_simplif = arqs_simplif;
         iniciarZ808();
     }
     
     private void iniciarZ808() throws IOException {
+        criarDiretorio();
         ProcessadorMacros macro = new ProcessadorMacros();
-        try {
-            String caminho_montador = macro.processar(caminho_macro);
-            System.out.println("--- MONTADOR ---\n");
-            montador = new Montador(caminho_montador);
-            caminho_instr = ".\\src\\z808\\resources\\codigo_objeto.txt";
-            System.out.println("\n--- EXECUTOR ---\n");
-            registrador = new Registradores();
+        for (int i = 0; i < arquivos.length; i++) {
+        // for (String arq : arquivos) {
+            try {
+                System.out.println("--- PROCESSADOR DE MACROS ---\n");
+                macro.processar(diretorio, arquivos[i], arqs_simplif[i]);
+                System.out.println("--- MONTADOR ---\n");
+                montador = new Montador(diretorio, arqs_simplif[i]);
+                
+                // String caminho_montador = macro.processar(caminho_macro);
+                // diretorio = macro.processar(diretorio, arq);
+                // System.out.println("--- MONTADOR ---\n");
+                // montador = new Montador(diretorio, arq);
+                // arq_final = ".\\src\\z808\\resources\\codigo_objeto.txt";
+                // arq_final = diretorio + "/codigo_objeto.txt";
+                // System.out.println("\n--- EXECUTOR ---\n");
+                // registrador = new Registradores();
+            }
+            catch (Exception e ){
+                System.out.print(e);
+                System.exit(-1);
+            } 
         }
-        catch (Exception e ){
-            System.out.print(e);
-            System.exit(-1);
-        } 
+        System.out.println("--- LIGADOR --- (desenvolvimento)\n");
+        // ligador = new Ligador(diretorio, arquivos);
+        // arq_final = ligador.getArqFinal();
+        arq_final = diretorio + "/" + arqs_simplif[0] + "-cod-obj.txt";
+        System.out.println("--- EXECUTOR ---\n");
+        registrador = new Registradores();
+    }
+
+    private void criarDiretorio() {
+        File nova_pasta = new File(diretorio);
+        if (!nova_pasta.exists()) {
+            nova_pasta.mkdirs();
+        } else {
+            File[] arqs = nova_pasta.listFiles();
+            for (File a : arqs) 
+                a.delete();
+            nova_pasta.delete();
+            nova_pasta.mkdirs();
+        }
     }
     
     public int[] carregarInstr() {
-        tam_area_instrucoes = contarInstr(caminho_instr); // calcula quanto de espaço as instruções ocupam
+        tam_area_instrucoes = contarInstr(arq_final); // calcula quanto de espaço as instruções ocupam
         flag_jump = 0;
         
         memoria = new Memoria(tam_area_instrucoes,montador.getDadosParaArmazenar()); // cria memória 
-        guardaInstr(caminho_instr, memoria);  // coloca dados do arquivo na memória
+        guardaInstr(arq_final, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
         registrador.setCL(montador.getValorDiretivaORG());  // pega endereço (indice) da primeira instrução na memória
@@ -518,8 +551,6 @@ public class Z808 {
                             }
                             case "EF", "EE", "9D", "9C" -> {
                             }
-                            default -> {
-                            }
                         }
                     }
                 }
@@ -578,7 +609,7 @@ public class Z808 {
                                 if (numNegativo == 1){
                                     numNegativo = 0;
                                     memoria.escreverCodigo(quant_instrucoes, -((int) Integer.parseInt(instrucao, 16)));
-                                } else{
+                                } else {
                                     memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
                                 }   quant_instrucoes += 1;
                             }

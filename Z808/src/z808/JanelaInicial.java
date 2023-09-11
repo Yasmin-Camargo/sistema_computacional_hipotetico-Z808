@@ -32,8 +32,8 @@ import javax.swing.*;
  */
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
-    private String pathArquivo = "src\\z808\\resources\\macro3.txt";
-    private JTextField fieldArquivo = new JTextField(45);
+    private String caminhoArquivos = "'src\\z808\\resources\\macro3.txt'";
+    private JTextArea textAreaArquivo;// = new JTextArea(45);
     private JLabel labAux;
     
     public JanelaInicial() {
@@ -73,31 +73,41 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         container.add(labSubtitulo, gbc);
 
         // label indicado "caminho do arquivo"
-        JLabel labArquivo = new JLabel("File path:");
+        JLabel labArquivo = new JLabel("File(s) path:");
         labArquivo.setFont(new Font("Arial", Font.PLAIN, 14));
         labArquivo.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        gbc.insets = new Insets(0, 0, 5, 0);
+        gbc.insets = new Insets(0, 0, 5, 50);
         container.add(labArquivo, gbc);
         
         // input para o texto do caminho do arquivo
-        fieldArquivo = new JTextField();
-        fieldArquivo.setColumns(35);
-        fieldArquivo.addKeyListener(this);
-        fieldArquivo.setText(pathArquivo);
+        textAreaArquivo = new JTextArea();
+        textAreaArquivo.setColumns(100);
+        textAreaArquivo.setRows(100);
+        textAreaArquivo.setLineWrap(true);
+        textAreaArquivo.setMinimumSize(new Dimension(450, 75));
+        textAreaArquivo.setEditable(false);
+        textAreaArquivo.setText(caminhoArquivos);
+        textAreaArquivo.setCaretColor(Color.WHITE);
+        textAreaArquivo.addKeyListener(this);
         gbc.gridy = 5;
-        container.add(fieldArquivo, gbc);
+        container.add(textAreaArquivo, gbc);
         
         // botão de procurar arquivo no pc
         JButton btnProcurar = new JButton("Search");
         btnProcurar.addActionListener((ActionEvent e) -> {
-            JFileChooser arquivo = new JFileChooser(".\\src\\z808\\resources");
-            int escolha = arquivo.showOpenDialog(this);
+            JFileChooser seletor_arq = new JFileChooser(".\\src\\z808\\resources");
+            seletor_arq.setMultiSelectionEnabled(true);
+            int escolha = seletor_arq.showOpenDialog(this);
             if (escolha == JFileChooser.APPROVE_OPTION){
-                File arquivo_selecionado = arquivo.getSelectedFile();
-                fieldArquivo.setText(arquivo_selecionado.getPath());
+                File[] arquivos = seletor_arq.getSelectedFiles();
+                String texto = "";
+                for (File arq : arquivos) 
+                    texto += "'" + arq + "' : ";
+                textAreaArquivo.setText(texto);
             }
+            btnProcurar.setFocusable(false);
         }); 
         gbc.gridy = 6;
         gbc.insets = new Insets(15, -100, 0, 0);
@@ -126,23 +136,28 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     }
     
     public void btnCarregar() throws IOException {
-        pathArquivo = fieldArquivo.getText();
-        File arquivo = new File(pathArquivo);
-        if (!arquivo.exists()) {
-            //JOptionPane.showMessageDialog(null, "Erro: falha ao abrir o arquivo");
-            btnCarregarErro("File not found. Try again.");            
-        }
-        else {
-            if (!pathArquivo.contains(".txt")) {
-                btnCarregarErro("File must be of type .TXT. Try again.");
-            }
+        caminhoArquivos = textAreaArquivo.getText();
+        String[] arquivos = caminhoArquivos.split(" : ");
+        File arq;
+        int i, contador = 0;
+        for (i = 0; i < arquivos.length; i++) {
+        // for (String arq : arquivos) {
+            arquivos[i] = arquivos[i].substring(1, arquivos[i].length() - 1);
+            arq = new File(arquivos[i]);
+            if (!arq.exists())
+                btnCarregarErro("Some of the files weren't found. Try again."); 
             else {
-                //Z808 z808 = new Z808(pathArquivo); // chamar Z808
-                JanelaZ808 sistema = new JanelaZ808(pathArquivo);
-                sistema.setVisible(true);
-                this.dispose();
+                if (!arquivos[i].contains(".txt")) 
+                    btnCarregarErro("All files must be of type .TXT. Try again.");
+                else
+                    contador += 1;
             }
-        }    
+        }
+        if (contador == arquivos.length) {
+            JanelaZ808 sistema = new JanelaZ808(arquivos);
+            sistema.setVisible(true);
+            this.dispose();
+        } 
     }
     
     public void btnCarregarErro(String mensagem) {
@@ -158,6 +173,7 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     public void keyReleased(KeyEvent event) {
         if (event.getKeyCode() == 10) { try {
             // ENTER
+            event.consume();
             btnCarregar();
             } catch (IOException ex) {
                 Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);

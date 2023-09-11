@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 public class JanelaZ808 extends JFrame {
     private final int TAM_MAX_TABELAS = 1000;
     private final String[] panelMemorias = {"DataPanel", "StackPanel"};
+    private String[] arqs_simplif, arquivos;
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
@@ -34,13 +36,23 @@ public class JanelaZ808 extends JFrame {
     private JButton btnCarregarInstr, btnExecutar, btnResetar, btnPasso;
     private int chegouAoFim = 0;
     
-    private final Z808 sistema;
+    private Z808 sistema;
     Container container;
     private final GridBagConstraints gbc;
     
     @SuppressWarnings("empty-statement")
-    public JanelaZ808(String pathArquivo) throws IOException { 
-        sistema = new Z808(pathArquivo);
+    public JanelaZ808(String[] arquivos) throws IOException { 
+        this.arquivos = arquivos;
+        String[] aux;
+        String diretorio = "";
+        arqs_simplif = new String[arquivos.length];
+        for (int i = 0; i < arquivos .length; i++) {
+            aux = arquivos[i].split(Pattern.quote("\\"));
+            arqs_simplif[i] = aux[aux.length-1].substring(0, aux[aux.length-1].length()-4);
+            diretorio += arqs_simplif[i] + "-";
+        }
+        diretorio = diretorio.substring(0, diretorio.length() - 1);
+        sistema = new Z808(diretorio, arquivos, arqs_simplif);
         
         // janela
         setTitle("Z808 Emulator");
@@ -55,14 +67,14 @@ public class JanelaZ808 extends JFrame {
         gbc = new GridBagConstraints();
         container = getContentPane();
         
-        criarPanelArquivo(pathArquivo); // cria painel superior com localização do arquivo
+        criarPanelArquivo(arquivos); // cria painel superior com localização do arquivo
         criarRegistradores(); // cria JTextFields dos registradores
         criarTextAreas();
         criarBotoes(); // cria botões na parte inferior
         btnCarregarInstr();
     }
     
-    private void criarPanelArquivo(String pathArquivo) {
+    private void criarPanelArquivo(String[] pathArquivo) {
         JPanel panelArquivo = new JPanel();
         panelArquivo.setLayout(new GridBagLayout());
         //panelArquivo.setBackground(Color.WHITE);
@@ -77,7 +89,10 @@ public class JanelaZ808 extends JFrame {
         panelArquivo.add(labelArquivo, gbc);
         
         JTextField fieldArquivo = new JTextField(30);
-        fieldArquivo.setText(pathArquivo);
+        for (String s : arqs_simplif) {
+
+        }
+        // fieldArquivo.setText(pathArquivo);
         fieldArquivo.setEditable(false); // read only
         fieldArquivo.setCaretColor(Color.WHITE);
         fieldArquivo.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -446,20 +461,21 @@ public class JanelaZ808 extends JFrame {
     
     private void btnResetar() {
         String caminho = sistema.getCaminhoMacro();
-        try {
+        // try {
             sistema.matarJanelaMontador();
-            JanelaZ808 novo = new JanelaZ808(caminho);
-            novo.setVisible(true);
-            this.dispose();
-        }
-        catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                null,
-                "Exceção: " + e,
-                "ERRO!",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+            // JanelaZ808 novo = new JanelaZ808(caminho);
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            // novo.setVisible(true);
+            // this.dispose();
+        // }
+        // catch (IOException e) {
+        //     JOptionPane.showMessageDialog(
+        //         null,
+        //         "Exceção: " + e,
+        //         "ERRO!",
+        //         JOptionPane.ERROR_MESSAGE
+        //     );
+        // }
     }
     
     public String[][] criarMemoriaDados(int[] memoria) {

@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class Montador {
     private Map<String, Integer> tabela_simbolos;    // tabela de simbolos
@@ -32,13 +33,14 @@ public class Montador {
     private int diretiva_org;   // local para armazenar novo valor do PC caso seja utilizado a diretiva
     private JanelaMontador janela_montador;
     
-    public Montador(String caminho_arquivo) throws IOException{
+    // public Montador(String caminho_arquivo) throws IOException{
+    public Montador(String diretorio, String nome_arq) throws IOException{
         this.tabela_simbolos = new HashMap<>(); 
         this.LC = 0; 
         this.PC = 0; 
         this.diretiva_org = 0;
         
-        segundoPasso(primeiroPasso(caminho_arquivo));
+        segundoPasso(primeiroPasso(diretorio + "/" + nome_arq + "-montador.txt"), diretorio + "/" + nome_arq);
     }
     
     // primeiro passo do montador de dois passos: criar tabela de simbolos
@@ -51,7 +53,12 @@ public class Montador {
         try {
             arquivo = new BufferedReader(new FileReader(caminho_arquivo));   
         } catch (IOException e) {
-            System.out.println("Erro ao abrir arquivo");
+            JOptionPane.showMessageDialog(
+                null,
+                "ERRO!",
+                "Erro ao abrir arquivo.",
+                JOptionPane.ERROR_MESSAGE
+            );
             System.exit(0);
         }
         
@@ -60,7 +67,7 @@ public class Montador {
         while ((linha = arquivo.readLine()) != null){ 
             linha = linha.split(";")[0];
             String[] linha_separada = linha.split("\\p{Zs}+"); // Separa o conteúdo da linha (indepedente do tamanho do espaço)
-            texto_lido[LC][1] = String.valueOf(PC);             // coloca na matriz do código em qual enedereço esta
+            texto_lido[LC][1] = String.valueOf(PC);             // coloca na matriz do código em qual endereço esta
             
             switch (linha_separada[0]) {
                 // instruções
@@ -144,7 +151,11 @@ public class Montador {
                         texto_lido[LC][5] = linha_separada[2].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linha_separada[2].split(",")[1].equals("AX") && !linha_separada[2].split(",")[1].equals("DX") && !linha_separada[2].split(",")[1].equals("SI")  && !linha_separada[2].split(",")[1].contains("[") &&( !(Character.isDigit(linha_separada[2].split(",")[1].charAt(0))) ) ){                 // primeiro caracter não é um número, então é um label
+                        if (!linha_separada[2].split(",")[1].equals("AX") 
+                            && !linha_separada[2].split(",")[1].equals("DX")
+                            && !linha_separada[2].split(",")[1].equals("SI")  
+                            && !linha_separada[2].split(",")[1].contains("[") 
+                            &&( !(Character.isDigit(linha_separada[2].split(",")[1].charAt(0))) ) ){ // primeiro caracter não é um número, então é um label
                               
                             if (!tabela_simbolos.containsKey(linha_separada[2].split(",")[1])){   // verifica se rotulo já esta na tabela de simbolos
                                 tabela_simbolos.put(linha_separada[2].split(",")[1], -1);
@@ -154,13 +165,12 @@ public class Montador {
                         texto_lido[LC][4] = linha_separada[2];      // coloca na matriz o código o operando 1
                         texto_lido[LC][5] = "";                    // não tem operando 2
                        
-                        if (linha_separada[1].equals("equ")){
+                        if (linha_separada[1].equals("equ")) {
                             // VER: aqui pode ser também caracter ou outra expressão dentro da expressão
                             tabela_simbolos.put(linha_separada[0], Integer.valueOf(linha_separada[2]));
                             PC += 1;
-                        } else{
+                        } else
                             PC += 2;
-                        }
                     }
                    
                 break;
@@ -195,13 +205,14 @@ public class Montador {
     }
     
     // Segundo passo do montador de dois passos: gerar código de máquina
-    private void segundoPasso(String [][] textScanned) throws IOException{
-        String nomeArquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
+    private void segundoPasso(String [][] textScanned, String caminho) throws IOException{
+        String nome_arquivo = caminho + "-cod-obj.txt";
+        // String nome_arquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
         dados_armazenar = new HashMap<>() ;                               // dados definidos pelas label que devem ir para a memória
         int contadorInstrucao = 0, quantidadeDadosMemoriaParaArmazenar = 0;  
 
         try {
-            FileWriter arq = new FileWriter(nomeArquivo);        // Cria um objeto FileWriter para o arquivo específico
+            FileWriter arq = new FileWriter(nome_arquivo);        // Cria um objeto FileWriter para o arquivo específico
             BufferedWriter buffer = new BufferedWriter(arq); // Cria um objeto BufferedWriter para escrever no arquivo
 
             // Percorrendo tabela do codigo
@@ -489,14 +500,18 @@ public class Montador {
             buffer.close();
 
         } catch (IOException e) {
-            System.out.println("Ocorreu um erro ao criar o arquivo: " + e.getMessage());
+            JOptionPane.showMessageDialog(
+                null, 
+                "ERRO!", 
+                "Ocorreu um erro ao criar o arquivo: " + e.getMessage(), 
+                JOptionPane.ERROR_MESSAGE);
         }
         
         // PRINT PARA VER O QUE TÁ ACONTECENDO NO SEGUNDO PASSO
         // mostra o que foi armazenado no arquivo codigo objeto
         System.out.println("\nARQUIVO CODIGO OBJETO: ");
         try {
-            FileReader fileReader = new FileReader(nomeArquivo);         // Cria um objeto para ler o arquivo
+            FileReader fileReader = new FileReader(nome_arquivo);         // Cria um objeto para ler o arquivo
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String linha;
            
@@ -517,9 +532,9 @@ public class Montador {
     }
     
     // Conta  o número de linhas do arquivo
-    private int contarLinhasArquivo(String nomeArquivo) {
+    private int contarLinhasArquivo(String nome_arquivo) {
         int numeroLinhas = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(nomeArquivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(nome_arquivo))) {
             while (br.readLine() != null) {
                 numeroLinhas++;
             }
