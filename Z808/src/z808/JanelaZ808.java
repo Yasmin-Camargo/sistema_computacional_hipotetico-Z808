@@ -44,9 +44,9 @@ public class JanelaZ808 extends JFrame {
     public JanelaZ808(String[] arquivos) throws IOException { 
         this.arquivos = arquivos;
         String[] aux;
-        String diretorio = "";
+        String diretorio = "src\\z808\\resources\\";
         arqs_simplif = new String[arquivos.length];
-        for (int i = 0; i < arquivos .length; i++) {
+        for (int i = 0; i < arquivos.length; i++) {
             aux = arquivos[i].split(Pattern.quote("\\"));
             arqs_simplif[i] = aux[aux.length-1].substring(0, aux[aux.length-1].length()-4);
             diretorio += arqs_simplif[i] + "-";
