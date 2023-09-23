@@ -104,7 +104,7 @@ public class Montador {
                 case "Codigo":
                 case "Pilha":   // Caso 1: não tem label antes da instrução
                     texto_lido[LC][2] = "";                                       
-                    texto_lido[LC][3] = linha_separada[0];                         // coloca na matriz o código a operação
+                    texto_lido[LC][3] = linha_separada[0];    // coloca na matriz o código a operação
                     if (linha_separada.length == 1){ // instrução não tem nenhum operando
                         texto_lido[LC][4] = "";  
                         texto_lido[LC][5] = "";
@@ -115,9 +115,11 @@ public class Montador {
                         texto_lido[LC][5] = linha_separada[1].split(",")[1];      // coloca na matriz o código do operando 2
                         PC += 3;
                         // verifica se o segundo operando é um label
-                        if (!linha_separada[1].split(",")[1].equals("AX") && !linha_separada[1].split(",")[1].equals("DX") && !linha_separada[1].split(",")[1].equals("SI") && // se o operando 2 não é um registrador, 
-                            !linha_separada[1].split(",")[1].contains("[") && (                                                              !(Character.isDigit(linha_separada[1].split(",")[1].charAt(0))) )){                                       // primeiro caracter não é um número, então é um label
-                              
+                        if (!linha_separada[1].split(",")[1].equals("AX") 
+                                && !linha_separada[1].split(",")[1].equals("DX") 
+                                && !linha_separada[1].split(",")[1].equals("SI") // se o operando 2 não é um registrador, 
+                                && !linha_separada[1].split(",")[1].contains("[") 
+                                && (!(Character.isDigit(linha_separada[1].split(",")[1].charAt(0))) )) {      // primeiro caracter não é um número, então é um label
                             if (!tabela_simbolos.containsKey(linha_separada[1].split(",")[1])){   // verifica se label já esta na tabela de simbolos
                                 tabela_simbolos.put(linha_separada[1].split(",")[1], -1);    
                             }
@@ -209,7 +211,7 @@ public class Montador {
         String nome_arquivo = caminho + "-cod-obj.txt";
         // String nome_arquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
         dados_armazenar = new HashMap<>() ;                               // dados definidos pelas label que devem ir para a memória
-        int contadorInstrucao = 0, quantidadeDadosMemoriaParaArmazenar = 0;  
+        int contadorInstrucao = 0, contadorDados = 0;  
 
         try {
             FileWriter arq = new FileWriter(nome_arquivo);        // Cria um objeto FileWriter para o arquivo específico
@@ -218,9 +220,9 @@ public class Montador {
             // Percorrendo tabela do codigo
             for (int i = 0; i < textScanned.length; i++) {
                 if (!textScanned[i][2].equals("") && !textScanned[i][3].equals("equ")){     // coloca o endereco correto para a nossa area de dados
-                    tabela_simbolos.replace(textScanned[i][2], quantidadeDadosMemoriaParaArmazenar);
-                    dados_armazenar.put(quantidadeDadosMemoriaParaArmazenar, contadorInstrucao);
-                    quantidadeDadosMemoriaParaArmazenar += 1;
+                    tabela_simbolos.replace(textScanned[i][2], contadorDados);
+                    dados_armazenar.put(contadorDados, contadorInstrucao);
+                    contadorDados += 1;
                 } 
                 switch (textScanned[i][3]) {
                     case "equ":
@@ -386,7 +388,9 @@ public class Montador {
                         }
                         contadorInstrucao += 2;
                     break;
-                    case "call":                                   
+                    case "call":                             
+                        // função call que chama subrotinas 
+                        // acho que no Ligador? tem que substituir o nome da subrotina pelo endereço efetivo dela  
                         if (tabela_simbolos.containsKey(textScanned[i][4])){  // é uma label
                             buffer.write("E8");
                             buffer.write(formataPara16Bits(""+tabela_simbolos.get(textScanned[i][4])));
@@ -496,6 +500,11 @@ public class Montador {
                 }
             }
             
+            System.out.println("instrucoes -> " + contadorInstrucao);
+            System.out.println("dados -> " + contadorDados);
+            // buffer.write("\n#" + contadorInstrucao);
+            // buffer.write("\n#" + contadorDados);
+
             // Fecha o BufferedWriter
             buffer.close();
 

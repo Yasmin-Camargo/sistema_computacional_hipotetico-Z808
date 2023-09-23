@@ -12,6 +12,7 @@ public class Z808 {
     Registradores registrador;
     Memoria memoria;
     Montador montador;
+    Ligador ligador;
     int tam_area_instrucoes, flag_jump, flag_att_tabelas, cont_instr = 0;
     
     public Z808(String diretorio, String[] arquivos, String[] arqs_simplif) throws IOException {
@@ -46,8 +47,8 @@ public class Z808 {
                 System.exit(-1);
             } 
         }
-        System.out.println("--- LIGADOR --- (desenvolvimento)\n");
-        // ligador = new Ligador(diretorio, arquivos);
+        System.out.println("\n--- LIGADOR --- \n");
+        ligador = new Ligador(diretorio, arqs_simplif);
         // arq_final = ligador.getArqFinal();
         arq_final = diretorio + "/" + arqs_simplif[0] + "-cod-obj.txt";
         System.out.println("--- EXECUTOR ---\n");
@@ -71,7 +72,7 @@ public class Z808 {
         tam_area_instrucoes = contarInstr(arq_final); // calcula quanto de espaço as instruções ocupam
         flag_jump = 0;
         
-        memoria = new Memoria(tam_area_instrucoes,montador.getDadosParaArmazenar()); // cria memória 
+        memoria = new Memoria(tam_area_instrucoes, montador.getDadosParaArmazenar()); // cria memória 
         guardaInstr(arq_final, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
@@ -585,8 +586,11 @@ public class Z808 {
                         flag_final_arquivo = 1;
                     } else {
                          instrucao = new String(ch);
-                         memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
-                         quant_instrucoes += 1;
+                        //  System.out.println("instrucao -----> " + instrucao);
+                        //  if (instrucao != "\n#") {
+                             memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                             quant_instrucoes += 1;
+                        //  }
 
                         // Instruções que armazenam + 8 bits
                         switch (instrucao) {
@@ -615,7 +619,17 @@ public class Z808 {
                             }
                             case "EF", "EE", "9D", "9C" -> {
                             }
+                            // case "#" -> {
+                            //     System.out.println("aaaaaaaaaaaaaa");
+                            //     char a = '#';
+                            //     do {
+                            //         a = (char) arq_leitura.read();
+                            //         System.out.println(a);
+                            //     } while (a != '\n');
+                            //     }
+                            // }
                             default -> {
+                                // System.out.println("instrucao --> " + instrucao);
                             }
                         }
                     }

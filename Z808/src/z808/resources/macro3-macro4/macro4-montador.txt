@@ -1,0 +1,29 @@
+move AX,MACRO 
+push AX 
+move AX,var1 
+push AX 
+and AX,0 
+add AX,MACRO 
+add AX,var1 
+push AX 
+move AX,var1 push AX move AX,var2 push AX and AX,0 
+add AX,MACRO 
+add AX,var1 
+push AX 
+and AX,0 add AX,var1 add AX,var2 push AX ENDM  ENDM    move AX,5 
+push AX 
+move AX,2 
+push AX 
+and AX,0 
+add AX,5 
+add AX,2 
+push AX 
+move AX,3 
+push AX 
+move AX,4 
+push AX 
+and AX,0 
+add AX,3 
+add AX,4 
+push AX 
+cinco equ 5 end  
