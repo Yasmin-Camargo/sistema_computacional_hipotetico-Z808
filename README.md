@@ -1,3 +1,5 @@
+![TRABALHO FINAL PS](https://github.com/Yasmin-Camargo/sistema_computacional_hipotetico-Z808/assets/88253809/ea6545b9-ca67-4c25-be5f-e7c5df7928b5)
+
 # :pager: sistema_computacional_hipotetico-Z808
 Sistema Computacional Hiipotetico Z808 baseado na arquitetura dos processadores da família INTEL 8086/88 desenvolvido como trabalho avaliativo da disciplina de Programação de Sistemas
 
