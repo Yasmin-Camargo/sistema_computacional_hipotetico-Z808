@@ -27,15 +27,17 @@ import javax.swing.JOptionPane;
 
 public class Montador {
     private Map<String, Integer> tabela_simbolos;    // tabela de simbolos
+    private Map<Integer, Integer> dados_armazenar;    // local para armazenar dados que irão para memória de dados
+    private Map<Integer, Boolean> dados_enderecos;    // se o dado em dados_armazenar é um endereço
     private int LC; // contador de linha
     private int PC; // contador de endereços
-    private Map<Integer, Integer> dados_armazenar;    // local para aramzenar dados que irão para memória de dados
     private int diretiva_org;   // local para armazenar novo valor do PC caso seja utilizado a diretiva
     private JanelaMontador janela_montador;
     
     // public Montador(String caminho_arquivo) throws IOException{
     public Montador(String diretorio, String nome_arq) throws IOException{
         this.tabela_simbolos = new HashMap<>(); 
+        this.dados_enderecos = new HashMap<>(); 
         this.dados_armazenar = new HashMap<>(); 
         this.LC = 0; 
         this.PC = 0; 
@@ -72,38 +74,9 @@ public class Montador {
             
             switch (linha_separada[0]) {
                 // instruções
-                case "add":
-                case "div":
-                case "sub":
-                case "mul":
-                case "cmp":
-                case "and":
-                case "not":
-                case "or":
-                case "xor":
-                case "jmp":
-                case "jz":
-                case "jnz":
-                case "jp":
-                case "call":
-                case "pop":
-                case "popf":
-                case "push":
-                case "pushf":
-                case "store":
-                case "read":
-                case "write":
-                case "move":
-
-                // Diretivas
-                case "end":
-                case "equ":
-                case "org":
-
-                //outros
-                case "Dados":
-                case "Codigo":
-                case "Pilha":   // Caso 1: não tem label antes da instrução
+                case "add", "div", "sub", "mul", "cmp", "and", "not", "or", "xor", "jmp", "jz", "jnz", "jp", "call", "pop", "popf", "push", "pushf", "store", "read", "write", "move",
+                    "end", "equ", "org", // diretivas
+                    "Dados", "Codigo", "Pilha" -> { // Caso 1: não tem label antes da instrução
                     texto_lido[LC][2] = "";                                       
                     texto_lido[LC][3] = linha_separada[0];    // coloca na matriz o código a operação
                     if (linha_separada.length == 1){ // instrução não tem nenhum operando
@@ -131,9 +104,9 @@ public class Montador {
                         PC += 2;
                     }
                     
-                break;
+                }
 
-                default:    // Caso 2: tem uma label antes da instrução
+                default -> {    // Caso 2: tem uma label antes da instrução
                     texto_lido[LC][2] = linha_separada[0];                         // coloca na matriz o código a label identificada
                     System.out.println("LC:" + LC);
                     //System.out.println("linha separada 0:" + linhaSeparada[0]);
@@ -176,7 +149,7 @@ public class Montador {
                             PC += 2;
                     }
                    
-                break;
+                }
             }
             texto_lido[LC][0]  = String.valueOf(LC);   // coloca num linhas
             LC += 1;        // ataualiza contador de lihas
@@ -223,6 +196,7 @@ public class Montador {
                 if (!textScanned[i][2].equals("") && !textScanned[i][3].equals("equ")){     // coloca o endereco correto para a nossa area de dados
                     tabela_simbolos.replace(textScanned[i][2], contadorDados);
                     dados_armazenar.put(contadorDados, contadorInstrucao);
+                    // dados_enderecos.put(contadorDados, true);
                     System.out.println("--> dados para armazenar: " + textScanned[i][2] + ": " + contadorDados +" "+contadorInstrucao);
                     contadorDados += 1;
                 } 

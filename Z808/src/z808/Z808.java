@@ -141,7 +141,7 @@ public class Z808 {
 
             case 247 -> {
                 att3Registr(registrador, memoria); // lê próximo código da memória
-                int AX = registrador.getAX();
+                int AX = registrador.getAX(); 
                 switch (registrador.getRI()) {  
                     case 246 -> {
                         instrucao += "div AX, SI";
@@ -192,7 +192,7 @@ public class Z808 {
                  }
             }
             case 36 -> {
-                instrucao += "and AX,opd (direto)";        
+                instrucao += "and AX,opd (imediato)";        
                 att3Registr(registrador, memoria); //leitura do operando (16 bits)
                 registrador.setAX(Instrucoes.and(registrador.getAX(), registrador.getRI(), registrador));
             }
@@ -581,15 +581,12 @@ public class Z808 {
                     if (ch[0] == '\uFFFF' || ch[1] == '\uFFFF') {
                         flag_final_arquivo = 1;
                     } else {
-                         instrucao = new String(ch);
-                        //  System.out.println("instrucao -----> " + instrucao);
-                        //  if (instrucao != "\n#") {
-                             memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
-                             quant_instrucoes += 1;
-                        //  }
+                        instrucao = new String(ch);
+                        memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
+                        quant_instrucoes += 1;
 
-                        // Instruções que armazenam + 8 bits
                         switch (instrucao) {
+                            // Instruções que armazenam 1 byte
                             case "03", "F7", "2B", "3B", "23", "F8", "0B", "33", "57", "50", "07", "16" -> {
                                 ch[0] = (char) arq_leitura.read();
                                 ch[1] = (char) arq_leitura.read();
@@ -597,6 +594,7 @@ public class Z808 {
                                 memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
                                 quant_instrucoes += 1;
                             }
+                            // instruções que armazenam 2 bytes
                             case "05", "04", "2D", "2C", "3D", "3C", "25", "24", "0D", "0C", "35", "34", "EB", "74", "75", "7A", "E8", "E7", "59", "58", "12", "13", "08", "09", "14", "15" -> {
                                 opd[0] = (char) arq_leitura.read();
                                 if (opd[0] == '-'){ //verifica se é um número negativo
@@ -613,17 +611,7 @@ public class Z808 {
                                     memoria.escreverCodigo(quant_instrucoes, (int) Integer.parseInt(instrucao, 16));
                                 }   quant_instrucoes += 1;
                             }
-                            case "EF", "EE", "9D", "9C" -> {
-                            }
-                            // case "#" -> {
-                            //     System.out.println("aaaaaaaaaaaaaa");
-                            //     char a = '#';
-                            //     do {
-                            //         a = (char) arq_leitura.read();
-                            //         System.out.println(a);
-                            //     } while (a != '\n');
-                            //     }
-                            // }
+                            case "EF", "EE", "9D", "9C" -> { } // 1 byte
                             default -> {
                                 // System.out.println("instrucao --> " + instrucao);
                             }

@@ -3,6 +3,7 @@ package z808;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -63,6 +64,25 @@ public class Ligador {
             fr.close();
             leitor.close();
 
+            if (eh_principal) {
+                System.out.println("Main file!");
+                System.out.println(cont_instrucoes);
+                // System.out.println(cont_dados);
+                endereco_base = Integer.parseInt(cont_instrucoes.replace("#", ""));
+                int contador_dados = 0;
+                for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
+                    dados.put(contador_dados, (montador.getDadosParaArmazenar().get(chave)));
+                    contador_dados += 1;
+                }
+            } else {
+                instrucoes = modificarEnderecos(instrucoes);
+                int contador_dados = 0;
+                for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
+                    dados.put(contador_dados, (montador.getDadosParaArmazenar().get(chave) + endereco_base));
+                    contador_dados += 1;
+                }
+            }
+
             FileWriter fw = new FileWriter(f1);
             BufferedWriter escritor = new BufferedWriter(fw);
             escritor.write(instrucoes);
@@ -72,20 +92,14 @@ public class Ligador {
             ex.printStackTrace();
         }
 
-        if (eh_principal) {
-            System.out.println("Main file!");
-            System.out.println(cont_instrucoes);
-            // System.out.println(cont_dados);
-            endereco_base = Integer.parseInt(cont_instrucoes.replace("#", ""));
-        }
+        
 
-        System.out.println("Dados para Armazenar");
-        int contador_dados = 0;
-        for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
-            dados.put(contador_dados, montador.getDadosParaArmazenar().get(chave));
-            contador_dados += 1;
-            // System.out.println(montador.getDadosParaArmazenar().get(chave));
-        }
+        // int contador_dados = 0;
+        // for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
+        //     dados.put(contador_dados, montador.getDadosParaArmazenar().get(chave));
+        //     contador_dados += 1;
+        //     // System.out.println(montador.getDadosParaArmazenar().get(chave));
+        // }
 
         instrucoes_final += instrucoes;
         desloc_instr += Integer.parseInt(cont_instrucoes.replace("#", ""));
@@ -108,6 +122,71 @@ public class Ligador {
 
     public Map<Integer,Integer> getDados() {
         return dados;
+    }
+
+    private String modificarEnderecos(String instrucoes) {
+        // Instruções que armazenam + 8 bits
+        // só preciso consumir as instruções
+        // e quando for endereçamento direto, alterar os valores do endereço
+        char[] opd = new char[4];
+        char[] ch = new char[2];
+
+        int cont_char = 0, endereco;
+        
+        ch[0] = (char) instrucoes.charAt(cont_char++);
+        ch[1] = (char) instrucoes.charAt(cont_char++);
+        
+        String codigo = new String(ch);
+
+        switch (codigo) {
+            case "03", "07", "0B", "16", "23", "2B", "3B", "33", "50", "57", "F7", "F8" -> {
+                ch[0] = (char) instrucoes.charAt(cont_char++);
+                ch[1] = (char) instrucoes.charAt(cont_char++);
+                codigo = new String(ch);
+            }
+            // operações com endereçamento direto
+            case "05", "09", "13", "15", "59", "0D", "25", "2D", "35", "3D", "E7" -> {
+                // considerando que é um endereçamento, não deveria ter endereços negativos
+                opd[0] = (char) instrucoes.charAt(cont_char++);
+                opd[1] = (char) instrucoes.charAt(cont_char++);
+                opd[2] = (char) instrucoes.charAt(cont_char++);
+                opd[3] = (char) instrucoes.charAt(cont_char++);
+
+                System.out.println("INSTRUCAO --> " + codigo);
+                codigo = new String(opd);
+                System.out.println("endereço atual --> " + codigo);
+                endereco = Integer.parseInt(codigo) + desloc_dados;
+                System.out.println("novo endereço --> " + endereco);
+
+
+                // if (opd[0] == '-'){ //verifica se é um número negativo
+                //     opd[0] = (char) instrucoes.charAt(cont_char++);
+                // }   opd[1] = (char) instrucoes.charAt(cont_char++);
+            }
+            // instruções jz, jp, jnz, jmp
+            case "74", "75", "7A", "EB" -> {
+                opd[0] = (char) instrucoes.charAt(cont_char++);
+                opd[1] = (char) instrucoes.charAt(cont_char++);
+                opd[2] = (char) instrucoes.charAt(cont_char++);
+                opd[3] = (char) instrucoes.charAt(cont_char++);
+                System.out.println("INSTRUCAO --> " + codigo);
+                codigo = new String(opd);
+                System.out.println("endereço atual --> " + codigo);
+                endereco = Integer.parseInt(codigo) + desloc_dados;
+                System.out.println("novo endereço --> " + endereco);
+            }
+            // operações com endereçamento imediato, logo puxam 4 digitos do arquivo
+            case "04", "08", "12", "14", "58", "0C", "24", "2C", "34", "3C", "E8" -> {
+                opd[0] = (char) instrucoes.charAt(cont_char++);
+                if (opd[0] == '-') { 
+                    opd[0] = (char) instrucoes.charAt(cont_char++);
+                }   opd[1] = (char) instrucoes.charAt(cont_char++);
+                opd[2] = (char) instrucoes.charAt(cont_char++);
+                opd[3] = (char) instrucoes.charAt(cont_char++);
+            }
+            case "EF", "EE", "9D", "9C" -> { }
+        }
+        return instrucoes;
     }
 
 
