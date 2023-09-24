@@ -23,5 +23,5 @@ ENDM
 start
   PushPilha 5, 2, 0
   PushPilha 3, 4, 0
-  cinco equ 5;    	define a constante
+  seis equ 6;    	define a constante
 end

@@ -26,10 +26,11 @@ public class Z808 {
     
     private void iniciarZ808() throws IOException {
         criarDiretorio();
-        ProcessadorMacros macro = new ProcessadorMacros();
+        ProcessadorMacros macro;
         for (int i = 0; i < arquivos.size(); i++) {
             try {
                 System.out.println("--- PROCESSADOR DE MACROS ---\n");
+                macro = new ProcessadorMacros();
                 macro.processar(diretorio, arquivos.get(i), arquivos_simplif.get(i));
                 System.out.println("--- MONTADOR " + arquivos_simplif.get(i) + "--- \n");
                 montadores.add(new Montador(diretorio, arquivos_simplif.get(i)));
@@ -41,9 +42,10 @@ public class Z808 {
         }
 
         System.out.println("\n--- LIGADOR --- \n");
-        ligador = new Ligador(diretorio, arquivos_simplif);
+        ligador = new Ligador(diretorio, arquivos_simplif, montadores);
         // arq_final = ligador.getArqFinal();
-        arq_final = diretorio + "/" + arquivos_simplif.get(0) + "-cod-obj.txt";
+        // arq_final = diretorio + "/" + arquivos_simplif.get(0) + "-cod-obj.txt";
+        arq_final = diretorio + "\\cod-obj-final.txt";
         System.out.println("--- EXECUTOR ---\n");
         registrador = new Registradores();
     }
@@ -65,8 +67,8 @@ public class Z808 {
         tam_area_instrucoes = contarInstr(arq_final); // calcula quanto de espaço as instruções ocupam
         flag_jump = 0;
         
-        // memoria = new Memoria(tam_area_instrucoes, ligador.getDadosArmazenar())
-        memoria = new Memoria(tam_area_instrucoes, montadores.get(0).getDadosParaArmazenar()); // cria memória 
+        // memoria = new Memoria(tam_area_instrucoes, montadores.get(0).getDadosParaArmazenar()); // cria memória 
+        memoria = new Memoria(tam_area_instrucoes, ligador.getDados());
         guardaInstr(arq_final, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
@@ -509,7 +511,7 @@ public class Z808 {
         if (!arquivo.exists()) {
             JOptionPane.showMessageDialog(
                 null, 
-                "Falha ao abrir o arquivo.", 
+                "O arquivo código objeto final possivelmente não existe.", 
                 "ERRO", 
                 JOptionPane.ERROR_MESSAGE
             );
@@ -630,7 +632,11 @@ public class Z808 {
                 }
                 arq_leitura.close();
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Erro ao manipular o arquivo.", "ERRO", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                    null, 
+                    "Erro ao manipular o arquivo.", 
+                    "ERRO", 
+                    JOptionPane.ERROR_MESSAGE);
             }
         }
     }

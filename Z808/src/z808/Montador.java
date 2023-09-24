@@ -36,15 +36,16 @@ public class Montador {
     // public Montador(String caminho_arquivo) throws IOException{
     public Montador(String diretorio, String nome_arq) throws IOException{
         this.tabela_simbolos = new HashMap<>(); 
+        this.dados_armazenar = new HashMap<>(); 
         this.LC = 0; 
         this.PC = 0; 
         this.diretiva_org = 0;
         
-        segundoPasso(primeiroPasso(diretorio + "/" + nome_arq + "-montador.txt"), diretorio + "/" + nome_arq);
+        segundoPasso(primeiroPasso(diretorio + "/" + nome_arq + "-montador.txt", nome_arq), diretorio + "/" + nome_arq);
     }
     
     // primeiro passo do montador de dois passos: criar tabela de simbolos
-    private String [][] primeiroPasso(String caminho_arquivo) throws IOException{
+    private String [][] primeiroPasso(String caminho_arquivo, String nome_arq) throws IOException{
         // matriz para estruturar o código                                                             colunas: [0]     [1]        [2]     [3]        [4]          [5]
         String [][] texto_lido = new String [contarLinhasArquivo(caminho_arquivo)][6];    //          linha | endereço | label | operação | operando 1 | operando 2
         
@@ -201,7 +202,7 @@ public class Montador {
             System.out.println(chave + ": " + tabela_simbolos.get(chave));
         }
         
-        janela_montador = new JanelaMontador(texto_lido, LC, PC, tabela_simbolos);
+        janela_montador = new JanelaMontador(texto_lido, LC, PC, tabela_simbolos, nome_arq);
         
         return texto_lido;
     }
@@ -210,7 +211,7 @@ public class Montador {
     private void segundoPasso(String [][] textScanned, String caminho) throws IOException{
         String nome_arquivo = caminho + "-cod-obj.txt";
         // String nome_arquivo = ".\\src\\z808\\resources\\codigo_objeto.txt";
-        dados_armazenar = new HashMap<>() ;                               // dados definidos pelas label que devem ir para a memória
+        // dados_armazenar = new HashMap<>() ;                               // dados definidos pelas label que devem ir para a memória
         int contadorInstrucao = 0, contadorDados = 0;  
 
         try {
@@ -222,6 +223,7 @@ public class Montador {
                 if (!textScanned[i][2].equals("") && !textScanned[i][3].equals("equ")){     // coloca o endereco correto para a nossa area de dados
                     tabela_simbolos.replace(textScanned[i][2], contadorDados);
                     dados_armazenar.put(contadorDados, contadorInstrucao);
+                    System.out.println("--> dados para armazenar: " + textScanned[i][2] + ": " + contadorDados +" "+contadorInstrucao);
                     contadorDados += 1;
                 } 
                 switch (textScanned[i][3]) {

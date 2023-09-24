@@ -34,7 +34,7 @@ import javax.swing.*;
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
     private String arqPrincipal = "src\\z808\\resources\\macro3.txt";
-    private String arqSecundarios = "";
+    private String arqSecundarios = "'src\\z808\\resources\\macro1.txt'"; //    DEVE (!!!) deixar esse path entre ''
     private JTextField fieldArqPrincipal;// = new JTextArea(45);
     private JTextArea textAreaArquivos;// = new JTextArea(45);
     private JLabel labelAux;
@@ -42,10 +42,10 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     public JanelaInicial() {
         // janela
         setTitle("Z808 Emulator");
-        setSize(600, 500);
+        setSize(600, 550);
         setLocationRelativeTo(null); 
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
-        setMinimumSize(new Dimension(600, 450)); 
+        setMinimumSize(new Dimension(600, 550)); 
         setVisible(true);
         
         // onde todos os itens são inseridos
@@ -104,8 +104,9 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
                 File arquivo = seletor.getSelectedFile();
                 fieldArqPrincipal.setText(arquivo.getPath());
             }
-            btnProcurarPrincipal.setFocusable(false);
+            btnProcurarPrincipal.setFocusable(false);   
         }); 
+        btnProcurarPrincipal.setFocusable(false);
         gbc.gridy = 6;
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets = new Insets(0, 0, 15, 0);
@@ -146,34 +147,48 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
                 for (File arq : arquivos) 
                     texto += "'" + arq + "' : ";
                 textAreaArquivos.setText(texto);
+                arqSecundarios = texto;
             }
             btnProcurarOutros.setFocusable(false);
         }); 
         gbc.gridy = 9;
          gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(15, -150, 0, 0);
+        gbc.insets = new Insets(15, -175, 0, 0);
         container.add(btnProcurarOutros, gbc);
        
         // botão pra confirmar que é aquele arquivo que a gente quer
+        JButton btnLimpar = new JButton("Clear Secondary Files");
+        btnLimpar.addActionListener((ActionEvent e) -> {
+            btnLimpar();
+        }); 
+        gbc.insets = new Insets(15, 175, 0, 0);
+        container.add(btnLimpar, gbc);
+
         JButton btnConfirmar = new JButton("Confirm");
         btnConfirmar.addActionListener((ActionEvent e) -> {
             try {
                 btnCarregar();
             } catch (IOException ex) {
                 Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }); 
-        gbc.insets = new Insets(15, 150, 0, 0);
+            } 
+        });
+        gbc.gridy = 10;
+        gbc.insets = new Insets(15, 0, 0, 0);
         container.add(btnConfirmar, gbc);
         
         // legenda auxiliar
         labelAux = new JLabel("Press ENTER to continue.");
         labelAux.setFont(new Font("Arial", Font.PLAIN, 11));
         labelAux.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 10;
+        gbc.gridy = 11;
         gbc.gridwidth = 1;
         gbc.insets = new Insets(50, 0, 5, 0);
         container.add(labelAux, gbc);    
+    }
+
+    public void btnLimpar() {
+        arqSecundarios = "";
+        textAreaArquivos.setText("");
     }
     
     public void btnCarregar() throws IOException {
@@ -186,13 +201,13 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
                 btnCarregarErro("Main file must be of type .txt. Try again.");
         
         ArrayList<String> arquivos = new ArrayList<>();
-        int i, contador = 0;
+        int contador = 0;
         if (!arqSecundarios.equals("")) {
             String[] arqTemp = arqSecundarios.split(" : ");
-            // arquivos = arqSecundarios.split(" : ");
             for (String arq : arqTemp) {
-                arquivos.add(arq.substring(1, arq.length()-1));
-                arquivo = new File(arq);
+                String aux = arq.substring(1, arq.length()-1);
+                arquivos.add(aux);
+                arquivo = new File(aux);
                 if (!arquivo.exists())
                     btnCarregarErro(arquivo.getPath() + " wasn't found. Try again."); 
                     else 
@@ -220,10 +235,10 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
     @Override public void keyPressed(KeyEvent event) {}
     @Override 
     public void keyReleased(KeyEvent event) {
-        if (event.getKeyCode() == 10) { try {
-            // ENTER
-            event.consume();
-            btnCarregar();
+        if (event.getKeyCode() == 10) { // ENTER
+            try {
+                // event.consume();
+                btnCarregar();
             } catch (IOException ex) {
                 Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
             }

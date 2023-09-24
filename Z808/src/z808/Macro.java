@@ -49,7 +49,7 @@ public class Macro {
 
             parametros_reais.push(params.get(i));
         }
-        System.out.println(parametros_reais.toString() + '\n');
+        // System.out.println(parametros_reais.toString() + '\n');
     }
 
     /* Analisa se tem alguma parametro formal, se tiver, substitui pelo valor correpondente #(d,i) */

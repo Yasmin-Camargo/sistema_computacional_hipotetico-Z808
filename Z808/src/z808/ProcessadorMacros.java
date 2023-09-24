@@ -119,7 +119,7 @@ public class ProcessadorMacros {
             parametros.add(operando);
         
         Macro macro = macros.get(leitor.getInstrucao());
-        System.out.println("EXPANDIR MACRO -- " + macro.getNomeMacro() + ":\n" + macro.getEsqueletoMacro());
+        // System.out.println("EXPANDIR MACRO -- " + macro.getNomeMacro() + ":\n" + macro.getEsqueletoMacro());
 
         macro.setParametrosReais(parametros);               // Define os parametros reais com os valores dentro de "parametros"
         return macro.expandirMacro();                            // Retorna uma string com a macro expandida a partir dos parametros fornecidos;

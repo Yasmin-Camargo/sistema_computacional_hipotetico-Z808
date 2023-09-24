@@ -22,9 +22,9 @@ public class JanelaMontador extends JFrame {
     Container container;
     JTextArea area; 
     
-    public JanelaMontador(String[][] montador, int lc, int pc, Map<String,Integer> tabela) {
+    public JanelaMontador(String[][] montador, int lc, int pc, Map<String,Integer> tabela, String nomeArq) {
         // janela
-        setTitle("Z808 Emulator: MONTADOR");
+        setTitle("Z808 Emulator: MONTADOR " + nomeArq);
         setSize(700, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
         setMinimumSize(new Dimension(700, 400)); 
@@ -35,14 +35,14 @@ public class JanelaMontador extends JFrame {
         container = getContentPane();
         gbc = new GridBagConstraints();
         
-        criarVisual(montador, lc, pc, tabela);
+        criarVisual(montador, lc, pc, tabela, nomeArq);
     }
     
-    private void criarVisual(String[][] montador, int lc, int pc, Map<String,Integer> tabela) {
+    private void criarVisual(String[][] montador, int lc, int pc, Map<String,Integer> tabela, String nomeArq) {
         JPanel panelTopo = new JPanel();
         panelTopo.setLayout(new GridBagLayout());
         
-        JLabel labelMontador = new JLabel("Montador");
+        JLabel labelMontador = new JLabel("Montador " + nomeArq);
         labelMontador.setFont(new Font("Arial", Font.BOLD, 16));
         labelMontador.setHorizontalAlignment(SwingConstants.CENTER);
         

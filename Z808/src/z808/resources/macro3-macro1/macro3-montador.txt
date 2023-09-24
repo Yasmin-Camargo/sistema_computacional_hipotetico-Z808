@@ -14,4 +14,4 @@ and AX,0
 add AX,3 
 add AX,4 
 push AX 
-cinco equ 5 end  
+seis equ 6 end  

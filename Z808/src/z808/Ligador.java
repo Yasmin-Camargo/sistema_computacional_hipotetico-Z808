@@ -17,26 +17,40 @@ public class Ligador {
     private Map<String, Integer> tabela_global = new HashMap<>();
     private String diretorio;
     private ArrayList<String> arquivos_simplif;
+    private ArrayList<Montador> montadores;
 
-    private int endereco_base;
+    private Map<Integer, Integer> dados;
 
-    Ligador(String diretorio, ArrayList<String> arquivos_simplif) throws IOException {
+    private int endereco_base, desloc_instr, desloc_dados;
+    private String instrucoes_final;
+
+    Ligador(String diretorio, ArrayList<String> arquivos_simplif, ArrayList<Montador> montadores) throws IOException {
         // o primeiro arquivo de arquivos_simplif é o arquivo principal
         // usar o endereço dele para o primeiro arquivo!
         this.diretorio = diretorio;
+        this.montadores = montadores;
         this.arquivos_simplif = arquivos_simplif;
+        this.dados = new HashMap<>();
+        ligarModulos();
+    }
 
-        
+    private void ligarModulos() throws IOException {
+        this.instrucoes_final = "";
+        this.desloc_instr = 0;
+        this.desloc_dados = 0;
+
         // LEMBRAR --- primeiro arquivo é o Main!
-        acessarModulo(diretorio + "\\" + arquivos_simplif.get(0) + "-cod-obj.txt", true);
+        acessarModulo(diretorio + "\\" + arquivos_simplif.get(0) + "-cod-obj.txt", montadores.get(0), true);
         
         // LEMBRAR --- os outros são secundários
         for (int i = 1; i < arquivos_simplif.size(); i++) {
-            acessarModulo(diretorio + "\\" + arquivos_simplif.get(i) + "-cod-obj.txt", false);
+            acessarModulo(diretorio + "\\" + arquivos_simplif.get(i) + "-cod-obj.txt",  montadores.get(i), false);
         }
+
+        salvarArquivoFinal();
     }
 
-    private void acessarModulo(String caminho, Boolean eh_principal) throws IOException {
+    private void acessarModulo(String caminho, Montador montador, Boolean eh_principal) throws IOException {
         String instrucoes = "", cont_instrucoes = "", cont_dados = "";
         // remove quant de instrucoes e dados inseridos no arquivo de codigo objeto
         try {
@@ -61,10 +75,49 @@ public class Ligador {
         if (eh_principal) {
             System.out.println("Main file!");
             System.out.println(cont_instrucoes);
-            System.out.println(cont_dados);
+            // System.out.println(cont_dados);
+            endereco_base = Integer.parseInt(cont_instrucoes.replace("#", ""));
         }
 
+        System.out.println("Dados para Armazenar");
+        int contador_dados = 0;
+        for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
+            dados.put(contador_dados, montador.getDadosParaArmazenar().get(chave));
+            contador_dados += 1;
+            // System.out.println(montador.getDadosParaArmazenar().get(chave));
+        }
+
+        instrucoes_final += instrucoes;
+        desloc_instr += Integer.parseInt(cont_instrucoes.replace("#", ""));
+        desloc_dados += Integer.parseInt(cont_dados.replace("#", ""));
+
+        System.out.println(instrucoes_final + "\n" + desloc_instr +"\n"+ desloc_dados);
     }
+
+    private void salvarArquivoFinal() throws IOException {
+        String nome_arquivo = diretorio + "\\cod-obj-final.txt";
+        FileWriter arq = new FileWriter(nome_arquivo);       
+        BufferedWriter escritor = new BufferedWriter(arq);
+        escritor.write(instrucoes_final);
+        escritor.close();
+    }
+
+    public int getContagemInstrucoes() {
+        return desloc_instr;
+    }
+
+    public Map<Integer,Integer> getDados() {
+        return dados;
+    }
+
+
+
+
+
+
+
+
+
 
     private void criarTabelaSimbolos(String arquivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
