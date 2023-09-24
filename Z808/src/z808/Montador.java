@@ -502,8 +502,8 @@ public class Montador {
             
             System.out.println("instrucoes -> " + contadorInstrucao);
             System.out.println("dados -> " + contadorDados);
-            // buffer.write("\n#" + contadorInstrucao);
-            // buffer.write("\n#" + contadorDados);
+            buffer.write("\n#" + contadorInstrucao);
+            buffer.write("\n#" + contadorDados);
 
             // Fecha o BufferedWriter
             buffer.close();

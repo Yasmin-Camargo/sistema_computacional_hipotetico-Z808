@@ -3,54 +3,47 @@ package z808;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
-
 
 public class Z808 {
     String caminho_macro, arq_final;
-    String diretorio, arquivos[], arqs_simplif[];
+    String diretorio;//, arquivos[], arqs_simplif[];
+    ArrayList<String> arquivos, arquivos_simplif;
     Registradores registrador;
     Memoria memoria;
-    Montador montador;
+    ArrayList<Montador> montadores;
     Ligador ligador;
     int tam_area_instrucoes, flag_jump, flag_att_tabelas, cont_instr = 0;
     
-    public Z808(String diretorio, String[] arquivos, String[] arqs_simplif) throws IOException {
+    public Z808(String diretorio, ArrayList<String> arquivos, ArrayList<String> arquivos_simplif) throws IOException {
         this.diretorio = diretorio;
         this.arquivos = arquivos;
-        this.arqs_simplif = arqs_simplif;
+        this.arquivos_simplif = arquivos_simplif;
+        montadores = new ArrayList<>();
         iniciarZ808();
     }
     
     private void iniciarZ808() throws IOException {
         criarDiretorio();
         ProcessadorMacros macro = new ProcessadorMacros();
-        for (int i = 0; i < arquivos.length; i++) {
-        // for (String arq : arquivos) {
+        for (int i = 0; i < arquivos.size(); i++) {
             try {
                 System.out.println("--- PROCESSADOR DE MACROS ---\n");
-                macro.processar(diretorio, arquivos[i], arqs_simplif[i]);
-                System.out.println("--- MONTADOR ---\n");
-                montador = new Montador(diretorio, arqs_simplif[i]);
-                
-                // String caminho_montador = macro.processar(caminho_macro);
-                // diretorio = macro.processar(diretorio, arq);
-                // System.out.println("--- MONTADOR ---\n");
-                // montador = new Montador(diretorio, arq);
-                // arq_final = ".\\src\\z808\\resources\\codigo_objeto.txt";
-                // arq_final = diretorio + "/codigo_objeto.txt";
-                // System.out.println("\n--- EXECUTOR ---\n");
-                // registrador = new Registradores();
+                macro.processar(diretorio, arquivos.get(i), arquivos_simplif.get(i));
+                System.out.println("--- MONTADOR " + arquivos_simplif.get(i) + "--- \n");
+                montadores.add(new Montador(diretorio, arquivos_simplif.get(i)));
             }
             catch (Exception e ){
                 System.out.print(e);
                 System.exit(-1);
             } 
         }
+
         System.out.println("\n--- LIGADOR --- \n");
-        ligador = new Ligador(diretorio, arqs_simplif);
+        ligador = new Ligador(diretorio, arquivos_simplif);
         // arq_final = ligador.getArqFinal();
-        arq_final = diretorio + "/" + arqs_simplif[0] + "-cod-obj.txt";
+        arq_final = diretorio + "/" + arquivos_simplif.get(0) + "-cod-obj.txt";
         System.out.println("--- EXECUTOR ---\n");
         registrador = new Registradores();
     }
@@ -72,11 +65,12 @@ public class Z808 {
         tam_area_instrucoes = contarInstr(arq_final); // calcula quanto de espaço as instruções ocupam
         flag_jump = 0;
         
-        memoria = new Memoria(tam_area_instrucoes, montador.getDadosParaArmazenar()); // cria memória 
+        // memoria = new Memoria(tam_area_instrucoes, ligador.getDadosArmazenar())
+        memoria = new Memoria(tam_area_instrucoes, montadores.get(0).getDadosParaArmazenar()); // cria memória 
         guardaInstr(arq_final, memoria);  // coloca dados do arquivo na memória
         
         // Inicialização dos registradores
-        registrador.setCL(montador.getValorDiretivaORG());  // pega endereço (indice) da primeira instrução na memória
+        registrador.setCL(montadores.get(0).getValorDiretivaORG());  // pega endereço (indice) da primeira instrução na memória
         registrador.setRI(memoria.lerCodigo(registrador.getCL())); // pega o código da instrução
         registrador.setIP(registrador.getCL() + 1); // atualiza o apontador de instrução para o endereço da próxima instrução
         
@@ -670,7 +664,7 @@ public class Z808 {
     }
     
     public void matarJanelaMontador() {
-        montador.matarJanela();
+        montadores.get(0).matarJanela();
         
         // @ JULIA COLOCA UMA ASCII DE FAQUINHA AQUI
         

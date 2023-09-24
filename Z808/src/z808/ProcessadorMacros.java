@@ -28,9 +28,8 @@ public class ProcessadorMacros {
     }
 
     // Processa o arquivo selecionado
-    public void processar(String diretorio, String arquivo, String simplificado) throws Exception {
-        System.out.println(arquivo);
-        File saida = new File(diretorio + "/" + simplificado + "-montador.txt");	// Cria um objeto e adiciona a extenção TXT
+    public void processar(String diretorio, String arquivo, String arq_simplif) throws Exception {
+        File saida = new File(diretorio + "/" + arq_simplif + "-montador.txt");	// Cria um objeto e adiciona a extenção TXT
         saida.createNewFile();	
         FileWriter arq_saida;
         try {

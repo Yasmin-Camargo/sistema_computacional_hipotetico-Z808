@@ -1,23 +1,69 @@
 package z808;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 public class Ligador {
     private Map<String, Integer> tabela_global = new HashMap<>();
     private String diretorio;
+    private ArrayList<String> arquivos_simplif;
 
-    Ligador(String diretorio, String[] arquivos_simplif) {
+    private int endereco_base;
+
+    Ligador(String diretorio, ArrayList<String> arquivos_simplif) throws IOException {
+        // o primeiro arquivo de arquivos_simplif é o arquivo principal
+        // usar o endereço dele para o primeiro arquivo!
         this.diretorio = diretorio;
-        System.out.println("diretorio: " + diretorio);
-        for (String arquivo : arquivos_simplif) {
-            System.out.println("ARQUIVO " + arquivo);
-            criarTabelaSimbolos(arquivo);
+        this.arquivos_simplif = arquivos_simplif;
+
+        
+        // LEMBRAR --- primeiro arquivo é o Main!
+        acessarModulo(diretorio + "\\" + arquivos_simplif.get(0) + "-cod-obj.txt", true);
+        
+        // LEMBRAR --- os outros são secundários
+        for (int i = 1; i < arquivos_simplif.size(); i++) {
+            acessarModulo(diretorio + "\\" + arquivos_simplif.get(i) + "-cod-obj.txt", false);
         }
-        realizarLigacao(arquivos_simplif);
+    }
+
+    private void acessarModulo(String caminho, Boolean eh_principal) throws IOException {
+        String instrucoes = "", cont_instrucoes = "", cont_dados = "";
+        // remove quant de instrucoes e dados inseridos no arquivo de codigo objeto
+        try {
+            File f1 = new File(caminho);
+            FileReader fr = new FileReader(f1);
+            BufferedReader leitor = new BufferedReader(fr);
+            instrucoes = leitor.readLine();
+            cont_instrucoes = leitor.readLine();
+            cont_dados = leitor.readLine();
+            fr.close();
+            leitor.close();
+
+            FileWriter fw = new FileWriter(f1);
+            BufferedWriter escritor = new BufferedWriter(fw);
+            escritor.write(instrucoes);
+            escritor.flush();
+            escritor.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (eh_principal) {
+            System.out.println("Main file!");
+            System.out.println(cont_instrucoes);
+            System.out.println(cont_dados);
+        }
+
     }
 
     private void criarTabelaSimbolos(String arquivo) {
@@ -56,11 +102,11 @@ public class Ligador {
         }
     }
 
-    public void realizarLigacao(String[] arquivos_simplif) {
+    public void realizarLigacao(String diretorio, String[] arquivos_simplif) {
         System.out.println("-- segundo passo --");
         // Executa a ligação dos módulos usando a tabela de símbolos
         for (String arquivo : arquivos_simplif) {
-            ligarModulo(arquivo);
+            ligarModulo(diretorio + arquivo);
         }
     }
 

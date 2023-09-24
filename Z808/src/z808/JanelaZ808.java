@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
@@ -28,7 +29,9 @@ import javax.swing.table.DefaultTableModel;
 public class JanelaZ808 extends JFrame {
     private final int TAM_MAX_TABELAS = 1000;
     private final String[] panelMemorias = {"DataPanel", "StackPanel"};
-    private String[] arqs_simplif, arquivos;
+    // private String[] arqs_simplif;
+    private ArrayList<String> arquivos, arquivos_simplif;
+    // private String arq_principal;
     
     private JTextField fieldRegAX, fieldRegDX, fieldRegCL, fieldRegRI, fieldRegSI, fieldRegIP, fieldRegSP;
     private JTextField fieldRegFlagCF, fieldRegFlagPF, fieldRegFlagIF, fieldRegFlagZF, fieldRegFlagSF, fieldRegFlagOF;
@@ -41,18 +44,20 @@ public class JanelaZ808 extends JFrame {
     private final GridBagConstraints gbc;
     
     @SuppressWarnings("empty-statement")
-    public JanelaZ808(String[] arquivos) throws IOException { 
+    public JanelaZ808(String arq_principal, ArrayList<String> arquivos) throws IOException { 
         this.arquivos = arquivos;
-        String[] aux;
+        this.arquivos.add(0, arq_principal);
+        arquivos_simplif = new ArrayList<>();
         String diretorio = "src\\z808\\resources\\";
-        arqs_simplif = new String[arquivos.length];
-        for (int i = 0; i < arquivos.length; i++) {
-            aux = arquivos[i].split(Pattern.quote("\\"));
-            arqs_simplif[i] = aux[aux.length-1].substring(0, aux[aux.length-1].length()-4);
-            diretorio += arqs_simplif[i] + "-";
+        String[] aux;
+        
+        for (String arq : arquivos) {
+            aux = arq.split(Pattern.quote("\\"));
+            arquivos_simplif.add(aux[aux.length-1].substring(0, aux[aux.length-1].length()-4));
+            diretorio += (arquivos_simplif.get(arquivos_simplif.size()-1) + "-");
         }
         diretorio = diretorio.substring(0, diretorio.length() - 1);
-        sistema = new Z808(diretorio, arquivos, arqs_simplif);
+        sistema = new Z808(diretorio, arquivos, arquivos_simplif);
         
         // janela
         setTitle("Z808 Emulator");
@@ -67,14 +72,14 @@ public class JanelaZ808 extends JFrame {
         gbc = new GridBagConstraints();
         container = getContentPane();
         
-        criarPanelArquivo(arquivos); // cria painel superior com localização do arquivo
+        criarPanelArquivo(); // cria painel superior com localização do arquivo
         criarRegistradores(); // cria JTextFields dos registradores
         criarTextAreas();
         criarBotoes(); // cria botões na parte inferior
         btnCarregarInstr();
     }
     
-    private void criarPanelArquivo(String[] pathArquivo) {
+    private void criarPanelArquivo() {
         JPanel panelArquivo = new JPanel();
         panelArquivo.setLayout(new GridBagLayout());
         //panelArquivo.setBackground(Color.WHITE);
@@ -89,8 +94,8 @@ public class JanelaZ808 extends JFrame {
         panelArquivo.add(labelArquivo, gbc);
         
         JTextField fieldArquivo = new JTextField(30);
-        for (String s : arqs_simplif) {
-
+        for (String s : arquivos) {
+            System.out.println(s);
         }
         // fieldArquivo.setText(pathArquivo);
         fieldArquivo.setEditable(false); // read only
@@ -464,6 +469,11 @@ public class JanelaZ808 extends JFrame {
         // try {
             sistema.matarJanelaMontador();
             // JanelaZ808 novo = new JanelaZ808(caminho);
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
             System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
             // novo.setVisible(true);
             // this.dispose();

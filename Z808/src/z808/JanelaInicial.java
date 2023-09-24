@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -32,14 +33,16 @@ import javax.swing.*;
  */
 
 public class JanelaInicial extends JFrame implements KeyListener, ActionListener {
-    private String caminhoArquivos = "'src\\z808\\resources\\macro3.txt'";
-    private JTextArea textAreaArquivo;// = new JTextArea(45);
-    private JLabel labAux;
+    private String arqPrincipal = "src\\z808\\resources\\macro3.txt";
+    private String arqSecundarios = "";
+    private JTextField fieldArqPrincipal;// = new JTextArea(45);
+    private JTextArea textAreaArquivos;// = new JTextArea(45);
+    private JLabel labelAux;
     
     public JanelaInicial() {
         // janela
         setTitle("Z808 Emulator");
-        setSize(600, 450);
+        setSize(600, 500);
         setLocationRelativeTo(null); 
         setDefaultCloseOperation(EXIT_ON_CLOSE); 
         setMinimumSize(new Dimension(600, 450)); 
@@ -73,45 +76,83 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         container.add(labSubtitulo, gbc);
 
         // label indicado "caminho do arquivo"
-        JLabel labArquivo = new JLabel("File(s) path:");
-        labArquivo.setFont(new Font("Arial", Font.PLAIN, 14));
-        labArquivo.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel labelArqPrincipal = new JLabel("Main file path:");
+        labelArqPrincipal.setFont(new Font("Arial", Font.PLAIN, 14));
+        labelArqPrincipal.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        gbc.insets = new Insets(0, 0, 5, 50);
-        container.add(labArquivo, gbc);
+        gbc.insets = new Insets(0, 0, 5, 0);
+        container.add(labelArqPrincipal, gbc);
         
         // input para o texto do caminho do arquivo
-        textAreaArquivo = new JTextArea();
-        textAreaArquivo.setColumns(100);
-        textAreaArquivo.setRows(100);
-        textAreaArquivo.setLineWrap(true);
-        textAreaArquivo.setMinimumSize(new Dimension(450, 75));
-        textAreaArquivo.setEditable(false);
-        textAreaArquivo.setText(caminhoArquivos);
-        textAreaArquivo.setCaretColor(Color.WHITE);
-        textAreaArquivo.addKeyListener(this);
+        fieldArqPrincipal = new JTextField(45);
+        fieldArqPrincipal.addKeyListener(this);
+        fieldArqPrincipal.setText(arqPrincipal);
+        fieldArqPrincipal.setFocusable(false);
+        fieldArqPrincipal.setEditable(false);
+        fieldArqPrincipal.setBackground(Color.WHITE);
         gbc.gridy = 5;
-        container.add(textAreaArquivo, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        container.add(fieldArqPrincipal, gbc);
+
+        // botão de procurar arquivo no pc
+        JButton btnProcurarPrincipal = new JButton("Search Main File");
+        btnProcurarPrincipal.addActionListener((ActionEvent e) -> {
+            JFileChooser seletor = new JFileChooser(".\\src\\z808\\resources");
+            int escolha = seletor.showOpenDialog(this);
+            if (escolha == JFileChooser.APPROVE_OPTION){
+                File arquivo = seletor.getSelectedFile();
+                fieldArqPrincipal.setText(arquivo.getPath());
+            }
+            btnProcurarPrincipal.setFocusable(false);
+        }); 
+        gbc.gridy = 6;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.insets = new Insets(0, 0, 15, 0);
+        container.add(btnProcurarPrincipal, gbc);
+        
+        // label indicado "caminho do arquivo"
+        JLabel labelArqSecundario = new JLabel("Secondary file(s) path(s):");
+        labelArqSecundario.setFont(new Font("Arial", Font.PLAIN, 14));
+        labelArqSecundario.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 7;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(0, 0, 5, 0);
+        container.add(labelArqSecundario, gbc);
+        
+        // input para o texto do caminho do arquivo
+        textAreaArquivos = new JTextArea();
+        textAreaArquivos.setColumns(100);
+        textAreaArquivos.setRows(100);
+        textAreaArquivos.setLineWrap(true);
+        textAreaArquivos.setMinimumSize(new Dimension(450, 75));
+        textAreaArquivos.setEditable(false);
+        textAreaArquivos.setText(arqSecundarios);
+        textAreaArquivos.setCaretColor(Color.WHITE);
+        textAreaArquivos.addKeyListener(this);
+        gbc.gridy = 8;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        container.add(textAreaArquivos, gbc);
         
         // botão de procurar arquivo no pc
-        JButton btnProcurar = new JButton("Search");
-        btnProcurar.addActionListener((ActionEvent e) -> {
-            JFileChooser seletor_arq = new JFileChooser(".\\src\\z808\\resources");
-            seletor_arq.setMultiSelectionEnabled(true);
-            int escolha = seletor_arq.showOpenDialog(this);
+        JButton btnProcurarOutros = new JButton("Search Secondary Files");
+        btnProcurarOutros.addActionListener((ActionEvent e) -> {
+            JFileChooser seletor = new JFileChooser(".\\src\\z808\\resources");
+            seletor.setMultiSelectionEnabled(true);
+            int escolha = seletor.showOpenDialog(this);
             if (escolha == JFileChooser.APPROVE_OPTION){
-                File[] arquivos = seletor_arq.getSelectedFiles();
+                File[] arquivos = seletor.getSelectedFiles();
                 String texto = "";
                 for (File arq : arquivos) 
                     texto += "'" + arq + "' : ";
-                textAreaArquivo.setText(texto);
+                textAreaArquivos.setText(texto);
             }
-            btnProcurar.setFocusable(false);
+            btnProcurarOutros.setFocusable(false);
         }); 
-        gbc.gridy = 6;
-        gbc.insets = new Insets(15, -100, 0, 0);
-        container.add(btnProcurar, gbc);
+        gbc.gridy = 9;
+         gbc.fill = GridBagConstraints.NONE;
+        gbc.insets = new Insets(15, -150, 0, 0);
+        container.add(btnProcurarOutros, gbc);
        
         // botão pra confirmar que é aquele arquivo que a gente quer
         JButton btnConfirmar = new JButton("Confirm");
@@ -122,48 +163,56 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
                 Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
             }
         }); 
-        gbc.insets = new Insets(15, 100, 0, 0);
+        gbc.insets = new Insets(15, 150, 0, 0);
         container.add(btnConfirmar, gbc);
         
         // legenda auxiliar
-        labAux = new JLabel("Press ENTER to continue.");
-        labAux.setFont(new Font("Arial", Font.PLAIN, 11));
-        labAux.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 7;
+        labelAux = new JLabel("Press ENTER to continue.");
+        labelAux.setFont(new Font("Arial", Font.PLAIN, 11));
+        labelAux.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 10;
         gbc.gridwidth = 1;
         gbc.insets = new Insets(50, 0, 5, 0);
-        container.add(labAux, gbc);    
+        container.add(labelAux, gbc);    
     }
     
     public void btnCarregar() throws IOException {
-        caminhoArquivos = textAreaArquivo.getText();
-        String[] arquivos = caminhoArquivos.split(" : ");
-        File arq;
+        arqPrincipal = fieldArqPrincipal.getText();
+        File arquivo = new File(arqPrincipal);
+        if (!arquivo.exists()) 
+            btnCarregarErro("Main file not found. Try again.");
+        else 
+            if (!arqPrincipal.contains(".txt"))   
+                btnCarregarErro("Main file must be of type .txt. Try again.");
+        
+        ArrayList<String> arquivos = new ArrayList<>();
         int i, contador = 0;
-        for (i = 0; i < arquivos.length; i++) {
-        // for (String arq : arquivos) {
-            arquivos[i] = arquivos[i].substring(1, arquivos[i].length() - 1);
-            arq = new File(arquivos[i]);
-            if (!arq.exists())
-                btnCarregarErro("Some of the files weren't found. Try again."); 
-            else {
-                if (!arquivos[i].contains(".txt")) 
-                    btnCarregarErro("All files must be of type .TXT. Try again.");
-                else
-                    contador += 1;
+        if (!arqSecundarios.equals("")) {
+            String[] arqTemp = arqSecundarios.split(" : ");
+            // arquivos = arqSecundarios.split(" : ");
+            for (String arq : arqTemp) {
+                arquivos.add(arq.substring(1, arq.length()-1));
+                arquivo = new File(arq);
+                if (!arquivo.exists())
+                    btnCarregarErro(arquivo.getPath() + " wasn't found. Try again."); 
+                    else 
+                    if (!arq.contains(".txt"))
+                        btnCarregarErro(arquivo.getPath() + " isn't of type .TXT. Try again."); 
+                    else
+                        contador += 1;
             }
         }
-        if (contador == arquivos.length) {
-            JanelaZ808 sistema = new JanelaZ808(arquivos);
+        if (contador == arquivos.size()) {
+            JanelaZ808 sistema = new JanelaZ808(arqPrincipal, arquivos);
             sistema.setVisible(true);
             this.dispose();
         } 
     }
     
     public void btnCarregarErro(String mensagem) {
-        labAux.setFont(new Font("Arial", Font.BOLD, 11));
-        labAux.setForeground(Color.RED);
-        labAux.setText(mensagem);
+        labelAux.setFont(new Font("Arial", Font.BOLD, 11));
+        labelAux.setForeground(Color.RED);
+        labelAux.setText(mensagem);
     }
     
     @Override public void actionPerformed(ActionEvent event) {}
