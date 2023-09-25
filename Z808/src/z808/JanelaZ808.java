@@ -96,10 +96,12 @@ public class JanelaZ808 extends JFrame {
         panelArquivo.add(labelArquivo, gbc);
         
         JTextField fieldArquivo = new JTextField(30);
-        for (String s : arquivos) {
-            System.out.println(s);
+        String texto = "";
+        for (String s : arquivos_simplif) {
+            texto += (s+"-");
         }
-        // fieldArquivo.setText(pathArquivo);
+        texto = texto.substring(0, texto.length()-1);
+        fieldArquivo.setText(texto);
         fieldArquivo.setEditable(false); // read only
         fieldArquivo.setCaretColor(Color.WHITE);
         fieldArquivo.setFont(new Font("Arial", Font.PLAIN, 14));

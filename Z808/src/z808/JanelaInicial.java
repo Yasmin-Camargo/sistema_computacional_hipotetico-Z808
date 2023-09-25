@@ -23,7 +23,7 @@ import javax.swing.*;
  * @authors  GRUPO: Adas & CG
  *  Bianca Beppler Dullius
  *  Caroline Souza Camargo
- *  Cláudio Luis da Silva Machado Junior
+ *  Claudio Luis da Silva Machado Junior
  *  Eduarda Abreu Carvalho
  *  Guilherme Braatz Stein
  *  Júlia da Rocha Junqueira
@@ -100,7 +100,9 @@ public class JanelaInicial extends JFrame implements KeyListener, ActionListener
         btnProcurarPrincipal.addActionListener((ActionEvent e) -> {
             JFileChooser seletor = new JFileChooser(".\\src\\z808\\resources");
             int escolha = seletor.showOpenDialog(this);
-            if (escolha == JFileChooser.APPROVE_OPTION){
+            if (escolha == JFileChooser.APPROVE_OPTION) {
+                arqSecundarios = "";
+                textAreaArquivos.setText("");                
                 File arquivo = seletor.getSelectedFile();
                 fieldArqPrincipal.setText(arquivo.getPath());
             }

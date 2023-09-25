@@ -39,6 +39,8 @@ public class ProcessadorMacros {
             while (scanner.hasNextLine()) {                         // Executa para cada linha existente no arquivo
                 leitor_macro.lerLinhaScanner(scanner);              // Processa cada linha do arquivo
                 String linha = processarLinha(leitor_macro);
+                // if (!linha.contains("\n") && !linha.equals("")) // wtf
+                    // linha += "\n";
                 arq_saida.write(linha);  
             }
             arq_saida.close(); 

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Ligador {
-    // private Map<String, Integer> tabela_global = new HashMap<>();
     private String diretorio;
     private ArrayList<String> arquivos_simplif;
     private ArrayList<Montador> montadores;
@@ -28,6 +27,7 @@ public class Ligador {
         this.montadores = montadores;
         this.arquivos_simplif = arquivos_simplif;
         this.dados = new HashMap<>();
+        this.endereco_base = 0;
         ligarModulos();
     }
 
@@ -60,25 +60,6 @@ public class Ligador {
             fr.close();
             leitor.close();
 
-            if (eh_principal) {
-                System.out.println("Main file!");
-                System.out.println(cont_instrucoes);
-                // System.out.println(cont_dados);
-                endereco_base = Integer.parseInt(cont_instrucoes.replace("#", ""));
-                int contador_dados = 0;
-                for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
-                    dados.put(contador_dados, (montador.getDadosParaArmazenar().get(chave)));
-                    contador_dados += 1;
-                }
-            } else {
-                instrucoes = modificarEnderecos(instrucoes);
-                int contador_dados = 0;
-                for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
-                    dados.put(contador_dados, (montador.getDadosParaArmazenar().get(chave) + endereco_base));
-                    contador_dados += 1;
-                }
-            }
-
             FileWriter fw = new FileWriter(f1);
             BufferedWriter escritor = new BufferedWriter(fw);
             escritor.write(instrucoes);
@@ -88,16 +69,20 @@ public class Ligador {
             ex.printStackTrace();
         }
 
-        
-
-        // int contador_dados = 0;
-        // for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
-        //     dados.put(contador_dados, montador.getDadosParaArmazenar().get(chave));
-        //     contador_dados += 1;
-        //     // System.out.println(montador.getDadosParaArmazenar().get(chave));
-        // }
-
+        if (eh_principal) {
+            System.out.println("Main file!");
+            System.out.println(cont_instrucoes);
+        } else {
+            instrucoes = modificarEnderecos(instrucoes);
+        }
+        int contador_dados = 0;
+        for (Integer chave : montador.getDadosParaArmazenar().keySet()) {
+            dados.put(contador_dados, (montador.getDadosParaArmazenar().get(chave) + endereco_base));
+            contador_dados += 1;
+        }
+        endereco_base += (Integer.parseInt(cont_instrucoes.replace("#", "")));
         instrucoes_final += instrucoes;
+
         desloc_instr += Integer.parseInt(cont_instrucoes.replace("#", ""));
         desloc_dados += Integer.parseInt(cont_dados.replace("#", ""));
 
@@ -148,16 +133,26 @@ public class Ligador {
                 opd[2] = (char) instrucoes.charAt(cont_char++);
                 opd[3] = (char) instrucoes.charAt(cont_char++);
 
-                System.out.println("INSTRUCAO --> " + codigo);
                 codigo = new String(opd);
-                System.out.println("endereço atual --> " + codigo);
                 endereco = Integer.parseInt(codigo) + desloc_dados;
-                System.out.println("novo endereço --> " + endereco);
+                String novo_texto = "";
+                if (endereco < 10) {
+                    novo_texto = "000";
+                } else if (endereco < 100) {
+                    novo_texto = "00"; 
+                } else if (endereco < 1000) {
+                    novo_texto = "0";
+                }
+                novo_texto += String.valueOf(endereco);
+                
+                String parte1 = instrucoes.substring(0, cont_char-4);
+                String parte2 = instrucoes.substring(cont_char, instrucoes.length());
 
+                // System.out.println(instrucoes);
+                // System.out.println(parte1 + novo_texto + parte2);
 
-                // if (opd[0] == '-'){ //verifica se é um número negativo
-                //     opd[0] = (char) instrucoes.charAt(cont_char++);
-                // }   opd[1] = (char) instrucoes.charAt(cont_char++);
+                instrucoes = parte1 + novo_texto + parte2;
+
             }
             // instruções jz, jp, jnz, jmp
             case "74", "75", "7A", "EB" -> {
@@ -185,85 +180,4 @@ public class Ligador {
         return instrucoes;
     }
 
-
-
-
-
-
-
-
-
-
-    // private void criarTabelaSimbolos(String arquivo) {
-    //     try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
-    //         String linha;
-    //         int enderecoRelativo = 0; // Inicializa o endereço relativo para o arquivo atual
-    //         while ((linha = br.readLine()) != null) {
-    //             // Analise a linha para extrair símbolos e endereços relativos
-    //             String[] partes = linha.split(" "); // Assumindo que os símbolos estão separados por espaço
-    //             if (partes.length == 2) {
-    //                 String simbolo = partes[0];
-    //                 // Não sei, aqui tinha que pegar o end relativo, mas de onde pega???
-    //                 int enderecoSimbolo = enderecoRelativo;
-    //                 // Verifica se o símbolo já existe na tabela global
-    //                 if (!tabela_global.containsKey(simbolo)) {
-    //                     // Se não existe, adiciona o símbolo com o endereço relativo
-    //                     tabela_global.put(simbolo, enderecoSimbolo);
-    //                 } else {
-    //                     // Caso encontre um símbolo duplicado
-    //                     System.err.println("Aviso: Símbolo duplicado encontrado - " + simbolo);
-    //                 }
-    //             }
-    //             // Atualiza o endereço relativo para a próxima linha
-    //             enderecoRelativo += 1;
-    //         }
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    // public int buscarSimboloGlobal(String nome) {
-    //     if (tabela_global.containsKey(nome)) {
-    //         return tabela_global.get(nome); // Retorna o valor associado ao símbolo global
-    //     } else {
-    //         return -1; // Retorna -1 se o símbolo não for encontrado
-    //     }
-    // }
-
-    // public void realizarLigacao(String diretorio, String[] arquivos_simplif) {
-    //     System.out.println("-- segundo passo --");
-    //     // Executa a ligação dos módulos usando a tabela de símbolos
-    //     for (String arquivo : arquivos_simplif) {
-    //         ligarModulo(diretorio + arquivo);
-    //     }
-    // }
-
-    // private void ligarModulo(String arquivo) {
-    //     try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
-    //         String linha;
-    //         int enderecoRelativo = 0; // Inicializa o endereço relativo para o arquivo atual
-    //         while ((linha = br.readLine()) != null) {
-    //             // Analise a linha para encontrar referências externas
-    //             String[] partes = linha.split(" "); // Assumindo que as instruções estão separadas por espaço
-    //             if (partes.length == 3 && partes[0].equals("EXTERN")) {
-    //                 String simboloExtern = partes[1];
-    //                 // Verifica se o símbolo externo existe na tabela global
-    //                 if (tabela_global.containsKey(simboloExtern)) {
-    //                     int enderecoGlobal = tabela_global.get(simboloExtern);
-    //                     // Atualiza o endereço no módulo atual
-    //                     int novoEndereco = enderecoRelativo + Integer.parseInt(partes[2]) + enderecoGlobal;
-    //                     System.out.println("Ligando " + simboloExtern + " em " + novoEndereco);
-    //                     // 
-    //                     // Você pode fazer algo com o novoEndereco, como atualizar a instrução no módulo atual
-    //                 } else {
-    //                     System.err.println("Erro: Símbolo externo não encontrado - " + simboloExtern);
-    //                 }
-    //             }
-    //             // Atualiza o endereço relativo para a próxima linha
-    //             enderecoRelativo += 1;
-    //         }
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 }
