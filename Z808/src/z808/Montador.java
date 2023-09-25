@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 public class Montador {
     private Map<String, Integer> tabela_simbolos;    // tabela de simbolos
     private Map<Integer, Integer> dados_armazenar;    // local para armazenar dados que irão para memória de dados
-    private Map<Integer, Boolean> dados_enderecos;    // se o dado em dados_armazenar é um endereço
     private int LC; // contador de linha
     private int PC; // contador de endereços
     private int diretiva_org;   // local para armazenar novo valor do PC caso seja utilizado a diretiva
@@ -37,7 +36,6 @@ public class Montador {
     // public Montador(String caminho_arquivo) throws IOException{
     public Montador(String diretorio, String nome_arq) throws IOException{
         this.tabela_simbolos = new HashMap<>(); 
-        this.dados_enderecos = new HashMap<>(); 
         this.dados_armazenar = new HashMap<>(); 
         this.LC = 0; 
         this.PC = 0; 
