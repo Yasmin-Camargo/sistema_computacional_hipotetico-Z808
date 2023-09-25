@@ -658,9 +658,9 @@ public class Z808 {
     }
     
     public void matarJanelaMontador() {
-        montadores.get(0).matarJanela();
-        
-        // @ JULIA COLOCA UMA ASCII DE FAQUINHA AQUI
-        
+        for (Montador m : montadores) {
+            m.matarJanela();
+        }
+        // montadores.get(0).matarJanela();
     }
 }

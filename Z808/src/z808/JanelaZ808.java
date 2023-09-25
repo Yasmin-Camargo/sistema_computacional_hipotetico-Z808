@@ -30,6 +30,7 @@ public class JanelaZ808 extends JFrame {
     private final int TAM_MAX_TABELAS = 1000;
     private final String[] panelMemorias = {"DataPanel", "StackPanel"};
     // private String[] arqs_simplif;
+    private String arq_principal;
     private ArrayList<String> arquivos, arquivos_simplif;
     // private String arq_principal;
     
@@ -45,6 +46,7 @@ public class JanelaZ808 extends JFrame {
     
     @SuppressWarnings("empty-statement")
     public JanelaZ808(String arq_principal, ArrayList<String> arquivos) throws IOException { 
+        this.arq_principal = arq_principal;
         this.arquivos = arquivos;
         this.arquivos.add(0, arq_principal);
         arquivos_simplif = new ArrayList<>();
@@ -465,27 +467,22 @@ public class JanelaZ808 extends JFrame {
     }
     
     private void btnResetar() {
-        String caminho = sistema.getCaminhoMacro();
-        // try {
+        this.arquivos.remove(0);
+        try {
             sistema.matarJanelaMontador();
-            // JanelaZ808 novo = new JanelaZ808(caminho);
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
-            // novo.setVisible(true);
-            // this.dispose();
-        // }
-        // catch (IOException e) {
-        //     JOptionPane.showMessageDialog(
-        //         null,
-        //         "Exceção: " + e,
-        //         "ERRO!",
-        //         JOptionPane.ERROR_MESSAGE
-        //     );
-        // }
+            JanelaZ808 novo = new JanelaZ808(arq_principal, arquivos);
+            // System.out.println("-----=---\nBOTAO RESETAR NAO ESTA FUNCIONADO\n-------------");
+            novo.setVisible(true);
+            this.dispose();
+        }
+        catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Não foi possível resetar simulador. Exceção: " + e + ".",
+                "ERRO!",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
     
     public String[][] criarMemoriaDados(int[] memoria) {
